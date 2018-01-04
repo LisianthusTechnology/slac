@@ -4,15 +4,42 @@
 <meta charset="ISO-8859-1">
 <title>Cadastro de Evento</title>
 <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
+<link href="bootstrap/css/css-project.css" rel="stylesheet">
 </head>
-<body>
-<nav class="navbar navbar-default"  style="background-color: #ADD8E6">
+<body class="background">
+<nav class="navbar navbar-default color">
   <div class="container-fluid">
     <div class="navbar-header">
-        <img class="col-xs-1 col-md-2" alt="Brand" src="images/Logo_ueg.png">
+        <img class="col-md-2" alt="Brand" src="images/Logo_ueg.png">
+   		<div class="text-center">
+   			<h4 class="position headslac"><strong>SLAC</strong></h4>
+        	<p class="position headtextslac">Sistema de Lançamento de <br>Atividades Complementares</p>  
+    	</div>
     </div>
   </div>
 </nav>
-
+<form class="form-horizontal container-fluid">
+	<p class="text-center headslac"><strong>Cadastro de Atividades<br><br></strong></p>
+	<div class="form-group">
+		<label for="nomeEvento" class="col-sm-2 control-label">*Nome do Evento:</label>
+    	<div class="col-sm-4">
+      		<input type="text" class="form-control" id="nomeEvento" placeholder="Evento">
+    	</div>
+    	<label for="chCertificado" class="col-sm-3 control-label">*Carga Horária do Certificado:</label>
+    	<div class="col-sm-2">
+      		<input type="text" class="form-control" id="chCertificado" placeholder="Carga Horária">
+    	</div>
+    </div>
+    <div class="form-group">
+		<label for="localEvento" class="col-sm-2 control-label">*Local do Evento:</label>
+    	<div class="col-sm-4">
+      		<input type="text" class="form-control" id="localEvento" placeholder="Local">
+    	</div>
+    	<label for="dtInicioAtividade" class="col-sm-3 control-label">*Data de Inicio da Atividade:</label>
+    	<div class="col-sm-2">
+      		<input type="text" class="form-control" id="dtInicioAtividade" placeholder="Data de Inicio">
+    	</div>
+    </div>
+</form>
 </body>
 </html>
