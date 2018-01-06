@@ -61,7 +61,7 @@ public class ServletCadastroEventos extends HttpServlet {
 		String nomeMetodo = null;
 		String op = req.getParameter("op");
 		PrintWriter out = resp.getWriter();
-
+		
 		if (op == null || op.equalsIgnoreCase("index")) {
 			op = "inserir";
 			MiniTemplator tpl = getMiniTemplator(op);

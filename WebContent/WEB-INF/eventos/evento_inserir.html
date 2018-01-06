@@ -25,9 +25,9 @@
     	<div class="col-sm-4">
       		<input type="text" class="form-control" id="nomeEvento" placeholder="Evento">
     	</div>
-    	<label for="chCertificado" class="col-sm-3 control-label">*Carga Horária do Certificado:</label>
+    	<label for="chCertificadoEvento" class="col-sm-3 control-label">*Carga Horária do Certificado:</label>
     	<div class="col-sm-2">
-      		<input type="text" class="form-control" id="chCertificado" placeholder="Carga Horária">
+      		<input type="text" class="form-control" id="chCertificadoEvento" placeholder="Carga Horária">
     	</div>
     </div>
     <div class="form-group">
@@ -35,11 +35,50 @@
     	<div class="col-sm-4">
       		<input type="text" class="form-control" id="localEvento" placeholder="Local">
     	</div>
-    	<label for="dtInicioAtividade" class="col-sm-3 control-label">*Data de Inicio da Atividade:</label>
+    	<label for="dtInicioEvento" class="col-sm-3 control-label">*Data de Inicio da Atividade:</label>
     	<div class="col-sm-2">
-      		<input type="text" class="form-control" id="dtInicioAtividade" placeholder="Data de Inicio">
+      		<input type="text" class="form-control" id="dtInicioEvento" placeholder="Data de Inicio">
     	</div>
     </div>
-</form>
+    <div class="form-group">
+		<label for="modalidadeEvento" class="col-sm-2 control-label">*Modalidade:</label>
+    	<div class="col-sm-4">
+			<select id="modalidadeEvento" class="form-control">
+  				<option value="1">Modalidade I - Atividades de formação social, humana e cultural</option>
+  				<option value="2">Modalidade II - Atividades de cunho comunitário e de interesse coletivo</option>
+ 				<option value="3">Modalidade III - Atividades de ensino, de formação profissional, pesquisa, iniciação científica e tecnológica</option>
+  				<option value="4">Outras</option>
+			</select>
+      	</div>
+    	<label for="certificadoEvento" class="col-sm-3 control-label">*Certificado:</label>
+    	<div class="col-sm-2">
+    		<div class="input-group">
+      			<input type="text" class="form-control" id="rdCertificadoEvento" placeholder="Certificado" readonly>
+     			<span class="input-group-btn">
+       				<button class="btn btn-default" type="button" id="btnCertificadoEvento">
+       					<span class="glyphicon glyphicon-cloud-upload"></span>
+       				</button>
+      			</span>
+      		</div>
+    	</div>
+    </div>
+    	<div class="form-group">
+		<label for="tipoEvento" class="col-sm-2 control-label">*Tipo do Evento:</label>
+    	<div class="col-sm-4">
+			<select id="tipoEvento" class="form-control">
+  				<option value="Presencial">Presencial</option>
+  				<option value="Distancia">Distância</option>
+			</select>
+      	</div>
+    	<label for="descricaoAtividadeEvento" class="col-sm-3 control-label">*Descrição da Atividade:</label>
+    	<div class="col-sm-2">
+    		<select id="descricaoAtividadeEvento" class="form-control">
+    			<option value="$idAtividade1">$atividade1</option>
+  				<option value="$idAtividade2">$atividade2</option>
+  			</select>
+    	</div>
+    </div>
+    <button type="submit" class="btn btn-default">Salvar</button>
+</form> 
 </body>
 </html>
