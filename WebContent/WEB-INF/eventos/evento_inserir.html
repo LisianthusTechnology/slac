@@ -4,19 +4,26 @@
 <meta charset="ISO-8859-1">
 <title>Cadastro de Evento</title>
 <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
-<link href="bootstrap/css/css-project.css" rel="stylesheet">
+<link href="bootstrap/css/css-project.css?version=13" rel="stylesheet">
 </head>
 <body class="background">
 <nav class="navbar navbar-default color">
-  <div class="container-fluid">
-    <div class="navbar-header">
-        <img class="col-md-2" alt="Brand" src="images/Logo_ueg.png">
-   		<div class="text-center">
-   			<h4 class="position headslac"><strong>SLAC</strong></h4>
-        	<p class="position headtextslac">Sistema de Lançamento de <br>Atividades Complementares</p>  
+ 	<div class="container-fluid">
+   		<div class="row">
+    		<div class="col-md-4">
+    			<img alt="Brand" src="images/Logo_ueg_red.png">
+    		</div>
+    		<div class="col-md-4 text-center">
+   				<h4 class="headslac"><strong>SLAC</strong></h4>
+        		<p class="headtextslac">Sistema de Lançamento de <br>Atividades Complementares</p>  
+    		</div>
+    		<div class="col-md-4 text-right">
+    			<h4 class="headslac"><strong>Olá, <br> João Da Silva
+    				<span class="glyphicon glyphicon-user"></span>
+    			</strong></h4>     		
+    		</div>
     	</div>
-    </div>
-  </div>
+	</div>
 </nav>
 <form class="form-horizontal container-fluid">
 	<p class="text-center headslac"><strong>Cadastro de Atividades<br><br></strong></p>
@@ -53,7 +60,7 @@
     	<label for="certificadoEvento" class="col-sm-3 control-label">*Certificado:</label>
     	<div class="col-sm-2">
     		<div class="input-group">
-      			<input type="text" class="form-control" id="rdCertificadoEvento" placeholder="Certificado" readonly>
+      			<input type="text" class="form-control" id="rdCertificadoEvento" placeholder="$certificadoEvento" readonly>
      			<span class="input-group-btn">
        				<button class="btn btn-default" type="button" id="btnCertificadoEvento">
        					<span class="glyphicon glyphicon-cloud-upload"></span>
@@ -78,7 +85,7 @@
   			</select>
     	</div>
     </div>
-    <button type="submit" class="btn btn-default">Salvar</button>
+    <button class="btnsalvar" type="submit">Salvar</button>
 </form> 
 </body>
 </html>
