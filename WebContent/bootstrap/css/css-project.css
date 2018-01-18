@@ -21,4 +21,8 @@
 
 .btnsalvar{
 	background-color: #120856;
+	color:white;
+	padding: 12px 25px; /*altura largura*/
+	border: none;
+    border-radius: 2px;  
 }
