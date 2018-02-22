@@ -22,7 +22,7 @@ public class ServletCadastroEventos extends HttpServlet {
 	String separador;
 	String realPath;
 	String contextPath;
-
+//Teste alterar
 	public void init() {
 		servletContext = getServletContext();
 		separador = System.getProperty("file.separator");
