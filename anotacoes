@@ -1,4 +1,6 @@
 --Fazer aparecer as modalidades cadastradas no select na hora de inserir a particioação em uma atividade
 --Pra salvar uma participação é preciso ter o id da modalidade na tabela de participação
 --Resolver problema de conexao com o banco 
--Fazer pacote de teste pra testar a conexao com o banco
+--Fazer pacote de teste pra testar a conexao com o banco
+--Na SQL de update do DAO da participação, como ficam os IDs da atividade, aluno e coor? como faz para eles se manteram o mesmo?
+--Na SQL vamos tratar as datas como Integer?
