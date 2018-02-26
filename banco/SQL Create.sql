@@ -9,7 +9,7 @@ CREATE TABLE coordenador_ac (
 
 CREATE TABLE aluno (
   id_aluno SERIAL NOT NULL,
-  cpf INTEGER NOT NULL,
+  cpf BIGINT NOT NULL,
   nome VARCHAR(40) NOT NULL,
   senha VARCHAR(8) NOT NULL,
   email VARCHAR(30) NOT NULL,
@@ -22,7 +22,7 @@ CREATE TABLE aluno (
   );
   
 CREATE TABLE modalidade (
-  id_mod INTEGER NOT NULL,
+  id_mod SERIAL NOT NULL,
   nome_mod VARCHAR(50) NOT NULL,
   PRIMARY KEY (id_mod));
   
@@ -60,3 +60,4 @@ CREATE TABLE atividade_complementar (
   CONSTRAINT fk_atividade_complementar_has_aluno_coordenador_ac
     FOREIGN KEY (coordenador_ac_id_admin)
     REFERENCES coordenador_ac (id_admin));
+    

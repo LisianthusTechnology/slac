@@ -50,12 +50,28 @@
     <div class="form-group">
 		<label for="modalidadeEvento" class="col-sm-2 control-label">*Modalidade:</label>
     	<div class="col-sm-4">
+    	<!--
 			<select id="modalidadeEvento" class="form-control">
   				<option value="1">Modalidade I - Atividades de formação social, humana e cultural</option>
   				<option value="2">Modalidade II - Atividades de cunho comunitário e de interesse coletivo</option>
  				<option value="3">Modalidade III - Atividades de ensino, de formação profissional, pesquisa, iniciação científica e tecnológica</option>
   				<option value="4">Outras</option>
 			</select>
+			-->
+			
+			
+			<select id="modalidadeEvento" class="form-control" name="modalidade_evento">
+				<option value="">Selecione</option>
+					<!-- $beginBlock relation.modalidade -->
+						<option value="${modalidade.id_mod}" ${atividade_complementar.modalidade_id_mod}>${modalidade.id_mod}</option>			
+					<!-- $endBlock relation.modalidade -->
+			
+		</select>
+			
+			
+			
+			
+			
       	</div>
     	<label for="certificadoEvento" class="col-sm-3 control-label">*Certificado:</label>
     	<div class="col-sm-2">
