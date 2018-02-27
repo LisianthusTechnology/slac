@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import biz.source_code.miniTemplator.MiniTemplator;
 import biz.source_code.miniTemplator.MiniTemplator.TemplateSyntaxException;
-import conexaoBanco.ConexaoBanco;
+
 
 
 @SuppressWarnings("serial")
@@ -30,7 +30,7 @@ public class ServletCadastroEventos extends HttpServlet {
 		separador = System.getProperty("file.separator");
 		realPath = servletContext.getRealPath("/");
 		contextPath = servletContext.getContextPath();
-		ConexaoBanco.obterInstancia();
+	
 	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)

@@ -3,4 +3,6 @@
 --Resolver problema de conexao com o banco 
 --Fazer pacote de teste pra testar a conexao com o banco
 --Na SQL de update do DAO da participação, como ficam os IDs da atividade, aluno e coor? como faz para eles se manteram o mesmo?
---Na SQL vamos tratar as datas como Integer?
+--Na SQL vamos tratar as datas como Integer? Procurei isso na internet
+--Cirei a classe de modalidade
+--O erro q ta dando é pq tem um atributo a menos (ou a mais) q a quantidade de colunas da tabela do banco. Acho q se resolver isso a conexão ta ok

@@ -1,6 +1,6 @@
 package modelo;
 
-import sun.util.calendar.BaseCalendar.Date;
+import java.util.Date;
 
 /**
  * 
@@ -23,26 +23,31 @@ public class Participacao {
 	private String tipo_ac_part;
 	
 	
-	public Participacao(Integer atividade_complementar_id_atividade, Integer aluno_id_aluno, Integer id_participacao, 
-			String certificado_part, Integer coordenador_ac_id_admin,
-			String status, Date data_validacao_ac, String nome_ac_part, Date data_inicio_ac_part, 
-			Integer ch_cadastrada_part, Integer ch_validada_part, String local_ac_part, String tipo_ac_part){
+	public Participacao(Integer atividade_complementar_id_atividade1, Integer aluno_id_aluno1, Integer id_participacao1, 
+			String certificado_part1, Integer coordenador_ac_id_admin1,
+			String status1, Date data_val1, String nome_ac_part1, java.util.Date data_inicio1, 
+			Integer ch_cadastrada_part1, Integer ch_validada_part1, String local_ac_part1, String tipo_ac_part1){
 		
-		atividade_complementar_id_atividade = atividade_complementar_id_atividade;
-		aluno_id_aluno = aluno_id_aluno;
-		id_participacao = id_participacao;
-		coordenador_ac_id_admin = coordenador_ac_id_admin;
-		certificado_part = certificado_part;
-		status = status;
-		data_validaca_ac = data_validacao_ac;
-		nome_ac_part = nome_ac_part;
-		data_inicio_ac_part = data_inicio_ac_part;
-		ch_cadastrada_part = ch_cadastrada_part;
-		ch_validada_part = ch_validada_part;
-		local_ac_part = local_ac_part;
-		tipo_ac_part = tipo_ac_part;
+		atividade_complementar_id_atividade = atividade_complementar_id_atividade1;
+		aluno_id_aluno = aluno_id_aluno1;
+		id_participacao = id_participacao1;
+		coordenador_ac_id_admin = coordenador_ac_id_admin1;
+		certificado_part = certificado_part1;
+		status = status1;
+		data_validaca_ac = data_val1;
+		nome_ac_part = nome_ac_part1;
+		data_inicio_ac_part = data_inicio1;
+		ch_cadastrada_part = ch_cadastrada_part1;
+		ch_validada_part = ch_validada_part1;
+		local_ac_part = local_ac_part1;
+		tipo_ac_part = tipo_ac_part1;
 			
 	}
+	
+	public Participacao(){
+		
+	}
+	
 	
 	public Integer getAtividade_complementar_id_atividade() {
 		return atividade_complementar_id_atividade;

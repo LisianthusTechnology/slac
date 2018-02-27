@@ -19,11 +19,12 @@ public class DAOParticipacao {
 
 	private DAOParticipacao() {
 		try {
-			Class.forName("org.postgresql.Driver");
-			con = DriverManager.getConnection("jdbc:postgresql://localhost:5433/slac", "postgres", "");
+			String driver = "org.postgresql.Driver";
+			Class.forName(driver);
+			this.con = DriverManager.getConnection("jdbc:postgresql://localhost:5433/slac", "postgres", "");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println(e.getMessage()+"DAOPArticipacao");
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -34,7 +35,6 @@ public class DAOParticipacao {
 		if (dao == null) {
 			dao = new DAOParticipacao();
 		}
-
 		return dao;
 	}
 
@@ -88,6 +88,8 @@ public class DAOParticipacao {
 			ret.setSucesso(true);
 			ret.setMensagem("inclusão do participacao realizada com sucesso");
 		}
+		
+		System.out.println("Retorno:"+ ret.getMensagem());
 
 		return ret;
 
@@ -113,9 +115,12 @@ public class DAOParticipacao {
 
 	private int executaAlteracao(String sql) throws SQLException {
 		Statement stmt = con.createStatement();
+		//System.out.println("SQL 2:"+sql);
 		int ok = stmt.executeUpdate(sql);
 		return ok;
 	}
+	
+
 
 	public boolean excluir(Participacao participacao) throws RuntimeException {
 		if (participacao == null) return false;// o id nunca vai ser nulo
@@ -242,18 +247,31 @@ public class DAOParticipacao {
 
 	public Participacao obter(Integer id) {
 		if(id == null) return null;
-		String sql = "select id,nome,apelido,telefone " + "from participacao where id=" + id + "";
+		String sql = "select atividade_camplementar_id_atividade, aluno_id_aluno, id_participacao, certificado_part, coord_ac_id_admin,"
+				+ "status, data_validacao_ac, nome_ac_part, data_inicio_ac_part, ch_cadastrada_part, ch_validada_part, local_ac_part, tipo_ac_part "
+				+ "from participacao where id_participacao=" + id + "";
+	
 		try {
 			Statement stmt = con.createStatement();
 
 			ResultSet resultSet = stmt.executeQuery(sql);
 			if (resultSet.next()) {
 				Participacao participacao = new Participacao();
-				participacao.setId(resultSet.getInt("id"));
-				participacao.setNome(resultSet.getString("nome"));
-				participacao.setApelido(resultSet.getString("apelido"));
-				participacao.setTelefone(preparaAtributoLong(resultSet, "telefone"));
-
+				
+				participacao.setAtividade_complementar_id_atividade(resultSet.getInt("atividade_complementar_id_atividade"));
+				participacao.setAluno_id_aluno(resultSet.getInt("aluno_id_aluno"));
+				participacao.setId_participacaoo(resultSet.getInt("id_participacao"));
+				participacao.setCertificado_part(resultSet.getString("certificado_part"));
+				participacao.setCoordenador_ac_id_admin(resultSet.getInt("coordenador_ac_id_admin"));
+				participacao.setStatus(resultSet.getString("status"));
+				participacao.setData_validaca_ac(resultSet.getDate("data_validaca_ac"));
+				participacao.setNome_ac_part(resultSet.getString("nome_ac_part"));
+				participacao.setData_inicio_ac_part(resultSet.getDate("data_inicio_ac_part"));
+				participacao.setCh_cadastrada_part(resultSet.getInt("ch_cadastrada_part"));
+				participacao.setCh_validada_part(resultSet.getInt("ch_validada_part"));
+				participacao.setLocal_ac_part(resultSet.getString("local_ac_part"));
+				participacao.setTipo_ac_part(resultSet.getString("tipo_ac_part"));
+				
 				return participacao;
 			} else {
 				return null;
