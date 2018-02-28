@@ -59,7 +59,7 @@ public class DAOParticipacao {
 		String sql = "insert into participacao(atividade_complementar_id_atividade, aluno_id_aluno, "
 				+ "id_participacao, certificado_part, coordenador_ac_id_admin, status, data_validacao_ac, nome_ac_part, "
 				+ "data_inicio_ac_part, ch_cadastrada_part, ch_validada_part, local_ac_part, tipo_ac_part)" + " values(" + "" 
-		+ preparaAtributoParaBD(participacao.getAtividade_complementar_id_atividade()) + "" +", " 
+		+ preparaAtributoParaBD(participacao.getAtividade_complementar_id_atividade())+", " 
 		+ preparaAtributoParaBD(participacao.getAluno_id_aluno()) + ","
 		+ participacao.getId_participacao() + ","
 		+ preparaAtributoParaBD(participacao.getCertificado_part()) + ","
@@ -70,6 +70,7 @@ public class DAOParticipacao {
 		+ preparaAtributoParaBD(participacao.getData_inicio_ac_part()) + ","
 		+ preparaAtributoParaBD(participacao.getCh_cadastrada_part()) + ","
 		+ preparaAtributoParaBD(participacao.getCh_validada_part()) + ","
+		+ preparaAtributoParaBD(participacao.getLocal_ac_part()) + ","
 		+ preparaAtributoParaBD(participacao.getTipo_ac_part()) + ")";
 		System.out.println("SQL:" + sql);
 		int ok = 0;

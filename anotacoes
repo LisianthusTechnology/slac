@@ -6,3 +6,4 @@
 --Na SQL vamos tratar as datas como Integer? Procurei isso na internet
 --Cirei a classe de modalidade
 --O erro q ta dando é pq tem um atributo a menos (ou a mais) q a quantidade de colunas da tabela do banco. Acho q se resolver isso a conexão ta ok
+--Sprint 2: corrigir o q teve de errado na 1, fazer a especificação do q vai ser implementado na Sprint 2

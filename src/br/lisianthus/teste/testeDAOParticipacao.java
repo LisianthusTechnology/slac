@@ -54,7 +54,7 @@ public class testeDAOParticipacao {
 		part.setLocal_ac_part("Anapolis");
 		part.setTipo_ac_part("distancia");
 		
-		System.out.println(part.getData_validaca_ac());
+		System.out.println(part.getLocal_ac_part());
 		
 		if(daop != null){
 		
