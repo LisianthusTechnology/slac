@@ -1,10 +1,10 @@
-package teste;
+package br.lisianthus.teste;
 
 import java.util.Date;
 
-import dao.DAOParticipacao;
+import br.lisianthus.dao.DAOParticipacao;
+import br.lisianthus.modelo.Participacao;
 import javafx.scene.chart.PieChart.Data;
-import modelo.Participacao;
 
 public class testeDAOParticipacao {
 

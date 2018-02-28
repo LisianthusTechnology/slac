@@ -1,4 +1,4 @@
-package utils;
+package br.lisianthus.utils;
 
 public class Retorno {
 	private boolean sucesso;

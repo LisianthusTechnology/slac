@@ -1,4 +1,4 @@
-package dao;
+package br.lisianthus.dao;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -9,8 +9,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import modelo.Participacao;
-import utils.Retorno;
+import br.lisianthus.modelo.Participacao;
+import br.lisianthus.utils.Retorno;
 
 
 public class DAOParticipacao {

@@ -1,4 +1,4 @@
-package modelo;
+package br.lisianthus.modelo;
 
 public class Modalidade {
 	
