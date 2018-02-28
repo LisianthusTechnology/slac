@@ -12,7 +12,7 @@ import java.util.List;
 import br.lisianthus.modelo.Participacao;
 import br.lisianthus.utils.Retorno;
 
-
+//teste git
 public class DAOParticipacao {
 	private static DAOParticipacao dao;
 	private Connection con;
