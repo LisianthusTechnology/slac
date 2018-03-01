@@ -14,6 +14,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import biz.source_code.miniTemplator.MiniTemplator;
 import biz.source_code.miniTemplator.MiniTemplator.TemplateSyntaxException;
+import br.lisianthus.dao.DAOModalidade;
+import br.lisianthus.dao.DAOParticipacao;
+import br.lisianthus.modelo.Modalidade;
 
 
 
@@ -69,6 +72,7 @@ public class ServletCadastroEventos extends HttpServlet {
 			op = "inserir";
 			MiniTemplator tpl = getMiniTemplator(op);
 			out.println(tpl.generateOutput());
+			
 		} else {
 			nomeMetodo = op + "Amigo";
 

@@ -5,6 +5,14 @@ public class Modalidade {
 	private Integer id_mod;
 	private String nome_mod;
 	
+	public Modalidade(){
+		
+	}
+	
+	public Modalidade(Integer idmod, String nomemod){
+		id_mod = idmod;
+		nome_mod = nomemod;
+	}
 	
 	public Integer getId_mod() {
 		return id_mod;
