@@ -25,7 +25,7 @@
     	</div>
 	</div>
 </nav>
-<form class="form-horizontal container-fluid">
+<form class="form-horizontal container-fluid" >
 	<p class="text-center headslac"><strong>Cadastro de Atividades<br><br></strong></p>
 	<div class="form-group">
 		<label for="nomeEvento" class="col-sm-2 control-label">*Nome do Evento:</label>
@@ -60,10 +60,10 @@
 			-->
 			
 			
-			<select id="modalidadeEvento" class="form-control" name="modalidade_evento">
+			<select id="modalidadeEvento" class="form-control" name="modalidade">
 				<option value="">Selecione</option>
 					<!-- $beginBlock relation.modalidade -->
-						<option value="${modalidade.id_mod}" ${atividade_complementar.modalidade_id_mod}>${modalidade.id_mod}</option>			
+						<option value="${modalidade.id_mod}">${modalidade.nome_mod}</option>			
 					<!-- $endBlock relation.modalidade -->
 			
 		</select>
