@@ -58,20 +58,12 @@
   				<option value="4">Outras</option>
 			</select>
 			-->
-			
-			
 			<select id="modalidadeEvento" class="form-control" name="modalidade">
 				<option value="">Selecione</option>
-					<!-- $beginBlock relation.modalidade -->
-						<option value="${modalidade.id_mod}">${modalidade.nome_mod}</option>			
-					<!-- $endBlock relation.modalidade -->
-			
-		</select>
-			
-			
-			
-			
-			
+					<!-- $beginBlock nomeModalidade -->
+						<option value="${modalidade.id_mod}" ${modalidade.selected}>${modalidade.nome_mod}</option>			
+					<!-- $endBlock nomeModalidade -->
+			</select>
       	</div>
     	<label for="certificadoEvento" class="col-sm-3 control-label">*Certificado:</label>
     	<div class="col-sm-2">
@@ -95,9 +87,12 @@
       	</div>
     	<label for="descricaoAtividadeEvento" class="col-sm-3 control-label">*Descrição da Atividade:</label>
     	<div class="col-sm-2">
-    		<select id="descricaoAtividadeEvento" class="form-control">
-    			<option value="$idAtividade1">$atividade1</option>
-  				<option value="$idAtividade2">$atividade2</option>
+    		<select id="descricaoAtividadeEvento" class="form-control" name="atividade_complementar">
+    			<option value="">Selecione</option>
+					<!-- $beginBlock descricaoAC -->
+						<option value="${atividade_complementar.id_atividade}" ${atividade.selected}>
+						${atividade_complementar.descricao_ac}</option>			
+					<!-- $endBlock descricaoAC -->
   			</select>
     	</div>
     </div>

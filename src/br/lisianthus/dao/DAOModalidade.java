@@ -1,8 +1,5 @@
 package br.lisianthus.dao;
 
-<<<<<<< HEAD
-public class DAOModalidade {
-=======
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -245,8 +242,4 @@ public class DAOModalidade {
 		}
 		return numeroLong;
 	}
-
-
->>>>>>> 71f0e82b08f5c8b69ea0e39abba3bfe08888c6ba
-
 }
