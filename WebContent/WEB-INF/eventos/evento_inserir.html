@@ -59,7 +59,7 @@
 			</select>
 			-->
 			<select id="modalidadeEvento" class="form-control" name="modalidade">
-				<option value="">Selecione</option>
+				<option>Selecione</option>
 					<!-- $beginBlock nomeModalidade -->
 						<option value="${modalidade.id_mod}" ${modalidade.selected}>${modalidade.nome_mod}</option>			
 					<!-- $endBlock nomeModalidade -->
@@ -88,7 +88,7 @@
     	<label for="descricaoAtividadeEvento" class="col-sm-3 control-label">*Descrição da Atividade:</label>
     	<div class="col-sm-2">
     		<select id="descricaoAtividadeEvento" class="form-control" name="atividade_complementar">
-    			<option value="">Selecione</option>
+    			<option>Selecione</option>
 					<!-- $beginBlock descricaoAC -->
 						<option value="${atividade_complementar.id_atividade}" ${atividade.selected}>
 						${atividade_complementar.descricao_ac}</option>			

@@ -34,7 +34,7 @@ public class DAOAtividadeComplementar {
 	
 	public List<AtividadeComplementar> buscarAtividadeModalidade(Modalidade mod){
 		ArrayList<AtividadeComplementar> list = new ArrayList<AtividadeComplementar>();
-		String sql = "select * from atividade_complementar where modalide_id_mod =" + mod.getId_mod();
+		String sql = "select * from atividade_complementar where modalidade_id_mod =" + mod.getId_mod();
 		ResultSet result = null;
 		System.out.println("SQL buscarAtividadeModadalidade DAOAC:"+sql);
 		try {

@@ -80,45 +80,44 @@ public class ServletCadastroEventos extends HttpServlet {
 			}
 		} else {
 			nomeMetodo = op + "Participacao";
-		}
 
-		Class<?> cls;
-		try {
-			cls = Class.forName("br.lisianthus.visao.ServletCadastroEventos");
-			Class[] parameterTypes = new Class[2];
-			parameterTypes[0] = HttpServletRequest.class;
-			parameterTypes[1] = PrintWriter.class;
-			// HttpServletRequest request = req;
-			PrintWriter print = new PrintWriter(out);
+			Class<?> cls;
+			try {
+				cls = Class.forName("br.lisianthus.visao.ServletCadastroEventos");
+				Class[] parameterTypes = new Class[2];
+				parameterTypes[0] = HttpServletRequest.class;
+				parameterTypes[1] = PrintWriter.class;
+				// HttpServletRequest request = req;
+				PrintWriter print = new PrintWriter(out);
 
-			Object[] obj = new Object[2];
-			obj[0] = req;
-			obj[1] = print;
+				Object[] obj = new Object[2];
+				obj[0] = req;
+				obj[1] = print;
 
-			Method mt = cls.getMethod(nomeMetodo, parameterTypes);
-			if (mt != null) {
-				mt.invoke(nomeMetodo, obj);
+				Method mt = cls.getMethod(nomeMetodo, parameterTypes);
+				if (mt != null) {
+					mt.invoke(nomeMetodo, obj);
+				}
+			} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IllegalArgumentException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InvocationTargetException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (NoSuchMethodException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (SecurityException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalArgumentException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InvocationTargetException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (NoSuchMethodException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SecurityException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
-
 	}
 
 	/*
@@ -177,6 +176,7 @@ public class ServletCadastroEventos extends HttpServlet {
 	public void listarModalidade(HttpServletRequest req, PrintWriter out, MiniTemplator tpl) throws IOException {
 		ControladorModalidade ctModalidade = new ControladorModalidade();
 		Modalidade mod = this.getModalidadeFromRequest(req);
+
 		List<Modalidade> listModalidade = ctModalidade.localizar(mod);
 		for (Modalidade modalidade : listModalidade) {
 			tpl.setVariable("modalidade.id_mod", modalidade.getId_mod());
@@ -184,10 +184,15 @@ public class ServletCadastroEventos extends HttpServlet {
 			tpl.addBlock("nomeModalidade");
 		}
 		out.println(tpl.generateOutput());
+
+		// chamando o método para listar as atividades
+		listarAtividades(req, out, tpl);
 	}
 
 	/**
-	 * Na teoria esse método é para listar as atividades, no entanto, não sei em que hora faço a chamada dele
+	 * Na teoria esse método é para listar as atividades, no entanto, não sei em
+	 * que hora faço a chamada dele
+	 * 
 	 * @param req
 	 * @param out
 	 * @param tpl
@@ -196,13 +201,12 @@ public class ServletCadastroEventos extends HttpServlet {
 	public void listarAtividades(HttpServletRequest req, PrintWriter out, MiniTemplator tpl) throws IOException {
 		ControladorAtividadeComplementar cont = new ControladorAtividadeComplementar();
 		List<AtividadeComplementar> listAtividadeComplementar;
-		String modalidadeSelected = tpl.getVariables().get("modalidade.selected");
-		String idModSelectedAux;
+
+		String idModSelectedAux = tpl.getVariables().get("modalidade.id_mod");
 		Integer idModSelected;
 		Modalidade mod = new Modalidade();
 
-		if (!modalidadeSelected.isEmpty()) {
-			idModSelectedAux = tpl.getVariables().get("modalidade.id_mod");
+		if (!idModSelectedAux.isEmpty()) {
 			idModSelected = preparaId(idModSelectedAux);
 			mod.setId_mod(idModSelected);
 			listAtividadeComplementar = cont.localizar(mod);
@@ -210,7 +214,9 @@ public class ServletCadastroEventos extends HttpServlet {
 			for (AtividadeComplementar ac : listAtividadeComplementar) {
 				tpl.setVariable("atividade_complementar.id_atividade", ac.getId_atividade());
 				tpl.setVariable("atividade_complementar.descricao_ac", ac.getDescricao_ac());
+				System.out.println(ac.getDescricao_ac());
 				tpl.addBlock("descricaoAC");
+				out.println(tpl.generateOutput());
 			}
 		}
 	}
