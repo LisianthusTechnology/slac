@@ -18,7 +18,7 @@ public class testeDAOParticipacao {
 		
 		part.setAtividade_complementar_id_atividade(1);
 		part.setAluno_id_aluno(1);
-		part.setId_participacaoo(2);
+		part.setId_participacaoo(3);
 		part.setCertificado_part("teste 2");
 		part.setCoordenador_ac_id_admin(1);
 		part.setStatus("a validar");
@@ -34,7 +34,7 @@ public class testeDAOParticipacao {
 		data.setYear(Integer.parseInt(dt[2]));
 		part.setData_validaca_ac(data);
 		
-		part.setNome_ac_part("teste part 2");
+		part.setNome_ac_part("teste part 3");
 		
 		
 		String dataString2 = "10/02/2013"; //Variavel que você recebe como parametro .

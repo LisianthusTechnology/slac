@@ -6,7 +6,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import br.lisianthus.modelo.Modalidade;
@@ -18,6 +17,7 @@ public class DAOModalidade {
 	private Connection con_m;
 	
 	private DAOModalidade(){
+		
 		
 		try{
 			String driver_m = "org.postgresql.Driver";
@@ -220,7 +220,7 @@ public class DAOModalidade {
 			if (resultSet.next()) {
 				Modalidade modalidade = new Modalidade();
 				
-				modalidade.setId_mod(resultSet.getInt("id_Modalidade"));
+				modalidade.setId_mod(resultSet.getInt("id_mod"));
 				modalidade.setNome_mod(resultSet.getString("nome_ac_part"));
 				
 				return modalidade;
