@@ -127,6 +127,4 @@ public class Participacao {
 	public void setTipo_ac_part(String tipo_ac_part) {
 		this.tipo_ac_part = tipo_ac_part;
 	}
-	
-	
 }

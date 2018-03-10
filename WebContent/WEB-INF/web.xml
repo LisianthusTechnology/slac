@@ -17,6 +17,6 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>ServletCadastroEventos</servlet-name>
-    <url-pattern>/CadastrarEvento</url-pattern>
+    <url-pattern>/eventos</url-pattern>
   </servlet-mapping>
 </web-app>
