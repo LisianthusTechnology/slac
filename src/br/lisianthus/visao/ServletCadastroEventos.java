@@ -1,8 +1,12 @@
 package br.lisianthus.visao;
 
 import java.io.IOException;
+
+import com.google.gson.Gson;
+
+
 import java.io.PrintWriter;
-import java.lang.reflect.Field;
+//import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
@@ -80,9 +84,10 @@ public class ServletCadastroEventos extends HttpServlet {
 			}
 		} else {
 			nomeMetodo = op + "Participacao";
-
-			Class<?> cls;
+			
 			try {
+				Class<?> cls;
+				
 				cls = Class.forName("br.lisianthus.visao.ServletCadastroEventos");
 				Class[] parameterTypes = new Class[2];
 				parameterTypes[0] = HttpServletRequest.class;
@@ -93,11 +98,12 @@ public class ServletCadastroEventos extends HttpServlet {
 				Object[] obj = new Object[2];
 				obj[0] = req;
 				obj[1] = print;
-
+				
 				Method mt = cls.getMethod(nomeMetodo, parameterTypes);
-				if (mt != null) {
-					mt.invoke(nomeMetodo, obj);
+				if (mt != null) {	
+					mt.invoke(this, obj);
 				}
+				
 			} catch (ClassNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -186,7 +192,7 @@ public class ServletCadastroEventos extends HttpServlet {
 		out.println(tpl.generateOutput());
 
 		// chamando o método para listar as atividades
-		listarAtividades(req, out, tpl);
+		//listarAtividades(req, out, tpl);
 	}
 
 	/**
@@ -198,11 +204,12 @@ public class ServletCadastroEventos extends HttpServlet {
 	 * @param tpl
 	 * @throws IOException
 	 */
-	public void listarAtividades(HttpServletRequest req, PrintWriter out, MiniTemplator tpl) throws IOException {
+	public void jsonParticipacao(HttpServletRequest req, PrintWriter out) throws IOException {
 		ControladorAtividadeComplementar cont = new ControladorAtividadeComplementar();
-		List<AtividadeComplementar> listAtividadeComplementar;
+		List<AtividadeComplementar> listAtividadeComplementar = null;
 
-		String idModSelectedAux = tpl.getVariables().get("modalidade.id_mod");
+		String idModSelectedAux = req.getParameter("idModalidadeServlet");
+		//String idModSelectedAux = tpl.getVariables().get("modalidade.id_mod");
 		Integer idModSelected;
 		Modalidade mod = new Modalidade();
 
@@ -210,15 +217,16 @@ public class ServletCadastroEventos extends HttpServlet {
 			idModSelected = preparaId(idModSelectedAux);
 			mod.setId_mod(idModSelected);
 			listAtividadeComplementar = cont.localizar(mod);
-
-			for (AtividadeComplementar ac : listAtividadeComplementar) {
-				tpl.setVariable("atividade_complementar.id_atividade", ac.getId_atividade());
-				tpl.setVariable("atividade_complementar.descricao_ac", ac.getDescricao_ac());
-				System.out.println(ac.getDescricao_ac());
-				tpl.addBlock("descricaoAC");
-				out.println(tpl.generateOutput());
+			out.println(convertJson(listAtividadeComplementar));
 			}
-		}
+		
+	}
+
+	private String convertJson(List<AtividadeComplementar> listAtividadeComplementar) {
+		Gson gson = new Gson();
+		String jsonAtividade = gson.toJson(listAtividadeComplementar);
+		System.out.println("Atividades: " + jsonAtividade);
+		return jsonAtividade;
 	}
 
 	/*
