@@ -5,7 +5,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import com.google.gson.Gson;
 
-
 import java.io.PrintWriter;
 //import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -36,7 +35,6 @@ import br.lisianthus.controle.ControladorModalidade;
 
 import br.lisianthus.modelo.AtividadeComplementar;
 import br.lisianthus.modelo.Modalidade;
-
 
 @SuppressWarnings("serial")
 public class ServletCadastroEventos extends HttpServlet {
@@ -98,10 +96,10 @@ public class ServletCadastroEventos extends HttpServlet {
 			}
 		} else {
 			nomeMetodo = op + "Participacao";
-			
+
 			try {
 				Class<?> cls;
-				
+
 				cls = Class.forName("br.lisianthus.visao.ServletCadastroEventos");
 				Class[] parameterTypes = new Class[2];
 				parameterTypes[0] = HttpServletRequest.class;
@@ -112,12 +110,13 @@ public class ServletCadastroEventos extends HttpServlet {
 				Object[] obj = new Object[2];
 				obj[0] = req;
 				obj[1] = print;
-				
+
 				Method mt = cls.getMethod(nomeMetodo, parameterTypes);
-				if (mt != null) {	
+				System.out.println("Metodo:" + nomeMetodo);
+				if (mt != null) {
 					mt.invoke(this, obj);
 				}
-				
+
 			} catch (ClassNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -146,8 +145,6 @@ public class ServletCadastroEventos extends HttpServlet {
 	 * throws IOException{ MiniTemplator tpl = this.getMiniTemplator("inserir");
 	 * localizarModalidade(req, out, tpl); }
 	 */
-
-
 
 	private Modalidade getModalidadeFromRequest(HttpServletRequest req) {
 
@@ -198,7 +195,7 @@ public class ServletCadastroEventos extends HttpServlet {
 		out.println(tpl.generateOutput());
 
 		// chamando o método para listar as atividades
-		//listarAtividades(req, out, tpl);
+		// listarAtividades(req, out, tpl);
 	}
 
 	/**
@@ -223,10 +220,17 @@ public class ServletCadastroEventos extends HttpServlet {
 			mod.setId_mod(idModSelected);
 			listAtividadeComplementar = cont.localizar(mod);
 			out.println(convertJson(listAtividadeComplementar));
-			}
-		
-	}
+		}
 
+	}
+/*
+	public String certificadoParticipacao(HttpServletRequest req, PrintWriter out) throws IOException {
+		String arq = req.getParameter("arquivoServlet");
+		
+		System.out.println("Aqruivo servlet:" + arq);
+		return arq;
+	}
+*/
 	private String convertJson(List<AtividadeComplementar> listAtividadeComplementar) {
 		Gson gson = new Gson();
 		String jsonAtividade = gson.toJson(listAtividadeComplementar);
@@ -280,18 +284,18 @@ public class ServletCadastroEventos extends HttpServlet {
 		Modalidade mod = new Modalidade();
 		// System.out.println("Modalidade: "+modalidadeSelected);
 		if (!idModSelectedAux.isEmpty()) {
- 			idModSelected = preparaId(idModSelectedAux);
- 			mod.setId_mod(idModSelected);
- 			listAtividadeComplementar = cont.localizar(mod);
- 
- 			for (AtividadeComplementar ac : listAtividadeComplementar) {
- 				tpl.setVariable("atividade_complementar.id_atividade", ac.getId_atividade());
- 				tpl.setVariable("atividade_complementar.descricao_ac", ac.getDescricao_ac());
+			idModSelected = preparaId(idModSelectedAux);
+			mod.setId_mod(idModSelected);
+			listAtividadeComplementar = cont.localizar(mod);
+
+			for (AtividadeComplementar ac : listAtividadeComplementar) {
+				tpl.setVariable("atividade_complementar.id_atividade", ac.getId_atividade());
+				tpl.setVariable("atividade_complementar.descricao_ac", ac.getDescricao_ac());
 				System.out.println(ac.getDescricao_ac());
- 				tpl.addBlock("descricaoAC");
+				tpl.addBlock("descricaoAC");
 				out.println(tpl.generateOutput());
- 			}
- 		}
+			}
+		}
 	}
 
 	private Integer preparaIdModalidade(HttpServletRequest req) {
@@ -305,18 +309,38 @@ public class ServletCadastroEventos extends HttpServlet {
 		return idInteger;
 	}
 
-	//Metodo que tirei da internet pra tentar pegar o arquivo e fazer upload
-	private void arquivoParticipacao(HttpServletRequest req, PrintWriter out, MiniTemplator tpl) {
+	// Metodo que tirei da internet pra tentar pegar o arquivo e fazer upload
+	public void certificadoParticipacao(HttpServletRequest req, PrintWriter out) {
+ 
+        try {
+            String FILE_PATH = "/arquivosteste/";
+ 
+            DiskFileItemFactory diskFileItemFactory = new DiskFileItemFactory();
+            ServletFileUpload fileUpload = new ServletFileUpload(diskFileItemFactory);
+ 
+            FileItem multiparts = fileUpload.p(req.getParameter("arquivoServlet"));//ele ta dando erro nessa parte aqui
+            for(FileItem item: multiparts) {
+                if(!item.isFormField()) {
+                    item.write(new File(String.format("%s%s", FILE_PATH, item.getName())));
+                    System.out.println("It was saved in the directory:"+item.getName()+" "+FILE_PATH);
+                }
+            }
+        } catch (Exception ex) {
+            System.out.println("error while uploading the file"+ex);
+        }
 
+		/*
 		final int SIZE_MAX = 50000 * 1024 * 1024;
 		final File repositorio = new File("C:/arquivosteste/");
 
 		DiskFileItemFactory factory = new DiskFileItemFactory();
 		factory.setSizeThreshold(SIZE_MAX);
 		factory.setRepository(repositorio);
+		System.out.println("Repositorio:"+factory);
 		ServletFileUpload upload = new ServletFileUpload(factory);
 		try {
 			List items = upload.parseRequest((RequestContext) req);
+			System.out.println("Upload:"+items.toString());
 			Iterator iter = items.iterator();
 			while (iter.hasNext()) {
 				FileItem item = (FileItem) iter.next();
@@ -343,11 +367,14 @@ public class ServletCadastroEventos extends HttpServlet {
 				}
 			}
 		} catch (FileUploadException e) {
-			e.printStackTrace();
+			//e.printStackTrace();
+			System.out.println(e.getMessage());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			//e.printStackTrace();
+			System.out.println("Repositorio:"+factory.getRepository());
 		}
+		*/
 	}
 
 	private String extractFilename(String filePathName) {
