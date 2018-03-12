@@ -1,6 +1,7 @@
 package br.lisianthus.visao;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import com.google.gson.Gson;
@@ -13,6 +14,7 @@ import java.lang.reflect.Method;
 import java.util.List;
 
 import java.io.InputStream;
+import java.util.Date;
 import java.util.Iterator;
 
 import javax.servlet.ServletContext;
@@ -33,9 +35,11 @@ import biz.source_code.miniTemplator.MiniTemplator;
 import biz.source_code.miniTemplator.MiniTemplator.TemplateSyntaxException;
 import br.lisianthus.controle.ControladorAtividadeComplementar;
 import br.lisianthus.controle.ControladorModalidade;
-
+import br.lisianthus.controle.ControladorParticipacao;
 import br.lisianthus.modelo.AtividadeComplementar;
 import br.lisianthus.modelo.Modalidade;
+import br.lisianthus.modelo.Participacao;
+import br.lisianthus.utils.Retorno;
 
 
 @SuppressWarnings("serial")
@@ -170,6 +174,33 @@ public class ServletCadastroEventos extends HttpServlet {
 		return a;
 	}
 
+	
+	public void salvarParticipacao(HttpServletRequest req, PrintWriter out) throws IOException{
+		Participacao participacao = new Participacao();
+		ControladorParticipacao controle = new ControladorParticipacao();
+		Retorno ret = new Retorno();
+		
+		participacao.setAluno_id_aluno(1);
+		participacao.setAtividade_complementar_id_atividade(preparaId(req.getParameter("descricaoAC")));
+		participacao.setCertificado_part(preparaArquivo(req));
+		participacao.setCh_cadastrada_part(preparaId(req.getParameter("chCertificado")));
+		participacao.setCh_validada_part(50);
+		participacao.setCoordenador_ac_id_admin(1);
+		participacao.setData_inicio_ac_part(new Date(2018-03-11));
+		participacao.setLocal_ac_part(req.getParameter("localEvento"));
+		participacao.setNome_ac_part(req.getParameter("nomeEvento"));
+		participacao.setStatus("pendente");
+		participacao.setTipo_ac_part(req.getParameter("tipoEvento"));
+		
+		ret.setMensagem("Salvar Participacao diz: " + controle.inserir(participacao).getMensagem());
+		
+		System.out.println(req.getParameter("modalidade"));
+	}
+	
+	private File preparaArquivo(HttpServletRequest req){
+		File file = new File(req.getParameter("certificado"));
+		return file;
+	}
 	/**
 	 * 
 	 * @param req
@@ -295,7 +326,7 @@ public class ServletCadastroEventos extends HttpServlet {
 	}
 
 	private Integer preparaIdModalidade(HttpServletRequest req) {
-		String id = req.getParameter("id");
+		String id = req.getParameter("modalidade");
 		Integer idInteger = id != null && !id.equals("") ? Integer.valueOf(id) : null;
 		return idInteger;
 	}
@@ -306,7 +337,7 @@ public class ServletCadastroEventos extends HttpServlet {
 	}
 
 	//Metodo que tirei da internet pra tentar pegar o arquivo e fazer upload
-	private void arquivoParticipacao(HttpServletRequest req, PrintWriter out, MiniTemplator tpl) {
+	/*private void arquivoParticipacao(HttpServletRequest req, PrintWriter out) {
 
 		final int SIZE_MAX = 50000 * 1024 * 1024;
 		final File repositorio = new File("C:/arquivosteste/");
@@ -361,8 +392,8 @@ public class ServletCadastroEventos extends HttpServlet {
 			return filePathName.substring(slashPos > 0 ? slashPos + 1 : 0);
 		}
 		return filePathName.substring(slashPos > 0 ? slashPos + 1 : 0);
-	}
-
+	}*/
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// private inserirParticipacao(){
 
 	// }
@@ -406,4 +437,34 @@ public class ServletCadastroEventos extends HttpServlet {
 
 	// }
 
+	/*public boolean insertFile( File f ){
+	    Connection c = this.getConnection();//busca uma conexao com o banco
+	    try {
+	      PreparedStatement ps = c.prepareStatement("INSERT INTO arquivo( id, nome, arquivo ) VALUES ( nextval('seq_arquivo'), ?, ? )");
+
+	        //converte o objeto file em array de bytes
+	        InputStream is = new FileInputStream( f );
+	        byte[] bytes = new byte[(int)f.length() ];
+	        int offset = 0;
+	        int numRead = 0;
+	        while (offset < bytes.length
+	               && (numRead=is.read(bytes, offset, bytes.length-offset)) >= 0) {
+	            offset += numRead;
+	        }
+
+	        ps.setString( 1, f.getName() );
+	        ps.setBytes( 2, bytes );
+	        ps.execute();
+	        ps.close();
+	        c.close();
+	        return true;
+
+	    } catch (SQLException ex) {
+	        ex.printStackTrace();
+	    } catch (IOException ex) {
+	        ex.printStackTrace();
+	    }
+	    return false;
+	}*/
+	
 }

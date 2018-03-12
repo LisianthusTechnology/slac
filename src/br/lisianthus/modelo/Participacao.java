@@ -1,5 +1,6 @@
 package br.lisianthus.modelo;
 
+import java.io.File;
 import java.util.Date;
 
 /**
@@ -12,7 +13,7 @@ public class Participacao {
 	private Integer aluno_id_aluno;
 	private Integer id_participacao;
 	private Integer coordenador_ac_id_admin;
-	private String certificado_part;
+	private File certificado_part;
 	private String status;
 	private Date data_validaca_ac;
 	private String nome_ac_part;
@@ -24,7 +25,7 @@ public class Participacao {
 	
 	
 	public Participacao(Integer atividade_complementar_id_atividade1, Integer aluno_id_aluno1, Integer id_participacao1, 
-			String certificado_part1, Integer coordenador_ac_id_admin1,
+			File certificado_part1, Integer coordenador_ac_id_admin1,
 			String status1, Date data_val1, String nome_ac_part1, java.util.Date data_inicio1, 
 			Integer ch_cadastrada_part1, Integer ch_validada_part1, String local_ac_part1, String tipo_ac_part1){
 		
@@ -73,10 +74,10 @@ public class Participacao {
 	public void setCoordenador_ac_id_admin(Integer coordenador_ac_id_admin) {
 		this.coordenador_ac_id_admin = coordenador_ac_id_admin;
 	}
-	public String getCertificado_part() {
+	public File getCertificado_part() {
 		return certificado_part;
 	}
-	public void setCertificado_part(String certificado_part) {
+	public void setCertificado_part(File certificado_part) {
 		this.certificado_part = certificado_part;
 	}
 	public String getStatus() {

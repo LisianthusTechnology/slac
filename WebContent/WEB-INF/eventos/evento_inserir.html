@@ -27,26 +27,26 @@
     		</div>
 		</div>
 	</nav>
-	<form class="form-horizontal container-fluid" >
+	<form action="eventos?op=salvar" class="form-horizontal container-fluid" method="POST">
 		<p class="text-center headslac"><strong>Cadastro de Atividades<br><br></strong></p>
 		<div class="form-group">
 			<label for="nomeEvento" class="col-sm-2 control-label">*Nome do Evento:</label>
     		<div class="col-sm-4">
-      			<input type="text" class="form-control" id="nomeEvento" placeholder="Evento">
+      			<input type="text" class="form-control" name="nomeEvento" id="nomeEvento" placeholder="Evento">
     		</div>
     		<label for="chCertificadoEvento" class="col-sm-3 control-label">*Carga Horária do Certificado:</label>
     		<div class="col-sm-2">
-      			<input type="text" class="form-control" id="chCertificadoEvento" placeholder="Carga Horária">
+      			<input type="text" class="form-control" name="chCertificado" id="chCertificadoEvento" placeholder="Carga Horária">
    	 		</div>
     	</div>
     	<div class="form-group">
 			<label for="localEvento" class="col-sm-2 control-label">*Local do Evento:</label>
     		<div class="col-sm-4">
-      			<input type="text" class="form-control" id="localEvento" placeholder="Local">
+      			<input type="text" class="form-control" name="localEvento" id="localEvento" placeholder="Local">
     		</div>
     		<label for="dtInicioEvento" class="col-sm-3 control-label">*Data de Inicio da Atividade:</label>
     		<div class="col-sm-2">
-      			<input type="text" class="form-control" id="dtInicioEvento" placeholder="Data de Inicio">
+      			<input type="text" class="form-control" name="dataInicioEvento" id="dtInicioEvento" placeholder="Data de Inicio">
     		</div>
     	</div>
     	<div class="form-group">
@@ -63,21 +63,21 @@
 			<div class="col-sm-2">
 				<div class="input-group">
 					<input type="hidden" name="MAX_FILE_SIZE" value="4194304" /> 
-					<input type="file" id="arquivo" />
+					<input type="file" name="certificado" id="arquivo"/>
 				</div>
 			</div>
     	</div>
     	<div class="form-group">
 			<label for="tipoEvento" class="col-sm-2 control-label">*Tipo do Evento:</label>
     		<div class="col-sm-4">
-				<select id="tipoEvento" class="form-control">
+				<select id="tipoEvento" name="tipoEvento" class="form-control">
   					<option value="Presencial">Presencial</option>
   					<option value="Distancia">Distância</option>
 				</select>
       		</div>
     		<label for="descricaoAtividadeEvento" class="col-sm-3 control-label">*Descrição da Atividade:</label>
     		<div class="col-sm-2">
-    			<select id="descricaoAtividadeEvento" class="form-control" name="atividade_complementar">
+    			<select id="descricaoAtividadeEvento" class="form-control" name="descricaoAC">
     				<option>Selecione</option>
 						<!-- $beginBlock descricaoAC -->
 							<option value="${atividade_complementar.id_atividade}" ${atividade.selected}>
@@ -87,7 +87,7 @@
     		</div>
     	</div>
      	<h6 class="legend">* Campo obrigatório.</h6>
-    	<button class="btnsave" type="submit">Salvar</button>
+    	<input type="submit" value="Salvar" class="btnsave">
    		<a href="#" class="btnback">Voltar</a>
 	</form> 
 </body>

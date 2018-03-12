@@ -1,7 +1,13 @@
 package br.lisianthus.dao;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -49,6 +55,16 @@ public class DAOParticipacao {
 	
 	public Retorno inserir(Participacao participacao) {
 		Retorno ret = new Retorno(false,"erro");
+
+ 
+        byte[] arquivoAux = convertArqInBytes(participacao.getCertificado_part());
+        byte[] arquivo = null;
+        if(arquivoAux!= null){
+        	arquivo = arquivoAux;
+        }else{
+        	ret.setMensagem(ret + "O Arquivo é obrigatório");
+        }
+        //ps.setBytes( 2, bytes );
 		
 		Retorno okValidar = validar(participacao);
 		if(!okValidar.isSucesso())
@@ -62,7 +78,7 @@ public class DAOParticipacao {
 		+ preparaAtributoParaBD(participacao.getAtividade_complementar_id_atividade())+", " 
 		+ preparaAtributoParaBD(participacao.getAluno_id_aluno()) + ","
 		+ participacao.getId_participacao() + ","
-		+ preparaAtributoParaBD(participacao.getCertificado_part()) + ","
+		+  arquivo + ","
 		+ preparaAtributoParaBD(participacao.getCoordenador_ac_id_admin()) + ","
 		+ preparaAtributoParaBD(participacao.getStatus()) + ","
 		+ preparaAtributoParaBD(participacao.getData_validaca_ac()) + ","
@@ -94,6 +110,32 @@ public class DAOParticipacao {
 
 		return ret;
 
+	}
+	
+	private byte[] convertArqInBytes(File f){
+	     
+		byte[] bytes = new byte[(int)f.length() ];
+		System.out.println("Tamanho Arq: " + f.length());
+		try {
+		//converte o objeto file em array de bytes
+		InputStream is = new FileInputStream( f );
+	
+        int offset = 0;
+        int numRead = 0;
+        while (offset < bytes.length
+               && (numRead=is.read(bytes, offset, bytes.length-offset)) >= 0) {
+            offset += numRead;
+        }
+        
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return bytes;
+		
 	}
 
 	private Retorno validar(Participacao participacao) {
@@ -190,7 +232,7 @@ public class DAOParticipacao {
 	 * @return
 	 * @throws SQLException 
 	 */
-	public List<Participacao> localizar(Participacao participacao) throws RuntimeException {
+	/*public List<Participacao> localizar(Participacao participacao) throws RuntimeException {
 		ArrayList<Participacao> list = new ArrayList<Participacao>();
 
 		String sql = "select atividade_camplementar_id_atividade, aluno_id_aluno, id_participacao, certificado_part, coord_ac_id_admin,"
@@ -244,7 +286,7 @@ public class DAOParticipacao {
 		}
 		
 		return list;
-	}
+	}*/
 
 	public Participacao obter(Integer id) {
 		if(id == null) return null;
@@ -262,7 +304,7 @@ public class DAOParticipacao {
 				participacao.setAtividade_complementar_id_atividade(resultSet.getInt("atividade_complementar_id_atividade"));
 				participacao.setAluno_id_aluno(resultSet.getInt("aluno_id_aluno"));
 				participacao.setId_participacaoo(resultSet.getInt("id_participacao"));
-				participacao.setCertificado_part(resultSet.getString("certificado_part"));
+				//participacao.setCertificado_part(resultSet.getString("certificado_part"));
 				participacao.setCoordenador_ac_id_admin(resultSet.getInt("coordenador_ac_id_admin"));
 				participacao.setStatus(resultSet.getString("status"));
 				participacao.setData_validaca_ac(resultSet.getDate("data_validaca_ac"));
