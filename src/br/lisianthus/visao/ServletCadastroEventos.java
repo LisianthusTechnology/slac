@@ -392,8 +392,11 @@ public class ServletCadastroEventos extends HttpServlet {
             DiskFileItemFactory diskFileItemFactory = new DiskFileItemFactory();
             ServletFileUpload fileUpload = new ServletFileUpload(diskFileItemFactory);
  
-            FileItem multiparts = fileUpload.p(req.getParameter("arquivoServlet"));//ele ta dando erro nessa parte aqui
-            for(FileItem item: multiparts) {
+            List<?> listItem = fileUpload.parseRequest((RequestContext) req);
+            //ele ta dando erro nessa parte aqui
+            Iterator<?> iter = listItem.iterator();
+            while(iter.next() != null){
+            	FileItem item = (FileItem) iter.next();
                 if(!item.isFormField()) {
                     item.write(new File(String.format("%s%s", FILE_PATH, item.getName())));
                     System.out.println("It was saved in the directory:"+item.getName()+" "+FILE_PATH);
