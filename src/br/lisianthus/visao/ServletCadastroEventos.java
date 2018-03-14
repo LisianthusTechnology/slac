@@ -6,7 +6,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import com.google.gson.Gson;
 
-
 import java.io.PrintWriter;
 //import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -41,10 +40,10 @@ import br.lisianthus.modelo.Modalidade;
 import br.lisianthus.modelo.Participacao;
 import br.lisianthus.utils.Retorno;
 
-
 @SuppressWarnings("serial")
 public class ServletCadastroEventos extends HttpServlet {
 
+    private final String UPLOAD_DIRECTORY = "C:/uploads";
 	ServletContext servletContext;
 	String separador;
 	String realPath;
@@ -102,10 +101,10 @@ public class ServletCadastroEventos extends HttpServlet {
 			}
 		} else {
 			nomeMetodo = op + "Participacao";
-			
+
 			try {
 				Class<?> cls;
-				
+
 				cls = Class.forName("br.lisianthus.visao.ServletCadastroEventos");
 				Class[] parameterTypes = new Class[2];
 				parameterTypes[0] = HttpServletRequest.class;
@@ -116,12 +115,12 @@ public class ServletCadastroEventos extends HttpServlet {
 				Object[] obj = new Object[2];
 				obj[0] = req;
 				obj[1] = print;
-				
+
 				Method mt = cls.getMethod(nomeMetodo, parameterTypes);
-				if (mt != null) {	
+				if (mt != null) {
 					mt.invoke(this, obj);
 				}
-				
+
 			} catch (ClassNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -151,8 +150,6 @@ public class ServletCadastroEventos extends HttpServlet {
 	 * localizarModalidade(req, out, tpl); }
 	 */
 
-
-
 	private Modalidade getModalidadeFromRequest(HttpServletRequest req) {
 
 		Integer id_mod = null;
@@ -174,33 +171,33 @@ public class ServletCadastroEventos extends HttpServlet {
 		return a;
 	}
 
-	
-	public void salvarParticipacao(HttpServletRequest req, PrintWriter out) throws IOException{
+	public void salvarParticipacao(HttpServletRequest req, PrintWriter out) throws IOException {
 		Participacao participacao = new Participacao();
 		ControladorParticipacao controle = new ControladorParticipacao();
 		Retorno ret = new Retorno();
-		
+
 		participacao.setAluno_id_aluno(1);
 		participacao.setAtividade_complementar_id_atividade(preparaId(req.getParameter("descricaoAC")));
-		participacao.setCertificado_part(preparaArquivo(req));
+		participacao.setCertificado_part(receiveFile(req));
 		participacao.setCh_cadastrada_part(preparaId(req.getParameter("chCertificado")));
 		participacao.setCh_validada_part(50);
 		participacao.setCoordenador_ac_id_admin(1);
-		participacao.setData_inicio_ac_part(new Date(2018-03-11));
+		participacao.setData_inicio_ac_part(new Date(2018 - 03 - 11));
 		participacao.setLocal_ac_part(req.getParameter("localEvento"));
 		participacao.setNome_ac_part(req.getParameter("nomeEvento"));
 		participacao.setStatus("pendente");
 		participacao.setTipo_ac_part(req.getParameter("tipoEvento"));
-		
+
 		ret.setMensagem("Salvar Participacao diz: " + controle.inserir(participacao).getMensagem());
-		
+
 		System.out.println(req.getParameter("modalidade"));
 	}
-	
-	private File preparaArquivo(HttpServletRequest req){
+
+	private File preparaArquivo(HttpServletRequest req) {
 		File file = new File(req.getParameter("certificado"));
 		return file;
 	}
+
 	/**
 	 * 
 	 * @param req
@@ -229,7 +226,7 @@ public class ServletCadastroEventos extends HttpServlet {
 		out.println(tpl.generateOutput());
 
 		// chamando o método para listar as atividades
-		//listarAtividades(req, out, tpl);
+		// listarAtividades(req, out, tpl);
 	}
 
 	/**
@@ -254,8 +251,8 @@ public class ServletCadastroEventos extends HttpServlet {
 			mod.setId_mod(idModSelected);
 			listAtividadeComplementar = cont.localizar(mod);
 			out.println(convertJson(listAtividadeComplementar));
-			}
-		
+		}
+
 	}
 
 	private String convertJson(List<AtividadeComplementar> listAtividadeComplementar) {
@@ -311,18 +308,18 @@ public class ServletCadastroEventos extends HttpServlet {
 		Modalidade mod = new Modalidade();
 		// System.out.println("Modalidade: "+modalidadeSelected);
 		if (!idModSelectedAux.isEmpty()) {
- 			idModSelected = preparaId(idModSelectedAux);
- 			mod.setId_mod(idModSelected);
- 			listAtividadeComplementar = cont.localizar(mod);
- 
- 			for (AtividadeComplementar ac : listAtividadeComplementar) {
- 				tpl.setVariable("atividade_complementar.id_atividade", ac.getId_atividade());
- 				tpl.setVariable("atividade_complementar.descricao_ac", ac.getDescricao_ac());
+			idModSelected = preparaId(idModSelectedAux);
+			mod.setId_mod(idModSelected);
+			listAtividadeComplementar = cont.localizar(mod);
+
+			for (AtividadeComplementar ac : listAtividadeComplementar) {
+				tpl.setVariable("atividade_complementar.id_atividade", ac.getId_atividade());
+				tpl.setVariable("atividade_complementar.descricao_ac", ac.getDescricao_ac());
 				System.out.println(ac.getDescricao_ac());
- 				tpl.addBlock("descricaoAC");
+				tpl.addBlock("descricaoAC");
 				out.println(tpl.generateOutput());
- 			}
- 		}
+			}
+		}
 	}
 
 	private Integer preparaIdModalidade(HttpServletRequest req) {
@@ -336,64 +333,43 @@ public class ServletCadastroEventos extends HttpServlet {
 		return idInteger;
 	}
 
-	//Metodo que tirei da internet pra tentar pegar o arquivo e fazer upload
-	/*private void arquivoParticipacao(HttpServletRequest req, PrintWriter out) {
-
-		final int SIZE_MAX = 50000 * 1024 * 1024;
-		final File repositorio = new File("C:/arquivosteste/");
-
-		DiskFileItemFactory factory = new DiskFileItemFactory();
-		factory.setSizeThreshold(SIZE_MAX);
-		factory.setRepository(repositorio);
-		ServletFileUpload upload = new ServletFileUpload(factory);
-		try {
-			List items = upload.parseRequest((RequestContext) req);
-			Iterator iter = items.iterator();
-			while (iter.hasNext()) {
-				FileItem item = (FileItem) iter.next();
-				if (item.isFormField()) {
-					String name = item.getFieldName();
-					String value = item.getString();
-					String nomeArquivo = extractFilename(item.getName());
-					System.out.println("item.getFieldName(): " + item.getFieldName());
-					System.out.println("item.getName(): " + item.getName());
-					System.out.println("item.getString(): " + item.getString());
-				} else {
-					String realName = extractFilename(item.getName());
-					int len = 0;
-					InputStream is = item.getInputStream();
-					File uploadedFile = new File(repositorio + "\\" + realName);
-					FileOutputStream fos = new FileOutputStream(uploadedFile);
-					ByteOutputStream bos = new ByteOutputStream();
-					byte[] buf = new byte[1024];
-					while ((len = is.read(buf, 0, 1024)) != -1)
-						bos.write(buf, 0, len);
-					buf = bos.toByteArray();
-					fos.write(bos.getBytes());
-					fos.close();
-				}
-			}
-		} catch (FileUploadException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
-	private String extractFilename(String filePathName) {
-		if (filePathName == null)
-			return null;
-		int dotPos = filePathName.lastIndexOf('.');
-		int slashPos = filePathName.lastIndexOf('\\');
-		if (slashPos == -1)
-			slashPos = filePathName.lastIndexOf('/');
-		if (dotPos > slashPos) {
-			return filePathName.substring(slashPos > 0 ? slashPos + 1 : 0);
-		}
-		return filePathName.substring(slashPos > 0 ? slashPos + 1 : 0);
-	}*/
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// Metodo que tirei da internet pra tentar pegar o arquivo e fazer upload
+	/*
+	 * private void arquivoParticipacao(HttpServletRequest req, PrintWriter out)
+	 * {
+	 * 
+	 * final int SIZE_MAX = 50000 * 1024 * 1024; final File repositorio = new
+	 * File("C:/arquivosteste/");
+	 * 
+	 * DiskFileItemFactory factory = new DiskFileItemFactory();
+	 * factory.setSizeThreshold(SIZE_MAX); factory.setRepository(repositorio);
+	 * ServletFileUpload upload = new ServletFileUpload(factory); try { List
+	 * items = upload.parseRequest((RequestContext) req); Iterator iter =
+	 * items.iterator(); while (iter.hasNext()) { FileItem item = (FileItem)
+	 * iter.next(); if (item.isFormField()) { String name = item.getFieldName();
+	 * String value = item.getString(); String nomeArquivo =
+	 * extractFilename(item.getName());
+	 * System.out.println("item.getFieldName(): " + item.getFieldName());
+	 * System.out.println("item.getName(): " + item.getName());
+	 * System.out.println("item.getString(): " + item.getString()); } else {
+	 * String realName = extractFilename(item.getName()); int len = 0;
+	 * InputStream is = item.getInputStream(); File uploadedFile = new
+	 * File(repositorio + "\\" + realName); FileOutputStream fos = new
+	 * FileOutputStream(uploadedFile); ByteOutputStream bos = new
+	 * ByteOutputStream(); byte[] buf = new byte[1024]; while ((len =
+	 * is.read(buf, 0, 1024)) != -1) bos.write(buf, 0, len); buf =
+	 * bos.toByteArray(); fos.write(bos.getBytes()); fos.close(); } } } catch
+	 * (FileUploadException e) { e.printStackTrace(); } catch (IOException e) {
+	 * // TODO Auto-generated catch block e.printStackTrace(); } }
+	 * 
+	 * private String extractFilename(String filePathName) { if (filePathName ==
+	 * null) return null; int dotPos = filePathName.lastIndexOf('.'); int
+	 * slashPos = filePathName.lastIndexOf('\\'); if (slashPos == -1) slashPos =
+	 * filePathName.lastIndexOf('/'); if (dotPos > slashPos) { return
+	 * filePathName.substring(slashPos > 0 ? slashPos + 1 : 0); } return
+	 * filePathName.substring(slashPos > 0 ? slashPos + 1 : 0); }
+	 */
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// private inserirParticipacao(){
 
 	// }
@@ -437,34 +413,52 @@ public class ServletCadastroEventos extends HttpServlet {
 
 	// }
 
-	/*public boolean insertFile( File f ){
-	    Connection c = this.getConnection();//busca uma conexao com o banco
-	    try {
-	      PreparedStatement ps = c.prepareStatement("INSERT INTO arquivo( id, nome, arquivo ) VALUES ( nextval('seq_arquivo'), ?, ? )");
+	/*
+	 * public boolean insertFile( File f ){ Connection c =
+	 * this.getConnection();//busca uma conexao com o banco try {
+	 * PreparedStatement ps = c.
+	 * prepareStatement("INSERT INTO arquivo( id, nome, arquivo ) VALUES ( nextval('seq_arquivo'), ?, ? )"
+	 * );
+	 * 
+	 * //converte o objeto file em array de bytes InputStream is = new
+	 * FileInputStream( f ); byte[] bytes = new byte[(int)f.length() ]; int
+	 * offset = 0; int numRead = 0; while (offset < bytes.length &&
+	 * (numRead=is.read(bytes, offset, bytes.length-offset)) >= 0) { offset +=
+	 * numRead; }
+	 * 
+	 * ps.setString( 1, f.getName() ); ps.setBytes( 2, bytes ); ps.execute();
+	 * ps.close(); c.close(); return true;
+	 * 
+	 * } catch (SQLException ex) { ex.printStackTrace(); } catch (IOException
+	 * ex) { ex.printStackTrace(); } return false; }
+	 */
 
-	        //converte o objeto file em array de bytes
-	        InputStream is = new FileInputStream( f );
-	        byte[] bytes = new byte[(int)f.length() ];
-	        int offset = 0;
-	        int numRead = 0;
-	        while (offset < bytes.length
-	               && (numRead=is.read(bytes, offset, bytes.length-offset)) >= 0) {
-	            offset += numRead;
-	        }
-
-	        ps.setString( 1, f.getName() );
-	        ps.setBytes( 2, bytes );
-	        ps.execute();
-	        ps.close();
-	        c.close();
-	        return true;
-
-	    } catch (SQLException ex) {
-	        ex.printStackTrace();
-	    } catch (IOException ex) {
-	        ex.printStackTrace();
-	    }
-	    return false;
-	}*/
-	
+	private String receiveFile(HttpServletRequest req){
+	 Retorno ret = new Retorno();
+	if(ServletFileUpload.isMultipartContent(req)){
+        try {
+            List<FileItem> multiparts = new ServletFileUpload(
+                                     new DiskFileItemFactory()).parseRequest((RequestContext) req);
+          
+            for(FileItem item : multiparts){
+                if(!item.isFormField()){
+                    String name = new File(item.getName()).getName();
+                    item.write( new File(UPLOAD_DIRECTORY + File.separator + name));
+                }
+            }
+       
+           //File uploaded successfully
+           req.setAttribute("message", "File Uploaded Successfully");
+           
+        } catch (Exception ex) {
+           req.setAttribute("message", "File Upload Failed due to " + ex);
+        }
+	}else{
+        	ret.setMensagem("Erro Upload");
+        	System.out.println(ret.getMensagem());
+        }
+	return UPLOAD_DIRECTORY;
+ 
 }
+}
+

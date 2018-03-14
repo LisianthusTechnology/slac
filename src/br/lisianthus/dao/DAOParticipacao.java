@@ -55,16 +55,6 @@ public class DAOParticipacao {
 	
 	public Retorno inserir(Participacao participacao) {
 		Retorno ret = new Retorno(false,"erro");
-
- 
-        byte[] arquivoAux = convertArqInBytes(participacao.getCertificado_part());
-        byte[] arquivo = null;
-        if(arquivoAux!= null){
-        	arquivo = arquivoAux;
-        }else{
-        	ret.setMensagem(ret + "O Arquivo é obrigatório");
-        }
-        //ps.setBytes( 2, bytes );
 		
 		Retorno okValidar = validar(participacao);
 		if(!okValidar.isSucesso())
@@ -78,7 +68,7 @@ public class DAOParticipacao {
 		+ preparaAtributoParaBD(participacao.getAtividade_complementar_id_atividade())+", " 
 		+ preparaAtributoParaBD(participacao.getAluno_id_aluno()) + ","
 		+ participacao.getId_participacao() + ","
-		+  arquivo + ","
+		+ preparaAtributoParaBD(participacao.getCertificado_part()) + ","
 		+ preparaAtributoParaBD(participacao.getCoordenador_ac_id_admin()) + ","
 		+ preparaAtributoParaBD(participacao.getStatus()) + ","
 		+ preparaAtributoParaBD(participacao.getData_validaca_ac()) + ","
@@ -111,33 +101,8 @@ public class DAOParticipacao {
 		return ret;
 
 	}
-	
-	private byte[] convertArqInBytes(File f){
-	     
-		byte[] bytes = new byte[(int)f.length() ];
-		System.out.println("Tamanho Arq: " + f.length());
-		try {
-		//converte o objeto file em array de bytes
-		InputStream is = new FileInputStream( f );
-	
-        int offset = 0;
-        int numRead = 0;
-        while (offset < bytes.length
-               && (numRead=is.read(bytes, offset, bytes.length-offset)) >= 0) {
-            offset += numRead;
-        }
-        
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return bytes;
-		
-	}
 
+	
 	private Retorno validar(Participacao participacao) {
 		Retorno ret = new Retorno(true,"");
 		
