@@ -37,8 +37,10 @@ import br.lisianthus.controle.ControladorModalidade;
 import br.lisianthus.controle.ControladorParticipacao;
 import br.lisianthus.modelo.AtividadeComplementar;
 import br.lisianthus.modelo.Modalidade;
+
 import br.lisianthus.modelo.Participacao;
 import br.lisianthus.utils.Retorno;
+
 
 @SuppressWarnings("serial")
 public class ServletCadastroEventos extends HttpServlet {
@@ -117,6 +119,8 @@ public class ServletCadastroEventos extends HttpServlet {
 				obj[1] = print;
 
 				Method mt = cls.getMethod(nomeMetodo, parameterTypes);
+
+				System.out.println("Metodo:" + nomeMetodo);
 				if (mt != null) {
 					mt.invoke(this, obj);
 				}
@@ -254,7 +258,15 @@ public class ServletCadastroEventos extends HttpServlet {
 		}
 
 	}
-
+/*
+	public String certificadoParticipacao(HttpServletRequest req, PrintWriter out) throws IOException {
+		String arq = req.getParameter("arquivoServlet");
+		
+		System.out.println("Aqruivo servlet:" + arq);
+		return arq;
+>>>>>>> O problema ta no momento de executar o metodo da servlet (certificadoParticipacao)
+	}
+*/
 	private String convertJson(List<AtividadeComplementar> listAtividadeComplementar) {
 		Gson gson = new Gson();
 		String jsonAtividade = gson.toJson(listAtividadeComplementar);
@@ -334,6 +346,7 @@ public class ServletCadastroEventos extends HttpServlet {
 	}
 
 	// Metodo que tirei da internet pra tentar pegar o arquivo e fazer upload
+
 	/*
 	 * private void arquivoParticipacao(HttpServletRequest req, PrintWriter out)
 	 * {
@@ -370,6 +383,88 @@ public class ServletCadastroEventos extends HttpServlet {
 	 * filePathName.substring(slashPos > 0 ? slashPos + 1 : 0); }
 	 */
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	/*public void certificadoParticipacao(HttpServletRequest req, PrintWriter out) {
+ 
+        try {
+            String FILE_PATH = "/arquivosteste/";
+ 
+            DiskFileItemFactory diskFileItemFactory = new DiskFileItemFactory();
+            ServletFileUpload fileUpload = new ServletFileUpload(diskFileItemFactory);
+ 
+            FileItem multiparts = fileUpload.p(req.getParameter("arquivoServlet"));//ele ta dando erro nessa parte aqui
+            for(FileItem item: multiparts) {
+                if(!item.isFormField()) {
+                    item.write(new File(String.format("%s%s", FILE_PATH, item.getName())));
+                    System.out.println("It was saved in the directory:"+item.getName()+" "+FILE_PATH);
+                }
+            }
+        } catch (Exception ex) {
+            System.out.println("error while uploading the file"+ex);
+        }
+
+		/*
+		final int SIZE_MAX = 50000 * 1024 * 1024;
+		final File repositorio = new File("C:/arquivosteste/");
+
+		DiskFileItemFactory factory = new DiskFileItemFactory();
+		factory.setSizeThreshold(SIZE_MAX);
+		factory.setRepository(repositorio);
+		System.out.println("Repositorio:"+factory);
+		ServletFileUpload upload = new ServletFileUpload(factory);
+		try {
+			List items = upload.parseRequest((RequestContext) req);
+			System.out.println("Upload:"+items.toString());
+			Iterator iter = items.iterator();
+			while (iter.hasNext()) {
+				FileItem item = (FileItem) iter.next();
+				if (item.isFormField()) {
+					String name = item.getFieldName();
+					String value = item.getString();
+					String nomeArquivo = extractFilename(item.getName());
+					System.out.println("item.getFieldName(): " + item.getFieldName());
+					System.out.println("item.getName(): " + item.getName());
+					System.out.println("item.getString(): " + item.getString());
+				} else {
+					String realName = extractFilename(item.getName());
+					int len = 0;
+					InputStream is = item.getInputStream();
+					File uploadedFile = new File(repositorio + "\\" + realName);
+					FileOutputStream fos = new FileOutputStream(uploadedFile);
+					ByteOutputStream bos = new ByteOutputStream();
+					byte[] buf = new byte[1024];
+					while ((len = is.read(buf, 0, 1024)) != -1)
+						bos.write(buf, 0, len);
+					buf = bos.toByteArray();
+					fos.write(bos.getBytes());
+					fos.close();
+				}
+			}
+		} catch (FileUploadException e) {
+			//e.printStackTrace();
+			System.out.println(e.getMessage());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			//e.printStackTrace();
+			System.out.println("Repositorio:"+factory.getRepository());
+		}
+		
+}*/
+
+	/*private String extractFilename(String filePathName) {
+		if (filePathName == null)
+			return null;
+		int dotPos = filePathName.lastIndexOf('.');
+		int slashPos = filePathName.lastIndexOf('\\');
+		if (slashPos == -1)
+			slashPos = filePathName.lastIndexOf('/');
+		if (dotPos > slashPos) {
+			return filePathName.substring(slashPos > 0 ? slashPos + 1 : 0);
+		}
+		return filePathName.substring(slashPos > 0 ? slashPos + 1 : 0);
+	}*/
+
+
 	// private inserirParticipacao(){
 
 	// }
