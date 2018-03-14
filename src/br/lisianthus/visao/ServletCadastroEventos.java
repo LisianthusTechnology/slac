@@ -38,6 +38,7 @@ import br.lisianthus.controle.ControladorParticipacao;
 import br.lisianthus.modelo.AtividadeComplementar;
 import br.lisianthus.modelo.Modalidade;
 
+
 import br.lisianthus.modelo.Participacao;
 import br.lisianthus.utils.Retorno;
 
@@ -264,7 +265,10 @@ public class ServletCadastroEventos extends HttpServlet {
 		
 		System.out.println("Aqruivo servlet:" + arq);
 		return arq;
+<<<<<<< HEAD
 >>>>>>> O problema ta no momento de executar o metodo da servlet (certificadoParticipacao)
+=======
+>>>>>>> d531c317a9d3e307b2f90b40a89eb13303e37d06
 	}
 */
 	private String convertJson(List<AtividadeComplementar> listAtividadeComplementar) {
@@ -347,6 +351,7 @@ public class ServletCadastroEventos extends HttpServlet {
 
 	// Metodo que tirei da internet pra tentar pegar o arquivo e fazer upload
 
+
 	/*
 	 * private void arquivoParticipacao(HttpServletRequest req, PrintWriter out)
 	 * {
@@ -385,6 +390,9 @@ public class ServletCadastroEventos extends HttpServlet {
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	/*public void certificadoParticipacao(HttpServletRequest req, PrintWriter out) {
+
+	public void certificadoParticipacao(HttpServletRequest req, PrintWriter out) {
+
  
         try {
             String FILE_PATH = "/arquivosteste/";
@@ -451,8 +459,10 @@ public class ServletCadastroEventos extends HttpServlet {
 			//e.printStackTrace();
 			System.out.println("Repositorio:"+factory.getRepository());
 		}
+<<<<<<< HEAD
 		
 }*/
+
 
 	/*private String extractFilename(String filePathName) {
 		if (filePathName == null)
