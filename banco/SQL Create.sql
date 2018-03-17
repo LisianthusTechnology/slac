@@ -39,7 +39,7 @@ CREATE TABLE atividade_complementar (
   CREATE TABLE participacao (
   atividade_complementar_id_atividade INTEGER NOT NULL,
   aluno_id_aluno INTEGER NOT NULL,
-  id_participacao INTEGER NOT NULL,
+  id_participacao SERIAL NOT NULL,
   certificado_part VARCHAR(70) NOT NULL,
   coordenador_ac_id_admin INTEGER NULL,
   status VARCHAR(25) NOT NULL,

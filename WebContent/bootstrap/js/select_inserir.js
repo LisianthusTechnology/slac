@@ -28,6 +28,7 @@ function carregarAtividades(idModalidade){
 }
 
 function carregarCertificado(){
+	
 	var x = document.getElementById("arquivo");
 	var txt = "";
 
@@ -48,8 +49,3 @@ function carregarCertificado(){
         }
 	}
 }
-   
-    
-
-
-
