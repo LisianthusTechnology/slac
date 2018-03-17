@@ -55,13 +55,13 @@ public class DAOParticipacao {
 		{
 			return okValidar;
 		}
-		
+		//id_participacao,
 		String sql = "insert into participacao(atividade_complementar_id_atividade, aluno_id_aluno, "
-				+ "id_participacao, certificado_part, coordenador_ac_id_admin, status, data_validacao_ac, nome_ac_part, "
+				+ " certificado_part, coordenador_ac_id_admin, status, data_validacao_ac, nome_ac_part, "
 				+ "data_inicio_ac_part, ch_cadastrada_part, ch_validada_part, local_ac_part, tipo_ac_part)" + " values(" + "" 
 		+ preparaAtributoParaBD(participacao.getAtividade_complementar_id_atividade())+", " 
 		+ preparaAtributoParaBD(participacao.getAluno_id_aluno()) + ","
-		+ participacao.getId_participacao() + ","
+		//+ participacao.getId_participacao() + ","
 		+ preparaAtributoParaBD(participacao.getCertificado_part()) + ","
 		+ preparaAtributoParaBD(participacao.getCoordenador_ac_id_admin()) + ","
 		+ preparaAtributoParaBD(participacao.getStatus()) + ","
@@ -90,7 +90,7 @@ public class DAOParticipacao {
 			ret.setMensagem("inclusão do participacao realizada com sucesso");
 		}
 		
-		System.out.println("Retorno:"+ ret.getMensagem());
+		System.out.println("Retorno DAO:"+ ret.getMensagem());
 
 		return ret;
 
@@ -106,10 +106,10 @@ public class DAOParticipacao {
 				participacao.getNome_ac_part().equals("")){
 			ret.setSucesso(false);
 			ret.setMensagem("O campo Nome é de preenchimento obrigatório");
-		}else if(participacao.getId_participacao()== null || participacao.getId_participacao().intValue()<=0){
+		}/*else if(participacao.getId_participacao()== null || participacao.getId_participacao().intValue()<=0){
 			ret.setSucesso(false);
 			ret.setMensagem("O campo Id é de preenchimento obrigatório e deve ser maior que 0!");
-		}
+		*}*/
 		
 		return ret;
 	}

@@ -6,15 +6,15 @@ import br.lisianthus.utils.Retorno;
 
 public class ControladorParticipacao {
 	private DAOParticipacao dao;
-	
+	//Retorno ret = new Retorno();
 	public ControladorParticipacao() {
 		dao = DAOParticipacao.getInstance();
 	}
 	
 	public Retorno inserir(Participacao part){
-		Retorno ret = new Retorno();
-		dao.inserir(part);
-		return ret;
+		
+		//dao.inserir(part);
+		return dao.inserir(part);
 	}
 
 }

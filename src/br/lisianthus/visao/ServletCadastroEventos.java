@@ -10,6 +10,7 @@ import java.io.PrintWriter;
 //import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import java.io.InputStream;
@@ -499,7 +500,7 @@ public class ServletCadastroEventos extends HttpServlet {
 		ServletFileUpload upload = new ServletFileUpload(factory);
 		File dir = new File(req.getContextPath() + "arquivoEloisa");
 		Participacao part = new Participacao();
-		Retorno ret = new Retorno();
+		Retorno ret;// = new Retorno();
 		ControladorParticipacao controle = new ControladorParticipacao();
 		
 		if (dir.mkdir()) {   
@@ -514,8 +515,9 @@ public class ServletCadastroEventos extends HttpServlet {
 			List<?> items = upload.parseRequest(req);
 	        Iterator<?> itr = items.iterator();
 	        part.setAluno_id_aluno(1);
+	        //part.setId_participacaoo(5);
         	part.setCoordenador_ac_id_admin(1);
-        	part.setCh_validada_part(2018-02-13);
+        	part.setCh_validada_part(30);
         	part.setStatus("A validar");
         	
 			while (itr.hasNext()) {
@@ -533,27 +535,35 @@ public class ServletCadastroEventos extends HttpServlet {
                     }
                     
                     if(campo.equals("chCertificado")){
-                    	System.out.println("Aqui3");
+                    	System.out.println("Aqui2");
                     	part.setCh_cadastrada_part(preparaId(valor));
                     }
                     
                     if(campo.equalsIgnoreCase("localEvento")){
                     	part.setLocal_ac_part(valor);
-                    	System.out.println("Aqui2");
+                    	System.out.println("Aqui3");
                     }
                     
-                   // if(campo.equals("tipoEvento")){
-                    //	part.setTipo_ac_part(valor);
-                    //}
                     
-                  //  if(campo.equals("descricaoAC")){
-                    //	part.setAtividade_complementar_id_atividade(preparaId(valor));
-                    //}
-                    
-                    if(campo.equals("dataInicioEvento"));{
-                    	part.setData_inicio_ac_part(new Date(valor));
+                    if(campo.equals("dataInicioEvento")){
+                    	String dataEmUmFormato = valor;
+                    	SimpleDateFormat formato = new SimpleDateFormat("dd-MM-yyyy");
+                    	Date data = formato.parse(dataEmUmFormato);
+                    	//formato.applyPattern("dd/MM/yyyy");
+                    	//String dataFormatada = formato.format(data);
+                    	part.setData_inicio_ac_part(data);
                     	System.out.println("Aqui4");
                     }
+                    
+                    if(campo.equals("tipoEvento")){
+                    	part.setTipo_ac_part(valor);
+                    	System.out.println("Aqui5");
+                    }
+                    
+                  if(campo.equals("descricaoAC")){
+                   part.setAtividade_complementar_id_atividade(preparaId(valor));
+                   System.out.println("Aqui6");
+                   }
                     
                        
                 } else {
@@ -567,13 +577,22 @@ public class ServletCadastroEventos extends HttpServlet {
                 }
                 
             }
-			//ret = controle.inserir(part);
-    		//System.out.println("Retorno:" + ret.getMensagem());
+			
+			if(part != null){
+			System.out.println("Participacao:"+part.getAtividade_complementar_id_atividade() + ", "+
+			part.getAluno_id_aluno() + ","+part.getId_participacao()+"," +part.getCertificado_part()+","+part.getCoordenador_ac_id_admin());
+						
+			ret = controle.inserir(part);
+			System.out.println("Retorno:" + ret.getMensagem());
+			}
+			
 			
 		}catch (Exception e) {
 			// TODO: handle exception
-			System.out.println("Erro:"+e.getMessage());
+			System.out.println("Erro:"+e);
 		}
+		
+		
 		
 /*
 		Participacao part = new Participacao();
