@@ -10,6 +10,8 @@ import java.io.PrintWriter;
 //import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import java.io.InputStream;
@@ -307,9 +309,7 @@ public class ServletCadastroEventos extends HttpServlet {
 		
 		if (dir.mkdir()) {   
 		    System.out.println("Diretorio criado com sucesso!"+dir.getPath());   
-		} else {   
-		    System.out.println("Erro ao criar diretorio!");   
-		}
+		} 
 		
 		
         
@@ -317,8 +317,8 @@ public class ServletCadastroEventos extends HttpServlet {
 			List<?> items = upload.parseRequest(req);
 	        Iterator<?> itr = items.iterator();
 	        part.setAluno_id_aluno(1);
+	        //part.setId_participacaoo(1);
         	part.setCoordenador_ac_id_admin(1);
-        	part.setCh_validada_part(2018-02-13);
         	part.setStatus("pendente");
         	
 			while (itr.hasNext()) {
@@ -338,7 +338,10 @@ public class ServletCadastroEventos extends HttpServlet {
                     }else if(campo.equals("descricaoAC")){
                     	part.setAtividade_complementar_id_atividade(preparaId(valor));
                     }else if(campo.equals("dataInicioEvento")){
-                    	part.setData_inicio_ac_part(new Date(valor));                    
+                    	String dataEmUmFormato = valor;
+                    	SimpleDateFormat formato = new SimpleDateFormat("dd-MM-yyyy");
+                    	Date data = formato.parse(dataEmUmFormato);
+                    	part.setData_inicio_ac_part(data);               
                     }
                     
                 } else {                
@@ -349,8 +352,14 @@ public class ServletCadastroEventos extends HttpServlet {
                 }
                 
             }
-			//ret = controle.inserir(part);
-    		//System.out.println("Retorno:" + ret.getMensagem());
+			
+			if(part != null){
+				System.out.println("Participacao:"+part.getAtividade_complementar_id_atividade() + ", "+
+				part.getAluno_id_aluno() + ","+part.getId_participacao()+"," +part.getCertificado_part()+","+part.getCoordenador_ac_id_admin());
+							
+				ret = controle.inserir(part);
+				System.out.println("Retorno:" + ret.getMensagem());
+			}
 			
 		}catch (Exception e) {
 			// TODO: handle exception
