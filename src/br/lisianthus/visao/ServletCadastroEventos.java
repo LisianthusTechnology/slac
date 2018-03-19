@@ -10,6 +10,7 @@ import java.io.PrintWriter;
 //import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
@@ -546,11 +547,9 @@ public class ServletCadastroEventos extends HttpServlet {
                     
                     
                     if(campo.equals("dataInicioEvento")){
-                    	String dataEmUmFormato = valor;
-                    	SimpleDateFormat formato = new SimpleDateFormat("dd-MM-yyyy");
-                    	Date data = formato.parse(dataEmUmFormato);
-                    	//formato.applyPattern("dd/MM/yyyy");
-                    	//String dataFormatada = formato.format(data);
+                    	DateFormat formatter = new SimpleDateFormat("dd/MM/yy");
+                    	Date data = (Date)formatter.parse(valor);
+                		System.out.println(data);
                     	part.setData_inicio_ac_part(data);
                     	System.out.println("Aqui4");
                     }
