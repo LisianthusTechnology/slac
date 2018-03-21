@@ -24,7 +24,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-
 import org.apache.tomcat.util.http.fileupload.RequestContext;
 
 import com.sun.xml.internal.messaging.saaj.util.ByteOutputStream;
@@ -97,6 +96,7 @@ public class ServletCadastroEventos extends HttpServlet {
 		op = op == null ? "index" : op;
 
 		if (op.equalsIgnoreCase("index") || op.equalsIgnoreCase("inserir")) {
+			// System.out.println("opcao:"+op);
 			MiniTemplator tpl = getMiniTemplator(op);
 
 			if (op.equalsIgnoreCase("inserir")) {
@@ -151,12 +151,6 @@ public class ServletCadastroEventos extends HttpServlet {
 		}
 	}
 
-	/*
-	 * public void inserirParticipacao(HttpServletRequest req, PrintWriter out)
-	 * throws IOException{ MiniTemplator tpl = this.getMiniTemplator("inserir");
-	 * localizarModalidade(req, out, tpl); }
-	 */
-
 	private Modalidade getModalidadeFromRequest(HttpServletRequest req) {
 
 		Integer id_mod = null;
@@ -179,14 +173,15 @@ public class ServletCadastroEventos extends HttpServlet {
 	}
 
 	public void salvarParticipacao(HttpServletRequest req, PrintWriter out) throws IOException {
-		//Participacao participacao = new Participacao();
-		receiveFile(req);
-	
-	}
+		// Participacao participacao = new Participacao();
+		MiniTemplator t = getMiniTemplator("message");
+		Retorno ret = new Retorno();
 
-	private File preparaArquivo(HttpServletRequest req) {
-		File file = new File(req.getParameter("certificado"));
-		return file;
+		ret = receiveFile(req);
+
+		t.setVariable("message", ret.getMensagem());
+
+		out.println(t.generateOutput());
 	}
 
 	/**
@@ -246,51 +241,12 @@ public class ServletCadastroEventos extends HttpServlet {
 
 	}
 
-	/*
-	 * public String certificadoParticipacao(HttpServletRequest req, PrintWriter
-	 * out) throws IOException { String arq =
-	 * req.getParameter("arquivoServlet");
-	 * 
-	 * System.out.println("Aqruivo servlet:" + arq); return arq; <<<<<<< HEAD
-	 * >>>>>>> O problema ta no momento de executar o metodo da servlet
-	 * (certificadoParticipacao) ======= >>>>>>>
-	 * d531c317a9d3e307b2f90b40a89eb13303e37d06 }
-	 */
 	private String convertJson(List<AtividadeComplementar> listAtividadeComplementar) {
 		Gson gson = new Gson();
 		String jsonAtividade = gson.toJson(listAtividadeComplementar);
 		System.out.println("Atividades: " + jsonAtividade);
 		return jsonAtividade;
 	}
-
-	/*
-	 * private void preencherTemplateComObjetoReflexao(MiniTemplator tpl, Object
-	 * a) { try { Class<?> cls = a.getClass(); for (Field field :
-	 * cls.getDeclaredFields()) { String fieldName = field.getName(); String
-	 * fieldValueString = "";
-	 * 
-	 * String methGet = ManipulaString.capitularizar(fieldName);
-	 * 
-	 * Method met = cls.getMethod("get" + methGet, null);
-	 * 
-	 * Object fieldValue = met.invoke(a, null);
-	 * 
-	 * // if(fieldValue.getClass().isInstance(String.class)){ //
-	 * fieldValueString = (String) fieldValue; // } if (fieldValue != null) {
-	 * fieldValueString = fieldValue.toString(); } tpl.setVariable(fieldName,
-	 * fieldValueString);
-	 * 
-	 * }
-	 * 
-	 * } catch (IllegalArgumentException e) { // TODO Auto-generated catch block
-	 * e.printStackTrace(); } catch (IllegalAccessException e) { // TODO
-	 * Auto-generated catch block e.printStackTrace(); } catch
-	 * (NoSuchMethodException e) { // TODO Auto-generated catch block
-	 * e.printStackTrace(); } catch (SecurityException e) { // TODO
-	 * Auto-generated catch block e.printStackTrace(); } catch
-	 * (InvocationTargetException e) { // TODO Auto-generated catch block
-	 * e.printStackTrace(); } }
-	 */
 
 	public MiniTemplator getMiniTemplator(String op) throws TemplateSyntaxException, IOException {
 		String caminhoAmigoIndex = realPath + separador + "WEB-INF" + separador + "eventos" + separador + "evento_" + op
@@ -334,331 +290,112 @@ public class ServletCadastroEventos extends HttpServlet {
 		return idInteger;
 	}
 
-	// Metodo que tirei da internet pra tentar pegar o arquivo e fazer upload
+	private Retorno receiveFile(HttpServletRequest req) {
 
-	/*
-	 * private void arquivoParticipacao(HttpServletRequest req, PrintWriter out)
-	 * {
-	 * 
-	 * final int SIZE_MAX = 50000 * 1024 * 1024; final File repositorio = new
-	 * File("C:/arquivosteste/");
-	 * 
-	 * DiskFileItemFactory factory = new DiskFileItemFactory();
-	 * factory.setSizeThreshold(SIZE_MAX); factory.setRepository(repositorio);
-	 * ServletFileUpload upload = new ServletFileUpload(factory); try { List
-	 * items = upload.parseRequest((RequestContext) req); Iterator iter =
-	 * items.iterator(); while (iter.hasNext()) { FileItem item = (FileItem)
-	 * iter.next(); if (item.isFormField()) { String name = item.getFieldName();
-	 * String value = item.getString(); String nomeArquivo =
-	 * extractFilename(item.getName());
-	 * System.out.println("item.getFieldName(): " + item.getFieldName());
-	 * System.out.println("item.getName(): " + item.getName());
-	 * System.out.println("item.getString(): " + item.getString()); } else {
-	 * String realName = extractFilename(item.getName()); int len = 0;
-	 * InputStream is = item.getInputStream(); File uploadedFile = new
-	 * File(repositorio + "\\" + realName); FileOutputStream fos = new
-	 * FileOutputStream(uploadedFile); ByteOutputStream bos = new
-	 * ByteOutputStream(); byte[] buf = new byte[1024]; while ((len =
-	 * is.read(buf, 0, 1024)) != -1) bos.write(buf, 0, len); buf =
-	 * bos.toByteArray(); fos.write(bos.getBytes()); fos.close(); } } } catch
-	 * (FileUploadException e) { e.printStackTrace(); } catch (IOException e) {
-	 * // TODO Auto-generated catch block e.printStackTrace(); } }
-	 * 
-	 * private String extractFilename(String filePathName) { if (filePathName ==
-	 * null) return null; int dotPos = filePathName.lastIndexOf('.'); int
-	 * slashPos = filePathName.lastIndexOf('\\'); if (slashPos == -1) slashPos =
-	 * filePathName.lastIndexOf('/'); if (dotPos > slashPos) { return
-	 * filePathName.substring(slashPos > 0 ? slashPos + 1 : 0); } return
-	 * filePathName.substring(slashPos > 0 ? slashPos + 1 : 0); }
-	 */
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	/*
-	 * public void certificadoParticipacao(HttpServletRequest req, PrintWriter
-	 * out) { public void certificadoParticipacao(HttpServletRequest req,
-	 * PrintWriter out) {
-	 * 
-	 * try { String FILE_PATH = "/arquivosteste/";
-	 * 
-	 * DiskFileItemFactory diskFileItemFactory = new DiskFileItemFactory();
-	 * ServletFileUpload fileUpload = new
-	 * ServletFileUpload(diskFileItemFactory);
-	 * 
-	 * List<?> listItem = fileUpload.parseRequest((RequestContext) req); //ele
-	 * ta dando erro nessa parte aqui Iterator<?> iter = listItem.iterator();
-	 * while(iter.next() != null){ FileItem item = (FileItem) iter.next();
-	 * if(!item.isFormField()) { item.write(new File(String.format("%s%s",
-	 * FILE_PATH, item.getName())));
-	 * System.out.println("It was saved in the directory:"+item.getName()+" "
-	 * +FILE_PATH); } } } catch (Exception ex) {
-	 * System.out.println("error while uploading the file"+ex); } /* final int
-	 * SIZE_MAX = 50000 * 1024 * 1024; final File repositorio = new
-	 * File("C:/arquivosteste/"); DiskFileItemFactory factory = new
-	 * DiskFileItemFactory(); factory.setSizeThreshold(SIZE_MAX);
-	 * factory.setRepository(repositorio);
-	 * System.out.println("Repositorio:"+factory); ServletFileUpload upload =
-	 * new ServletFileUpload(factory); try { List items =
-	 * upload.parseRequest((RequestContext) req);
-	 * System.out.println("Upload:"+items.toString()); Iterator iter =
-	 * items.iterator(); while (iter.hasNext()) { FileItem item = (FileItem)
-	 * iter.next(); if (item.isFormField()) { String name = item.getFieldName();
-	 * String value = item.getString(); String nomeArquivo =
-	 * extractFilename(item.getName());
-	 * System.out.println("item.getFieldName(): " + item.getFieldName());
-	 * System.out.println("item.getName(): " + item.getName());
-	 * System.out.println("item.getString(): " + item.getString()); } else {
-	 * String realName = extractFilename(item.getName()); int len = 0;
-	 * InputStream is = item.getInputStream(); File uploadedFile = new
-	 * File(repositorio + "\\" + realName); FileOutputStream fos = new
-	 * FileOutputStream(uploadedFile); ByteOutputStream bos = new
-	 * ByteOutputStream(); byte[] buf = new byte[1024]; while ((len =
-	 * is.read(buf, 0, 1024)) != -1) bos.write(buf, 0, len); buf =
-	 * bos.toByteArray(); fos.write(bos.getBytes()); fos.close(); } } } catch
-	 * (FileUploadException e) { //e.printStackTrace();
-	 * System.out.println(e.getMessage()); } catch (IOException e) { // TODO
-	 * Auto-generated catch block //e.printStackTrace();
-	 * System.out.println("Repositorio:"+factory.getRepository()); } <<<<<<<
-	 * HEAD
-	 * 
-	 * }
-	 */
-
-	/*
-	 * private String extractFilename(String filePathName) { if (filePathName ==
-	 * null) return null; int dotPos = filePathName.lastIndexOf('.'); int
-	 * slashPos = filePathName.lastIndexOf('\\'); if (slashPos == -1) slashPos =
-	 * filePathName.lastIndexOf('/'); if (dotPos > slashPos) { return
-	 * filePathName.substring(slashPos > 0 ? slashPos + 1 : 0); } return
-	 * filePathName.substring(slashPos > 0 ? slashPos + 1 : 0); }
-	 */
-
-	// private inserirParticipacao(){
-
-	// }
-
-	/*
-	 * private Object ciraObjeto(String casoDeUso){ Object objt = casoDeUso;
-	 * Class<?>cls = objt.toString().getClass();
-	 * 
-	 * return cls; }
-	 * 
-	 * private void inserirParticipacao(MiniTemplator tpl, Object objt) {
-	 * Class<?> cls = objt.getClass(); for (Field field :
-	 * cls.getDeclaredFields()) { String fieldName = field.getName(); String
-	 * fieldValueString = ""; String methGet; if (fieldName == null) { methGet =
-	 * null; } else {
-	 * 
-	 * methGet = fieldName.substring(0, 1).toUpperCase() +
-	 * fieldName.substring(1);
-	 * 
-	 * Method met; Object fieldValue; try { met = cls.getMethod("get" + methGet,
-	 * null); fieldValue = met.invoke(objt, null); if (fieldValue != null) {
-	 * fieldValueString = fieldValue.toString(); } tpl.setVariable(fieldName,
-	 * fieldValueString); } catch (NoSuchMethodException | SecurityException e)
-	 * { // TODO Auto-generated catch block e.printStackTrace(); }
-	 * 
-	 * catch (IllegalAccessException | IllegalArgumentException |
-	 * InvocationTargetException e) { // TODO Auto-generated catch block
-	 * e.printStackTrace(); }
-	 * 
-	 * // if(fieldValue.getClass().isInstance(String.class)){ //
-	 * fieldValueString = (String) fieldValue; // }
-	 * 
-	 * } } }
-	 */
-	// private salvarEvento
-	// private localizarEvento
-	// private excluirEvento
-	// private alterarEvento
-
-	// public void fazerAcao(MiniTemplator t, Controle ic, String acao) {
-
-	// }
-
-	/*
-	 * public boolean insertFile( File f ){ Connection c =
-	 * this.getConnection();//busca uma conexao com o banco try {
-	 * PreparedStatement ps = c.
-	 * prepareStatement("INSERT INTO arquivo( id, nome, arquivo ) VALUES ( nextval('seq_arquivo'), ?, ? )"
-	 * );
-	 * 
-	 * //converte o objeto file em array de bytes InputStream is = new
-	 * FileInputStream( f ); byte[] bytes = new byte[(int)f.length() ]; int
-	 * offset = 0; int numRead = 0; while (offset < bytes.length &&
-	 * (numRead=is.read(bytes, offset, bytes.length-offset)) >= 0) { offset +=
-	 * numRead; }
-	 * 
-	 * ps.setString( 1, f.getName() ); ps.setBytes( 2, bytes ); ps.execute();
-	 * ps.close(); c.close(); return true;
-	 * 
-	 * } catch (SQLException ex) { ex.printStackTrace(); } catch (IOException
-	 * ex) { ex.printStackTrace(); } return false; }
-	 */
-
-	private void receiveFile(HttpServletRequest req){
-		
 		FileItemFactory factory = new DiskFileItemFactory();
 		ServletFileUpload upload = new ServletFileUpload(factory);
 		File dir = new File(req.getContextPath() + "arquivoEloisa");
 		Participacao part = new Participacao();
-		Retorno ret;// = new Retorno();
+		Retorno ret = new Retorno();
 		ControladorParticipacao controle = new ControladorParticipacao();
-		
-		if (dir.mkdir()) {   
-		    System.out.println("Diretorio criado com sucesso!"+dir.getPath());   
-		} else {   
-		    System.out.println("Erro ao criar diretorio!");   
+
+		if (dir.mkdir()) {
+			System.out.println("Diretorio criado com sucesso!" + dir.getPath());
+		} else {
+			System.out.println("Erro ao criar diretorio!");
 		}
-		
-		
-        
-		try{
+
+		try {
 			List<?> items = upload.parseRequest(req);
-	        Iterator<?> itr = items.iterator();
-	        part.setAluno_id_aluno(1);
-	        //part.setId_participacaoo(5);
-        	part.setCoordenador_ac_id_admin(1);
-        	part.setCh_validada_part(30);
-        	part.setStatus("A validar");
-        	
+			Iterator<?> itr = items.iterator();
+			part.setAluno_id_aluno(1);
+			// part.setId_participacaoo(5);
+			part.setCoordenador_ac_id_admin(1);
+			part.setCh_validada_part(30);
+			part.setStatus("A validar");
+
 			while (itr.hasNext()) {
-                FileItem item = (FileItem) itr.next();
-                if (item.isFormField()) {
-                    System.out.println("Nome do campo = " + item.getFieldName() +
-                            ", Value = " + item.getString());
-                    String campo = item.getFieldName();
-                    String valor = item.getString();
-                    
-                    if(campo.equalsIgnoreCase("nomeEvento")){
-                    	System.out.println("Aqui");
-                       part.setNome_ac_part(valor);
-                       
-                    }
-                    
-                    if(campo.equals("chCertificado")){
-                    	System.out.println("Aqui2");
-                    	part.setCh_cadastrada_part(preparaId(valor));
-                    }
-                    
-                    if(campo.equalsIgnoreCase("localEvento")){
-                    	part.setLocal_ac_part(valor);
-                    	System.out.println("Aqui3");
-                    }
-                    
-                    
-                    if(campo.equals("dataInicioEvento")){
-                    	DateFormat formatter = new SimpleDateFormat("dd/MM/yy");
-                    	Date data = (Date)formatter.parse(valor);
-                		System.out.println(data);
-                    	part.setData_inicio_ac_part(data);
-                    	System.out.println("Aqui4");
-                    }
-                    
-                    if(campo.equals("tipoEvento")){
-                    	part.setTipo_ac_part(valor);
-                    	System.out.println("Aqui5");
-                    }
-                    
-                  if(campo.equals("descricaoAC")){
-                   part.setAtividade_complementar_id_atividade(preparaId(valor));
-                   System.out.println("Aqui6");
-                   }
-                    
-                       
-                } else {
-                   // System.out.println("Arquivo = " + item.getName());
-                   // System.out.println("Mime Type = " + item.getContentType());
-                   //  System.out.println("Tamanho= " + item.getSize() / 1024 + " KB");
-                    File file = new File(dir, item.getName());
-                    item.write(file);
-                    part.setCertificado_part(file.getPath());
-                    System.out.println("<br/>Arquivo gravado em: " + file.getPath());
-                }
-                
-            }
-			
-			if(part != null){
-			System.out.println("Participacao:"+part.getAtividade_complementar_id_atividade() + ", "+
-			part.getAluno_id_aluno() + ","+part.getId_participacao()+"," +part.getCertificado_part()+","+part.getCoordenador_ac_id_admin());
-						
-			ret = controle.inserir(part);
-			System.out.println("Retorno:" + ret.getMensagem());
+				FileItem item = (FileItem) itr.next();
+				if (item.isFormField()) {
+					System.out.println("Nome do campo = " + item.getFieldName() + ", Value = " + item.getString());
+					String campo = item.getFieldName();
+					String valor = item.getString();
+
+					if (campo.equalsIgnoreCase("nomeEvento")) {
+						System.out.println("Aqui");
+						part.setNome_ac_part(valor);
+
+					}
+
+					if (campo.equals("chCertificado")) {
+						System.out.println("Aqui2");
+						part.setCh_cadastrada_part(preparaId(valor));
+					}
+
+					if (campo.equalsIgnoreCase("localEvento")) {
+						part.setLocal_ac_part(valor);
+						System.out.println("Aqui3");
+					}
+
+					if (campo.equals("dataInicioEvento")) {
+						DateFormat formatter = new SimpleDateFormat("dd/MM/yy");
+						Date data = (Date) formatter.parse(valor);
+						System.out.println(data);
+						part.setData_inicio_ac_part(data);
+						System.out.println("Aqui4");
+					}
+
+					if (campo.equals("tipoEvento")) {
+						part.setTipo_ac_part(valor);
+						System.out.println("Aqui5");
+					}
+
+					if (campo.equals("descricaoAC")) {
+						part.setAtividade_complementar_id_atividade(preparaId(valor));
+						System.out.println("Aqui6");
+					}
+
+				} else {
+
+					File file = new File(dir, item.getName());
+					item.write(file);
+					part.setCertificado_part(file.getPath());
+					System.out.println("<br/>Arquivo gravado em: " + file.getPath());
+				}
+
 			}
-			
-			
-		}catch (Exception e) {
+
+			if (part != null) {
+				System.out.println("Participacao:" + part.getAtividade_complementar_id_atividade() + ", "
+						+ part.getAluno_id_aluno() + "," + part.getId_participacao() + "," + part.getCertificado_part()
+						+ "," + part.getCoordenador_ac_id_admin());
+
+				ret = controle.inserir(part);
+
+				System.out.println("Retorno:" + ret.getMensagem());
+			}
+
+		} catch (Exception e) {
 			// TODO: handle exception
-			System.out.println("Erro:"+e);
+			System.out.println("Erro:" + e);
 		}
-		
-		
-		
-/*
-		Participacao part = new Participacao();
-		ControladorParticipacao controle = new ControladorParticipacao();
-		 Retorno ret = new Retorno();
+		return ret;
 
-		if(ServletFileUpload.isMultipartContent(req)){
-
-	        try {
-
-	        	String itemform = null;
-
-	            List<FileItem> multiparts = new ServletFileUpload(
-
-	                                     new DiskFileItemFactory()).parseRequest(req);
-
-	            System.out.println("Aqui1");
-
-	            for(FileItem item : multiparts){
-	            	
-	                if(!item.isFormField()){
-	                	System.out.println("Aqui");
-	                    String name = new File(item.getName()).getName();
-
-	                    item.write( new File(UPLOAD_DIRECTORY + File.separator + name));
-
-	                }else{
-	                	System.out.println("Aqui");
-	                	part.setAluno_id_aluno(1);
-	                	part.setCoordenador_ac_id_admin(1);
-	                	part.setCh_validada_part(2018-02-13);
-	                	part.setStatus("A validar");
-	                	
-
-	                	if(item.getFieldName().equals("nomeEvento"))
-
-	                    {
-
-	                       part.setNome_ac_part(item.toString());
-
-	                    }else if(item.getFieldName().equals("chCertificado")){
-
-	                    	part.setCh_cadastrada_part(preparaId(item.toString()));
-
-	                    }else if(item.getFieldName().equals("localEvento")){
-	                    	part.setLocal_ac_part(item.toString());
-	                    }else if(item.getFieldName().equals("tipoEvento")){
-	                    	part.setTipo_ac_part(item.toString());
-	                    }else if(item.getFieldName().equals("descricaoAC")){
-	                    	part.setAtividade_complementar_id_atividade(preparaId(item.toString()));
-	                    }else if(item.getFieldName().equals("dataInicioEvento"));{
-	                    	part.setData_inicio_ac_part(new Date(item.toString()));
-	                    }
-
-	                }
-
-	              }
-	            ret = controle.inserir(part);
-	    		System.out.println("Retorno:" + ret.getMensagem());
-
-	        } catch (Exception ex) {
-	        	System.out.println("Erro:"+ex.getMessage());
-	            req.setAttribute("message", "File Upload Failed due to " + ex);
-
-	        }
-		}
-		*/
 	}
-	
+
+	private Retorno tratarMensagem(Participacao part) {
+
+		Retorno ret = new Retorno();
+		String htmlResult = "";
+		if (part.getNome_ac_part() != null || part.getCh_cadastrada_part() != null
+				|| part.getData_inicio_ac_part() != null || part.getLocal_ac_part() != null
+				|| part.getAtividade_complementar_id_atividade() != null || part.getTipo_ac_part() != null) {
+
+			ret.setMensagem("Preencha os dados obrigatórios do formulário abaixo");
+			// frase de acordo com o protótipo
+		}
+
+		return ret;
+	}
+
 }

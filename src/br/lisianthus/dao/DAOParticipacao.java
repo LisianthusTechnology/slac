@@ -106,10 +106,7 @@ public class DAOParticipacao {
 				participacao.getNome_ac_part().equals("")){
 			ret.setSucesso(false);
 			ret.setMensagem("O campo Nome é de preenchimento obrigatório");
-		}/*else if(participacao.getId_participacao()== null || participacao.getId_participacao().intValue()<=0){
-			ret.setSucesso(false);
-			ret.setMensagem("O campo Id é de preenchimento obrigatório e deve ser maior que 0!");
-		*}*/
+		}
 		
 		return ret;
 	}

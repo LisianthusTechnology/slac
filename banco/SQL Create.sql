@@ -23,12 +23,12 @@ CREATE TABLE aluno (
   
 CREATE TABLE modalidade (
   id_mod SERIAL NOT NULL,
-  nome_mod VARCHAR(50) NOT NULL,
+  nome_mod VARCHAR(100) NOT NULL,
   PRIMARY KEY (id_mod));
   
 CREATE TABLE atividade_complementar (
   id_atividade SERIAL NOT NULL,
-  descricao_ac VARCHAR(100) NOT NULL,
+  descricao_ac VARCHAR(200) NOT NULL,
   ch_max_ac INTEGER NULL,
   ch_min_ac INTEGER NULL,
   modalidade_id_mod INTEGER NOT NULL,
