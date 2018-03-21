@@ -61,7 +61,7 @@ public class DAOParticipacao {
 		{
 			return okValidar;
 		}
-		
+		//id_participacao,
 		String sql = "insert into participacao(atividade_complementar_id_atividade, aluno_id_aluno, "
 				+ " certificado_part, coordenador_ac_id_admin, status, data_validacao_ac, nome_ac_part, "
 				+ "data_inicio_ac_part, ch_cadastrada_part, ch_validada_part, local_ac_part, tipo_ac_part)" + " values(" + "" 
@@ -96,7 +96,7 @@ public class DAOParticipacao {
 			ret.setMensagem("inclusão do participacao realizada com sucesso");
 		}
 		
-		System.out.println("Retorno:"+ ret.getMensagem());
+		System.out.println("Retorno DAO:"+ ret.getMensagem());
 
 		return ret;
 

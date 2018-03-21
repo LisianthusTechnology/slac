@@ -22,7 +22,12 @@ public class ControladorAtividadeComplementar {
 	}
 	
 	public AtividadeComplementar obter(Integer id_ac){
+<<<<<<< HEAD
 		return dao.obter(id_ac);
 	}
+=======
+				return dao.obter(id_ac);
+			}
+>>>>>>> 6b9898d3c4317acc50329c88ddbb00a5338d002a
 	
 }

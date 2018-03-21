@@ -24,7 +24,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-
 import org.apache.tomcat.util.http.fileupload.RequestContext;
 
 import com.sun.xml.internal.messaging.saaj.util.ByteOutputStream;
@@ -99,6 +98,7 @@ public class ServletCadastroEventos extends HttpServlet {
 		op = op == null ? "index" : op;
 
 		if (op.equalsIgnoreCase("index") || op.equalsIgnoreCase("inserir")) {
+			// System.out.println("opcao:"+op);
 			MiniTemplator tpl = getMiniTemplator(op);
 
 			if (op.equalsIgnoreCase("inserir")) {
@@ -153,12 +153,6 @@ public class ServletCadastroEventos extends HttpServlet {
 		}
 	}
 
-	/*
-	 * public void inserirParticipacao(HttpServletRequest req, PrintWriter out)
-	 * throws IOException{ MiniTemplator tpl = this.getMiniTemplator("inserir");
-	 * localizarModalidade(req, out, tpl); }
-	 */
-
 	private Modalidade getModalidadeFromRequest(HttpServletRequest req) {
 
 		Integer id_mod = null;
@@ -181,13 +175,16 @@ public class ServletCadastroEventos extends HttpServlet {
 	}
 
 	public void salvarParticipacao(HttpServletRequest req, PrintWriter out) throws IOException {
-		//Participacao participacao = new Participacao();
-		receiveFile(req);
-	}
+		// Participacao participacao = new Participacao();
+		MiniTemplator t = getMiniTemplator("message");
+		Retorno ret = new Retorno();
 
-	private File preparaArquivo(HttpServletRequest req) {
-		File file = new File(req.getParameter("certificado"));
-		return file;
+
+		ret = receiveFile(req);
+
+		t.setVariable("message", ret.getMensagem());
+
+		out.println(t.generateOutput());
 	}
 
 	/**
@@ -296,74 +293,113 @@ public class ServletCadastroEventos extends HttpServlet {
 		return idInteger;
 	}
 
-	// Metodo que tirei da internet pra tentar pegar o arquivo e fazer upload
+	private Retorno receiveFile(HttpServletRequest req) {
 
-	private void receiveFile(HttpServletRequest req){
-		
 		FileItemFactory factory = new DiskFileItemFactory();
 		ServletFileUpload upload = new ServletFileUpload(factory);
 		File dir = new File(req.getContextPath() + "certificado");
 		Participacao part = new Participacao();
 		Retorno ret = new Retorno();
 		ControladorParticipacao controle = new ControladorParticipacao();
-		
-		if (dir.mkdir()) {   
-		    System.out.println("Diretorio criado com sucesso!"+dir.getPath());   
-		} 
-		
-		
-        
-		try{
+
+
+		if (dir.mkdir()) {
+			System.out.println("Diretorio criado com sucesso!" + dir.getPath());
+		} else {
+			System.out.println("Erro ao criar diretorio!");
+		}
+
+		try {
 			List<?> items = upload.parseRequest(req);
-	        Iterator<?> itr = items.iterator();
-	        part.setAluno_id_aluno(1);
-	        //part.setId_participacaoo(1);
-        	part.setCoordenador_ac_id_admin(1);
-        	part.setStatus("pendente");
-        	
+			Iterator<?> itr = items.iterator();
+			part.setAluno_id_aluno(1);
+			// part.setId_participacaoo(5);
+			part.setCoordenador_ac_id_admin(1);
+			part.setCh_validada_part(30);
+			part.setStatus("A validar");
+
 			while (itr.hasNext()) {
-                FileItem item = (FileItem) itr.next();
-                if (item.isFormField()) {
-                    String campo = item.getFieldName();
-                    String valor = item.getString();
-                    
-                    if(campo.equalsIgnoreCase("nomeEvento")){
-                       part.setNome_ac_part(valor);
-                    }else if(campo.equals("chCertificado")){
-                    	part.setCh_cadastrada_part(preparaId(valor));
-                    }else if(campo.equalsIgnoreCase("localEvento")){
-                    	part.setLocal_ac_part(valor);
-                    }else if(campo.equals("tipoEvento")){
-                    	part.setTipo_ac_part(valor);
-                    }else if(campo.equals("descricaoAC")){
-                    	part.setAtividade_complementar_id_atividade(preparaId(valor));
-                    }else if(campo.equals("dataInicioEvento")){
-                    	String dataEmUmFormato = valor;
-                    	SimpleDateFormat formato = new SimpleDateFormat("dd-MM-yyyy");
-                    	Date data = formato.parse(dataEmUmFormato);
-                    	part.setData_inicio_ac_part(data);               
-                    }
-                    
-                } else {                
-                    File file = new File(dir, item.getName());
-                    item.write(file);
-                    part.setCertificado_part(file.getPath());
-                    System.out.println("<br/>Arquivo gravado em: " + file.getPath());
-                }
-                
-            }
-			
-			if(part != null){
-				System.out.println("Participacao:"+part.getAtividade_complementar_id_atividade() + ", "+
-				part.getAluno_id_aluno() + ","+part.getId_participacao()+"," +part.getCertificado_part()+","+part.getCoordenador_ac_id_admin());
-							
+				FileItem item = (FileItem) itr.next();
+				if (item.isFormField()) {
+					System.out.println("Nome do campo = " + item.getFieldName() + ", Value = " + item.getString());
+					String campo = item.getFieldName();
+					String valor = item.getString();
+
+					if (campo.equalsIgnoreCase("nomeEvento")) {
+						System.out.println("Aqui");
+						part.setNome_ac_part(valor);
+
+					}
+
+					if (campo.equals("chCertificado")) {
+						System.out.println("Aqui2");
+						part.setCh_cadastrada_part(preparaId(valor));
+					}
+
+					if (campo.equalsIgnoreCase("localEvento")) {
+						part.setLocal_ac_part(valor);
+						System.out.println("Aqui3");
+					}
+
+					if (campo.equals("dataInicioEvento")) {
+						DateFormat formatter = new SimpleDateFormat("dd/MM/yy");
+						Date data = (Date) formatter.parse(valor);
+						System.out.println(data);
+						part.setData_inicio_ac_part(data);
+						System.out.println("Aqui4");
+					}
+
+					if (campo.equals("tipoEvento")) {
+						part.setTipo_ac_part(valor);
+						System.out.println("Aqui5");
+					}
+
+					if (campo.equals("descricaoAC")) {
+						part.setAtividade_complementar_id_atividade(preparaId(valor));
+						System.out.println("Aqui6");
+					}
+
+				} else {
+
+					File file = new File(dir, item.getName());
+					item.write(file);
+					part.setCertificado_part(file.getPath());
+					System.out.println("<br/>Arquivo gravado em: " + file.getPath());
+				}
+
+			}
+
+			if (part != null) {
+				System.out.println("Participacao:" + part.getAtividade_complementar_id_atividade() + ", "
+						+ part.getAluno_id_aluno() + "," + part.getId_participacao() + "," + part.getCertificado_part()
+						+ "," + part.getCoordenador_ac_id_admin());
+
 				ret = controle.inserir(part);
+
 				System.out.println("Retorno:" + ret.getMensagem());
 			}
-			
-		}catch (Exception e) {
+
+		} catch (Exception e) {
 			// TODO: handle exception
-			System.out.println("Erro:"+e.getMessage());
+			System.out.println("Erro:" + e);
 		}
+		return ret;
+
 	}
+
+	private Retorno tratarMensagem(Participacao part) {
+
+		Retorno ret = new Retorno();
+		String htmlResult = "";
+		if (part.getNome_ac_part() != null || part.getCh_cadastrada_part() != null
+				|| part.getData_inicio_ac_part() != null || part.getLocal_ac_part() != null
+				|| part.getAtividade_complementar_id_atividade() != null || part.getTipo_ac_part() != null) {
+
+			ret.setMensagem("Preencha os dados obrigatórios do formulário abaixo");
+			// frase de acordo com o protótipo
+		}
+
+		return ret;
+	}
+
 }
