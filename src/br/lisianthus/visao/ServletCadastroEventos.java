@@ -47,7 +47,7 @@ import br.lisianthus.utils.Retorno;
 @SuppressWarnings("serial")
 public class ServletCadastroEventos extends HttpServlet {
 
-	private final String UPLOAD_DIRECTORY = "C:/uploads";
+	//private final String UPLOAD_DIRECTORY = "C:/uploads";
 	ServletContext servletContext;
 	String separador;
 	String realPath;
@@ -394,7 +394,6 @@ public class ServletCadastroEventos extends HttpServlet {
 			ret.setMensagem("Preencha os dados obrigatórios do formulário abaixo");
 			// frase de acordo com o protótipo
 		}
-
 		return ret;
 	}
 
