@@ -19,7 +19,7 @@ public class ControladorParticipacao {
 		Retorno ret = new Retorno();
 		Participacao partComp = new Participacao();
 		partComp = calcularChValida(part);
-		dao.inserir(partComp);
+		ret = dao.inserir(partComp);
 		return ret;
 	}
 	

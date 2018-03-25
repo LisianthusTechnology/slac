@@ -1,8 +1,6 @@
 package br.lisianthus.visao;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import com.google.gson.Gson;
 
@@ -10,11 +8,9 @@ import java.io.PrintWriter;
 //import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
-import java.io.InputStream;
 import java.util.Date;
 import java.util.Iterator;
 
@@ -24,10 +20,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.tomcat.util.http.fileupload.RequestContext;
-
-import com.sun.xml.internal.messaging.saaj.util.ByteOutputStream;
-
 import biz.source_code.miniTemplator.MiniTemplator;
 import biz.source_code.miniTemplator.MiniTemplator.TemplateSyntaxException;
 import br.lisianthus.controle.ControladorAtividadeComplementar;
@@ -35,7 +27,7 @@ import br.lisianthus.controle.ControladorModalidade;
 import br.lisianthus.controle.ControladorParticipacao;
 import br.lisianthus.modelo.AtividadeComplementar;
 import br.lisianthus.modelo.Modalidade;
-import org.apache.commons.*;
+
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
@@ -319,43 +311,25 @@ public class ServletCadastroEventos extends HttpServlet {
 			while (itr.hasNext()) {
 				FileItem item = (FileItem) itr.next();
 				if (item.isFormField()) {
-					System.out.println("Nome do campo = " + item.getFieldName() + ", Value = " + item.getString());
 					String campo = item.getFieldName();
 					String valor = item.getString();
 
-					if (campo.equalsIgnoreCase("nomeEvento")) {
-						System.out.println("Aqui");
-						part.setNome_ac_part(valor);
-
-					}
-
-					if (campo.equals("chCertificado")) {
-						System.out.println("Aqui2");
-						part.setCh_cadastrada_part(preparaId(valor));
-					}
-
-					if (campo.equalsIgnoreCase("localEvento")) {
-						part.setLocal_ac_part(valor);
-						System.out.println("Aqui3");
-					}
-
-					if (campo.equals("dataInicioEvento")) {
-						DateFormat formatter = new SimpleDateFormat("dd/MM/yy");
-						Date data = (Date) formatter.parse(valor);
-						System.out.println(data);
-						part.setData_inicio_ac_part(data);
-						System.out.println("Aqui4");
-					}
-
-					if (campo.equals("tipoEvento")) {
-						part.setTipo_ac_part(valor);
-						System.out.println("Aqui5");
-					}
-
-					if (campo.equals("descricaoAC")) {
-						part.setAtividade_complementar_id_atividade(preparaId(valor));
-						System.out.println("Aqui6");
-					}
+					if(campo.equalsIgnoreCase("nomeEvento")){
+	                       part.setNome_ac_part(valor);
+	                    }else if(campo.equals("chCertificado")){
+	                    	part.setCh_cadastrada_part(preparaId(valor));
+	                    }else if(campo.equalsIgnoreCase("localEvento")){
+	                    	part.setLocal_ac_part(valor);
+	                    }else if(campo.equals("tipoEvento")){
+	                    	part.setTipo_ac_part(valor);
+	                    }else if(campo.equals("descricaoAC")){
+	                    	part.setAtividade_complementar_id_atividade(preparaId(valor));
+	                    }else if(campo.equals("dataInicioEvento")){
+	                    	String dataEmUmFormato = valor;
+	                    	SimpleDateFormat formato = new SimpleDateFormat("dd-MM-yyyy");
+	                    	Date data = formato.parse(dataEmUmFormato);
+	                    	part.setData_inicio_ac_part(data);               
+	                    }
 
 				} else {
 
