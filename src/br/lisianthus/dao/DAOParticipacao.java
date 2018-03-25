@@ -1,19 +1,11 @@
 package br.lisianthus.dao;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 import br.lisianthus.modelo.Participacao;
 import br.lisianthus.utils.Retorno;
@@ -296,5 +288,11 @@ public class DAOParticipacao {
 		}
 		return numeroLong;
 	}
+	
+	//pegar o id da modalidade e passar para o daoAC para que esse retorne todas as acs da modalidade
+			//para cada id de ac retornado preciso verificar quantos part existem e somar a ch_validade de todas elas
+			//esse método vai receber uma lista de id que vai ser percorrida e para cada id eu terei que rodar a sql acima
+			
 
 }
+
