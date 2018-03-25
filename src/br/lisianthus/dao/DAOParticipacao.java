@@ -73,7 +73,7 @@ public class DAOParticipacao {
 		System.out.println("SQL:" + sql);
 		int ok = 0;
 		try {
-			ok = executaAlteracao(sql);
+			ok = executaSQL(sql);
 		} catch (SQLException e) {
 			//e.printStackTrace();
 			String message=e.getMessage();
@@ -110,15 +110,13 @@ public class DAOParticipacao {
 		return ret;
 	}
 
-	private int executaAlteracao(String sql) throws SQLException {
+	private int executaSQL(String sql) throws SQLException {
 		Statement stmt = con.createStatement();
 		//System.out.println("SQL 2:"+sql);
 		int ok = stmt.executeUpdate(sql);
 		return ok;
 	}
 	
-
-
 	public boolean excluir(Participacao participacao) throws RuntimeException {
 		if (participacao == null) return false;// o id nunca vai ser nulo
 
@@ -128,7 +126,7 @@ public class DAOParticipacao {
 
 		int ok;
 		try {
-			ok = executaAlteracao(sql);
+			ok = executaSQL(sql);
 			if (ok > 0) {
 				return true;
 			}
@@ -164,7 +162,7 @@ public class DAOParticipacao {
 
 		int ok;
 		try {
-			ok = executaAlteracao(sql);
+			ok = executaSQL(sql);
 			if (ok > 0) {
 				return true;
 			}
