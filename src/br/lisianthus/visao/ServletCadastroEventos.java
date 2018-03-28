@@ -12,8 +12,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import java.text.DateFormat;
-
-
 import java.text.SimpleDateFormat;
 import java.util.List;
 
@@ -349,6 +347,21 @@ public class ServletCadastroEventos extends HttpServlet {
                     	SimpleDateFormat formato = new SimpleDateFormat("dd-MM-yyyy");
                     	Date data = formato.parse(dataEmUmFormato);
                     	part.setData_inicio_ac_part(data);               
+                    	System.out.println("Aqui3");
+                    }
+                    
+                    
+                    if(campo.equals("dataInicioEvento")){
+                    	DateFormat formatter = new SimpleDateFormat("dd/MM/yy");
+                    	Date data = (Date)formatter.parse(valor);
+                		System.out.println(data);
+                    	part.setData_inicio_ac_part(data);
+                    	System.out.println("Aqui4");
+                    }
+                    
+                    if(campo.equals("tipoEvento")){
+                    	part.setTipo_ac_part(valor);
+                    	System.out.println("Aqui5");
                     }
                     
                 }else{
