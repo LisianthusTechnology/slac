@@ -10,7 +10,10 @@ import java.io.PrintWriter;
 //import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+
 import java.text.DateFormat;
+
+
 import java.text.SimpleDateFormat;
 import java.util.List;
 
@@ -49,7 +52,7 @@ import br.lisianthus.utils.Retorno;
 @SuppressWarnings("serial")
 public class ServletCadastroEventos extends HttpServlet {
 
-    private final String UPLOAD_DIRECTORY = "C:/uploads";
+
 
 	ServletContext servletContext;
 	String separador;
@@ -304,7 +307,7 @@ public class ServletCadastroEventos extends HttpServlet {
 		ServletFileUpload upload = new ServletFileUpload(factory);
 		File dir = new File(req.getContextPath() + "certificado");
 		Participacao part = new Participacao();
-		Retorno ret = new Retorno();
+		Retorno ret;// = new Retorno();
 		ControladorParticipacao controle = new ControladorParticipacao();
 		
 		if (dir.mkdir()) {   
@@ -316,10 +319,14 @@ public class ServletCadastroEventos extends HttpServlet {
 		try{
 			List<?> items = upload.parseRequest(req);
 	        Iterator<?> itr = items.iterator();
-	        part.setAluno_id_aluno(1);
+	        part.setAluno_id_aluno(2);
 	        //part.setId_participacaoo(1);
         	part.setCoordenador_ac_id_admin(1);
         	part.setStatus("pendente");
+	        //part.setId_participacaoo(5);
+        	part.setCoordenador_ac_id_admin(1);
+        	part.setCh_validada_part(30);
+        	part.setStatus("A validar");
         	
 			while (itr.hasNext()) {
                 FileItem item = (FileItem) itr.next();
@@ -344,14 +351,13 @@ public class ServletCadastroEventos extends HttpServlet {
                     	part.setData_inicio_ac_part(data);               
                     }
                     
-                } else {                
+                }else{
                     File file = new File(dir, item.getName());
                     item.write(file);
                     part.setCertificado_part(file.getPath());
                     System.out.println("<br/>Arquivo gravado em: " + file.getPath());
                 }
-                
-            }
+			}
 			
 			if(part != null){
 				System.out.println("Participacao:"+part.getAtividade_complementar_id_atividade() + ", "+
@@ -360,10 +366,10 @@ public class ServletCadastroEventos extends HttpServlet {
 				ret = controle.inserir(part);
 				System.out.println("Retorno:" + ret.getMensagem());
 			}
-			
 		}catch (Exception e) {
 			// TODO: handle exception
 			System.out.println("Erro:"+e.getMessage());
 		}
+		
 	}
 }
