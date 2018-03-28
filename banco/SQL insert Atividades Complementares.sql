@@ -16,4 +16,4 @@ insert into atividade_complementar(descricao_ac, ch_max_ac, ch_min_ac, modalidad
 insert into atividade_complementar(descricao_ac, ch_max_ac, ch_min_ac, modalidade_id_mod) values ('Bolsa Desenvolvimento Institucional', 10, 30, 1);
 insert into atividade_complementar(descricao_ac, ch_max_ac, ch_min_ac, modalidade_id_mod) values ('Bolsa Mobilidade Nacional', 10, 30, 1);
 
-ALTER TABLE atividade_complementar ALTER COLUMN descricao_ac TYPE varchar(200) USING descricao_ac::varchar(200)
+ALTER TABLE atividade_complementar ALTER COLU	MN descricao_ac TYPE varchar(200) USING descricao_ac::varchar(200)
