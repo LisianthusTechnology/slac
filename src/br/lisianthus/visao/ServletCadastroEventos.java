@@ -1,8 +1,6 @@
 package br.lisianthus.visao;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import com.google.gson.Gson;
 
@@ -10,12 +8,14 @@ import java.io.PrintWriter;
 //import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+<<<<<<< HEAD
 
 import java.text.DateFormat;
+=======
+>>>>>>> branch 'master' of https://github.com/LisianthusTechnology/slac.git
 import java.text.SimpleDateFormat;
 import java.util.List;
 
-import java.io.InputStream;
 import java.util.Date;
 import java.util.Iterator;
 
@@ -25,11 +25,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-
-import org.apache.tomcat.util.http.fileupload.RequestContext;
-
-import com.sun.xml.internal.messaging.saaj.util.ByteOutputStream;
-
 import biz.source_code.miniTemplator.MiniTemplator;
 import biz.source_code.miniTemplator.MiniTemplator.TemplateSyntaxException;
 import br.lisianthus.controle.ControladorAtividadeComplementar;
@@ -37,7 +32,7 @@ import br.lisianthus.controle.ControladorModalidade;
 import br.lisianthus.controle.ControladorParticipacao;
 import br.lisianthus.modelo.AtividadeComplementar;
 import br.lisianthus.modelo.Modalidade;
-import org.apache.commons.*;
+
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
@@ -49,8 +44,11 @@ import br.lisianthus.utils.Retorno;
 
 @SuppressWarnings("serial")
 public class ServletCadastroEventos extends HttpServlet {
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> branch 'master' of https://github.com/LisianthusTechnology/slac.git
 
 	ServletContext servletContext;
 	String separador;
@@ -100,6 +98,7 @@ public class ServletCadastroEventos extends HttpServlet {
 		op = op == null ? "index" : op;
 
 		if (op.equalsIgnoreCase("index") || op.equalsIgnoreCase("inserir")) {
+			// System.out.println("opcao:"+op);
 			MiniTemplator tpl = getMiniTemplator(op);
 
 			if (op.equalsIgnoreCase("inserir")) {
@@ -154,12 +153,6 @@ public class ServletCadastroEventos extends HttpServlet {
 		}
 	}
 
-	/*
-	 * public void inserirParticipacao(HttpServletRequest req, PrintWriter out)
-	 * throws IOException{ MiniTemplator tpl = this.getMiniTemplator("inserir");
-	 * localizarModalidade(req, out, tpl); }
-	 */
-
 	private Modalidade getModalidadeFromRequest(HttpServletRequest req) {
 
 		Integer id_mod = null;
@@ -182,13 +175,16 @@ public class ServletCadastroEventos extends HttpServlet {
 	}
 
 	public void salvarParticipacao(HttpServletRequest req, PrintWriter out) throws IOException {
-		//Participacao participacao = new Participacao();
-		receiveFile(req);
-	}
+		// Participacao participacao = new Participacao();
+		MiniTemplator t = getMiniTemplator("message");
+		Retorno ret = new Retorno();
 
-	private File preparaArquivo(HttpServletRequest req) {
-		File file = new File(req.getParameter("certificado"));
-		return file;
+
+		ret = receiveFile(req);
+
+		t.setVariable("message", ret.getMensagem());
+
+		out.println(t.generateOutput());
 	}
 
 	/**
@@ -297,25 +293,25 @@ public class ServletCadastroEventos extends HttpServlet {
 		return idInteger;
 	}
 
-	// Metodo que tirei da internet pra tentar pegar o arquivo e fazer upload
+	private Retorno receiveFile(HttpServletRequest req) {
 
-	private void receiveFile(HttpServletRequest req){
-		
 		FileItemFactory factory = new DiskFileItemFactory();
 		ServletFileUpload upload = new ServletFileUpload(factory);
 		File dir = new File(req.getContextPath() + "certificado");
 		Participacao part = new Participacao();
 		Retorno ret;// = new Retorno();
 		ControladorParticipacao controle = new ControladorParticipacao();
-		
-		if (dir.mkdir()) {   
-		    System.out.println("Diretorio criado com sucesso!"+dir.getPath());   
-		} 
-		
-		
-        
-		try{
+
+
+		if (dir.mkdir()) {
+			System.out.println("Diretorio criado com sucesso!" + dir.getPath());
+		} else {
+			System.out.println("Erro ao criar diretorio!");
+		}
+
+		try {
 			List<?> items = upload.parseRequest(req);
+<<<<<<< HEAD
 	        Iterator<?> itr = items.iterator();
 	        part.setAluno_id_aluno(2);
 	        //part.setId_participacaoo(1);
@@ -326,7 +322,17 @@ public class ServletCadastroEventos extends HttpServlet {
         	part.setCh_validada_part(30);
         	part.setStatus("A validar");
         	
+=======
+			Iterator<?> itr = items.iterator();
+			part.setAluno_id_aluno(1);
+			// part.setId_participacaoo(5);
+			part.setCoordenador_ac_id_admin(1);
+			part.setCh_validada_part(30);
+			part.setStatus("A validar");
+
+>>>>>>> branch 'master' of https://github.com/LisianthusTechnology/slac.git
 			while (itr.hasNext()) {
+<<<<<<< HEAD
                 FileItem item = (FileItem) itr.next();
                 if (item.isFormField()) {
                     String campo = item.getFieldName();
@@ -376,13 +382,78 @@ public class ServletCadastroEventos extends HttpServlet {
 				System.out.println("Participacao:"+part.getAtividade_complementar_id_atividade() + ", "+
 				part.getAluno_id_aluno() + ","+part.getId_participacao()+"," +part.getCertificado_part()+","+part.getCoordenador_ac_id_admin());
 							
+=======
+				FileItem item = (FileItem) itr.next();
+				if (item.isFormField()) {
+					String campo = item.getFieldName();
+					String valor = item.getString();
+
+					if(campo.equalsIgnoreCase("nomeEvento")){
+	                       part.setNome_ac_part(valor);
+	                    }else if(campo.equals("chCertificado")){
+	                    	part.setCh_cadastrada_part(preparaId(valor));
+	                    }else if(campo.equalsIgnoreCase("localEvento")){
+	                    	part.setLocal_ac_part(valor);
+	                    }else if(campo.equals("tipoEvento")){
+	                    	part.setTipo_ac_part(valor);
+	                    }else if(campo.equals("descricaoAC")){
+	                    	part.setAtividade_complementar_id_atividade(preparaId(valor));
+	                    }else if(campo.equals("dataInicioEvento")){
+	                    	String dataEmUmFormato = valor;
+	                    	SimpleDateFormat formato = new SimpleDateFormat("dd-MM-yyyy");
+	                    	Date data = formato.parse(dataEmUmFormato);
+	                    	part.setData_inicio_ac_part(data);               
+	                    }
+
+				} else {
+
+					File file = new File(dir, item.getName());
+					item.write(file);
+					part.setCertificado_part(file.getPath());
+					System.out.println("<br/>Arquivo gravado em: " + file.getPath());
+				}
+
+			}
+
+			if (part != null) {
+				System.out.println("Participacao:" + part.getAtividade_complementar_id_atividade() + ", "
+						+ part.getAluno_id_aluno() + "," + part.getId_participacao() + "," + part.getCertificado_part()
+						+ "," + part.getCoordenador_ac_id_admin());
+
+>>>>>>> branch 'master' of https://github.com/LisianthusTechnology/slac.git
 				ret = controle.inserir(part);
+
 				System.out.println("Retorno:" + ret.getMensagem());
 			}
+<<<<<<< HEAD
 		}catch (Exception e) {
+=======
+
+		} catch (Exception e) {
+>>>>>>> branch 'master' of https://github.com/LisianthusTechnology/slac.git
 			// TODO: handle exception
-			System.out.println("Erro:"+e.getMessage());
+			System.out.println("Erro:" + e);
 		}
+<<<<<<< HEAD
 		
+=======
+		return ret;
+
+>>>>>>> branch 'master' of https://github.com/LisianthusTechnology/slac.git
 	}
+
+	private Retorno tratarMensagem(Participacao part) {
+
+		Retorno ret = new Retorno();
+		String htmlResult = "";
+		if (part.getNome_ac_part() != null || part.getCh_cadastrada_part() != null
+				|| part.getData_inicio_ac_part() != null || part.getLocal_ac_part() != null
+				|| part.getAtividade_complementar_id_atividade() != null || part.getTipo_ac_part() != null) {
+
+			ret.setMensagem("Preencha os dados obrigatórios do formulário abaixo");
+			// frase de acordo com o protótipo
+		}
+		return ret;
+	}
+
 }

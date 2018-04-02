@@ -17,9 +17,12 @@ public class AtividadeComplementar {
 		setModalidade_id_mod(modalidade_id_mod);
 		
 	}
+	
 	public AtividadeComplementar() {
 		// TODO Auto-generated constructor stub
 	}
+
+
 	public Integer getId_atividade() {
 		return id_atividade;
 	}
