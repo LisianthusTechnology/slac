@@ -8,11 +8,8 @@ import java.io.PrintWriter;
 //import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-<<<<<<< HEAD
 
 import java.text.DateFormat;
-=======
->>>>>>> branch 'master' of https://github.com/LisianthusTechnology/slac.git
 import java.text.SimpleDateFormat;
 import java.util.List;
 
@@ -44,11 +41,6 @@ import br.lisianthus.utils.Retorno;
 
 @SuppressWarnings("serial")
 public class ServletCadastroEventos extends HttpServlet {
-<<<<<<< HEAD
-
-
-=======
->>>>>>> branch 'master' of https://github.com/LisianthusTechnology/slac.git
 
 	ServletContext servletContext;
 	String separador;
@@ -299,7 +291,7 @@ public class ServletCadastroEventos extends HttpServlet {
 		ServletFileUpload upload = new ServletFileUpload(factory);
 		File dir = new File(req.getContextPath() + "certificado");
 		Participacao part = new Participacao();
-		Retorno ret;// = new Retorno();
+		Retorno ret = new Retorno();
 		ControladorParticipacao controle = new ControladorParticipacao();
 
 
@@ -311,18 +303,7 @@ public class ServletCadastroEventos extends HttpServlet {
 
 		try {
 			List<?> items = upload.parseRequest(req);
-<<<<<<< HEAD
-	        Iterator<?> itr = items.iterator();
-	        part.setAluno_id_aluno(2);
-	        //part.setId_participacaoo(1);
-        	part.setCoordenador_ac_id_admin(1);
-        	part.setStatus("pendente");
-	        //part.setId_participacaoo(5);
-        	part.setCoordenador_ac_id_admin(1);
-        	part.setCh_validada_part(30);
-        	part.setStatus("A validar");
-        	
-=======
+
 			Iterator<?> itr = items.iterator();
 			part.setAluno_id_aluno(1);
 			// part.setId_participacaoo(5);
@@ -330,59 +311,8 @@ public class ServletCadastroEventos extends HttpServlet {
 			part.setCh_validada_part(30);
 			part.setStatus("A validar");
 
->>>>>>> branch 'master' of https://github.com/LisianthusTechnology/slac.git
 			while (itr.hasNext()) {
-<<<<<<< HEAD
-                FileItem item = (FileItem) itr.next();
-                if (item.isFormField()) {
-                    String campo = item.getFieldName();
-                    String valor = item.getString();
-                    
-                    if(campo.equalsIgnoreCase("nomeEvento")){
-                       part.setNome_ac_part(valor);
-                    }else if(campo.equals("chCertificado")){
-                    	part.setCh_cadastrada_part(preparaId(valor));
-                    }else if(campo.equalsIgnoreCase("localEvento")){
-                    	part.setLocal_ac_part(valor);
-                    }else if(campo.equals("tipoEvento")){
-                    	part.setTipo_ac_part(valor);
-                    }else if(campo.equals("descricaoAC")){
-                    	part.setAtividade_complementar_id_atividade(preparaId(valor));
-                    }else if(campo.equals("dataInicioEvento")){
-                    	String dataEmUmFormato = valor;
-                    	SimpleDateFormat formato = new SimpleDateFormat("dd-MM-yyyy");
-                    	Date data = formato.parse(dataEmUmFormato);
-                    	part.setData_inicio_ac_part(data);               
-                    	System.out.println("Aqui3");
-                    }
-                    
-                    
-                    if(campo.equals("dataInicioEvento")){
-                    	DateFormat formatter = new SimpleDateFormat("dd/MM/yy");
-                    	Date data = (Date)formatter.parse(valor);
-                		System.out.println(data);
-                    	part.setData_inicio_ac_part(data);
-                    	System.out.println("Aqui4");
-                    }
-                    
-                    if(campo.equals("tipoEvento")){
-                    	part.setTipo_ac_part(valor);
-                    	System.out.println("Aqui5");
-                    }
-                    
-                }else{
-                    File file = new File(dir, item.getName());
-                    item.write(file);
-                    part.setCertificado_part(file.getPath());
-                    System.out.println("<br/>Arquivo gravado em: " + file.getPath());
-                }
-			}
-			
-			if(part != null){
-				System.out.println("Participacao:"+part.getAtividade_complementar_id_atividade() + ", "+
-				part.getAluno_id_aluno() + ","+part.getId_participacao()+"," +part.getCertificado_part()+","+part.getCoordenador_ac_id_admin());
-							
-=======
+
 				FileItem item = (FileItem) itr.next();
 				if (item.isFormField()) {
 					String campo = item.getFieldName();
@@ -420,26 +350,14 @@ public class ServletCadastroEventos extends HttpServlet {
 						+ part.getAluno_id_aluno() + "," + part.getId_participacao() + "," + part.getCertificado_part()
 						+ "," + part.getCoordenador_ac_id_admin());
 
->>>>>>> branch 'master' of https://github.com/LisianthusTechnology/slac.git
 				ret = controle.inserir(part);
 
 				System.out.println("Retorno:" + ret.getMensagem());
 			}
-<<<<<<< HEAD
-		}catch (Exception e) {
-=======
-
 		} catch (Exception e) {
->>>>>>> branch 'master' of https://github.com/LisianthusTechnology/slac.git
 			// TODO: handle exception
-			System.out.println("Erro:" + e);
 		}
-<<<<<<< HEAD
-		
-=======
 		return ret;
-
->>>>>>> branch 'master' of https://github.com/LisianthusTechnology/slac.git
 	}
 
 	private Retorno tratarMensagem(Participacao part) {
