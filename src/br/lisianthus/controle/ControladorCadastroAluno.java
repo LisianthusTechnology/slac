@@ -20,8 +20,7 @@ public class ControladorCadastroAluno {
 	public Retorno inserir(Aluno aluno){
 		
 		Retorno ret = new Retorno();
-		Aluno inseriraluno = new Aluno();
-		daoaluno.inserir_mod(inseriraluno);
+		ret = daoaluno.inserir_mod(aluno);
 		return ret;
 	}
 	

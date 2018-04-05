@@ -15,11 +15,7 @@ public class ControladorParticipacao {
 	}
 	
 	public Retorno inserir(Participacao part){
-<<<<<<< HEAD
-		
-=======
 
->>>>>>> branch 'master' of https://github.com/LisianthusTechnology/slac.git
 		Retorno ret = new Retorno();
 		Participacao partComp = new Participacao();
 		partComp = calcularChValida(part);

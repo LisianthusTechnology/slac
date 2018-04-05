@@ -1,5 +1,6 @@
 package br.lisianthus.dao;
 
+import java.math.BigInteger;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -55,8 +56,8 @@ public class DAOAluno {
 			return okValidar;
 		}
 
-		String sql = "insert into aluno(id_aluno, cpf, nome, senha, email, matricula, ano_ingresso, permissao, coordenador_ac_id_admin)"
-				+ " values(" + "" + aluno.getId_aluno() + "," + preparaAtributoParaBD(aluno.getCpf()) + ","
+		String sql = "insert into aluno(cpf, nome, senha, email, matricula, ano_ingresso, permissao, coordenador_ac_id_admin)"
+				+ " values(" + "" + preparaAtributoParaBD(aluno.getCpf()) + ","
 				+ preparaAtributoParaBD(aluno.getNome_aluno()) + "," + preparaAtributoParaBD(aluno.getSenha()) + ","
 				+ preparaAtributoParaBD(aluno.getEmail()) + "," + preparaAtributoParaBD(aluno.getMatricula()) + ","
 				+ preparaAtributoParaBD(aluno.getAno_ingresso()) + "," + preparaAtributoParaBD(aluno.isPermissao())
@@ -94,9 +95,6 @@ public class DAOAluno {
 		} else if (aluno.getNome_aluno() == null || aluno.getNome_aluno().equals("")) {
 			ret.setSucesso(false);
 			ret.setMensagem("O campo Nome é de preenchimento obrigatório");
-		} else if (aluno.getId_aluno() == null || aluno.getId_aluno().intValue() <= 0) {
-			ret.setSucesso(false);
-			ret.setMensagem("O campo Id é de preenchimento obrigatório e deve ser maior que 0!");
 		}
 
 		return ret;
@@ -190,7 +188,7 @@ public class DAOAluno {
 			while (result.next()) {
 
 				Integer aluno_id = result.getInt("id_aluno");
-				Long cpf_a = result.getLong("cpd");
+				BigInteger cpf_a = new BigInteger(result.getString("cpf"));
 				String nome_a = result.getString("nome");
 				String senha_a = result.getString("senha");
 				String email_a = result.getString("email");

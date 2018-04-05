@@ -10,14 +10,7 @@ import java.io.PrintWriter;
 //import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.List;
-
-import java.io.InputStream;
-import java.util.Date;
-import java.util.Iterator;
+import java.math.BigInteger;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -25,17 +18,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.FileItemFactory;
-import org.apache.commons.fileupload.disk.DiskFileItemFactory;
-import org.apache.commons.fileupload.servlet.ServletFileUpload;
-
 import biz.source_code.miniTemplator.MiniTemplator;
 import biz.source_code.miniTemplator.MiniTemplator.TemplateSyntaxException;
 import br.lisianthus.controle.ControladorCadastroAluno;
-import br.lisianthus.controle.ControladorParticipacao;
+
 import br.lisianthus.modelo.Aluno;
-import br.lisianthus.modelo.Participacao;
 import br.lisianthus.utils.Retorno;
 
 @SuppressWarnings("serial")
@@ -95,16 +82,18 @@ public class ServletAluno extends HttpServlet{
 			
 			MiniTemplator tpa = getMiniTemplator(op);
 
-			if (op.equalsIgnoreCase("inserir")) {
-				out.println("vey eu to aqui");
+			if (op.equalsIgnoreCase("cadastrar")) {
+			//	salvarAluno(req, out);
 			} else {
-				
 				out.println(tpa.generateOutput());
-				
 			}
+			
 		} else {
 			
-			  out.println("E pior ainda estou aqui");
+			  nomeMetodo = op + "Aluno";
+			  
+			
+			  System.out.println("E pior ainda estou aqui");
 
 			try {
 				Class<?> cls;
@@ -156,57 +145,56 @@ public class ServletAluno extends HttpServlet{
 	}
 
 	public void salvarAluno(HttpServletRequest req, PrintWriter out) throws IOException {
-		//Participacao participacao = new Participacao();
-		cadastraAluno(req);
+		MiniTemplator t = getMiniTemplator("message");
+		//Aluno aluno = new Aluno();
+		Retorno ret = new Retorno();
+		
+
+
+		ret = cadastroAluno(req);
+
+		t.setVariable("message", ret.getMensagem());
+
+		out.println(t.generateOutput());
+		
 	}
 	
 	
-    private void cadastraAluno(HttpServletRequest req){
+    private Retorno cadastroAluno (HttpServletRequest req){
 		
 		Aluno aluno = new Aluno();
-		Retorno ret;// = new Retorno();
-		ControladorCadastroAluno controle = new ControladorCadastroAluno();
-	
+		Retorno ret = new Retorno();
+		ControladorCadastroAluno controlealuno = new ControladorCadastroAluno();
         
+		
+	
 		try{
 			
-		//	List<?> items = upload.parseRequest(req);
-		//Iterator<?> itr = items.iterator();
-			
 			aluno.setId_aluno(1);
-		//	aluno.setCpf(2); //- Resolver 
-			aluno.setNome_aluno("");// Verificar como Colocar aqui para inserir 
-		    aluno.setSenha("");//-----
-			aluno.setEmail(""); // Depois do Aluno e o msm Aqui
-			aluno.setMatricula(6);
-			aluno.setAno_ingresso(7);
+			aluno.setCpf(new BigInteger(req.getParameter("cpf"))); //- Resolver 
+			aluno.setNome_aluno(req.getParameter("nome"));
+			System.out.println(req.getParameter("nome"));// Verificar como Colocar aqui para inserir 
+		    aluno.setSenha(req.getParameter("senha"));//-----
+			aluno.setEmail(req.getParameter("email")); // Depois do Aluno e o msm Aqui
+			aluno.setMatricula(preparaId(req.getParameter("matricula")));
+			aluno.setAno_ingresso(preparaId(req.getParameter("anocurso")));
             aluno.setPermissao(true);//Verificar como colocar aqui tbm 
             aluno.setCoord_ac_id(1);
             
 		
-        	
-//			while (itr.hasNext()) {
-//               
-                 
-//                    
-//                }else {
-//                	System.out.println("Senhor me ilumina");
-//                }
-		//	}
+           
+            
+            ret = controlealuno.inserir(aluno);
+            
 			
-			if(aluno != null){
-				System.out.println("Aluno:" + aluno.getId_aluno() + ", "+ aluno.getCpf() + "," + 
-			    aluno.getNome_aluno() +"," +aluno.getSenha()+"," +aluno.getEmail() +","+aluno.getMatricula()+"," +
-			    aluno.getAno_ingresso()+"," +aluno.isPermissao()+"," +aluno.getCoord_ac_id());
-							
-				ret = controle.inserir(aluno);
-				System.out.println("Retorno:" + ret.getMensagem());
-			}
 		}catch (Exception e) {
 			// TODO: handle exception
 			System.out.println("Erro:"+e.getMessage());
 		}
+		return ret;
 		
 	}
+
+
 
 }
