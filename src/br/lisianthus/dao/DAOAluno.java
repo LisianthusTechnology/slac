@@ -16,7 +16,8 @@ public class DAOAluno {
 
 	private static DAOAluno dao_a;
 	private Connection con_a;
-
+	
+	
 	private DAOAluno() {
 		try {
 			String driver_a = "org.postgresql.Driver";
@@ -47,6 +48,7 @@ public class DAOAluno {
 		}
 		return auxNome;
 	}
+	
 
 	public Retorno inserir_mod(Aluno aluno) {
 		Retorno ret = new Retorno(false, "erro");
@@ -95,7 +97,7 @@ public class DAOAluno {
 		} else if (aluno.getNome_aluno() == null || aluno.getNome_aluno().equals("")) {
 			ret.setSucesso(false);
 			ret.setMensagem("O campo Nome é de preenchimento obrigatório");
-		}
+		} 
 
 		return ret;
 	}
@@ -129,27 +131,37 @@ public class DAOAluno {
 		return false;
 	}
 
-	/*
-	 * public boolean alterar(Aluno aluno) throws RuntimeException { if (aluno
-	 * == null) return false;
-	 * 
-	 * 
-	 * String sql = "update aluno set cpf = '"
-	 * +preparaAtributoParaBD(aluno.getCpf())+"' " +
-	 * "nome = '"+preparaAtributoParaBD(aluno.getNome_aluno())+"'' " +
-	 * "senha = '"+prepara+"' " + ", email" + ", matricula" + ", ano_ingresso" +
-	 * ", permissao" + ", coordenador_ac_id_admin= '" +
-	 * preparaAtributoParaBD(Aluno.getNome_mod()) + "' " + " where id_Aluno= '"+
-	 * Aluno.getId_mod() + "'";
-	 * 
-	 * System.out.println("SQL_update:" + sql);
-	 * 
-	 * int ok; try { ok = executaAlteracao(sql); if (ok > 0) { return true; } }
-	 * catch (SQLException e) { // TODO Auto-generated catch block throw new
-	 * RuntimeException(e.getMessage());//tratar erros depois }
-	 * 
-	 * return false; }
-	 */
+	
+	public Retorno alterar(Aluno aluno) throws RuntimeException {
+		Retorno testeret;
+		
+		testeret = validar(aluno);
+			
+
+		String sql = "update aluno set permissao = "+ preparaAtributoParaBD(aluno.isPermissao()) + " where id_aluno= " + aluno.getId_aluno()+ "";
+
+		System.out.println("SQL_update:" + sql);
+		
+		int ok;
+		
+		try {
+			ok = executaAlteracao(sql);
+			if (ok > 0) {
+				testeret.setSucesso(true);
+				testeret.setMensagem("ALTERAÇÃO do Aluno realizada com sucesso");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			//System.out.println(e.getMessage());
+			//throw new RuntimeException(e.getMessage());// tratar erros depois }
+		}
+		//System.out.println("Retorno:" + ret.getMensagem());
+
+
+		return testeret;
+
+	}
+
 	/**
 	 * 
 	 * localiza uma lista de Alunos procurando pelo id(busca exata), ou pelo
@@ -188,7 +200,7 @@ public class DAOAluno {
 			while (result.next()) {
 
 				Integer aluno_id = result.getInt("id_aluno");
-				BigInteger cpf_a = new BigInteger(result.getString("cpf"));
+				Long cpf_a = result.getLong("cpf");
 				String nome_a = result.getString("nome");
 				String senha_a = result.getString("senha");
 				String email_a = result.getString("email");
@@ -209,23 +221,39 @@ public class DAOAluno {
 		return list;
 	}
 
-	/*
-	 * public Aluno obter(Integer id) { if(id == null) return null; String sql =
-	 * "select id_mod, nome_ac_part from Aluno where id_mod=" + id + "";
-	 * 
-	 * try { Statement stmt = con_m.createStatement();
-	 * 
-	 * ResultSet resultSet = stmt.executeQuery(sql); if (resultSet.next()) {
-	 * Aluno Aluno = new Aluno();
-	 * 
-	 * Aluno.setId_mod(resultSet.getInt("id_Aluno"));
-	 * Aluno.setNome_mod(resultSet.getString("nome_ac_part"));
-	 * 
-	 * return Aluno; } else { return null; }
-	 * 
-	 * } catch (SQLException e) { // TODO remover após conclusão
-	 * e.printStackTrace(); return null; } }
-	 */
+	public Aluno obter(Integer id) {
+		if (id == null)
+			return null;
+		String sql = "select id_aluno, cpf, nome, senha, email, matricula, ano_ingresso, permissao, coordenador_ac_id_admin from aluno where id_aluno=" + id + "";
+
+		try {
+			Statement stmt = con_a.createStatement();
+
+			ResultSet resultSet = stmt.executeQuery(sql);
+			if (resultSet.next()) {
+				Aluno aluno = new Aluno();
+
+				aluno.setId_aluno(resultSet.getInt("id_aluno"));
+				aluno.setCpf(resultSet.getLong("cpf"));
+				aluno.setNome_aluno(resultSet.getString("nome"));
+				aluno.setSenha(resultSet.getString("senha"));
+				aluno.setEmail(resultSet.getString("email"));
+				aluno.setMatricula(resultSet.getInt("matricula"));
+				aluno.setAno_ingresso(resultSet.getInt("ano_ingresso"));
+				aluno.setPermissao(resultSet.getBoolean("permissao"));
+				aluno.setCoord_ac_id(resultSet.getInt("coordenador_ac_id_admin"));
+				
+				return aluno;
+			} else {
+				return null;
+			}
+
+		} catch (SQLException e) { // TODO remover após conclusão
+			e.printStackTrace();
+			return null;
+		}
+	}
+
 	private Long preparaAtributoLong(ResultSet rs, String atributo) throws SQLException {
 		Long numeroLong = null;
 		if (rs.getObject(atributo) != null) {

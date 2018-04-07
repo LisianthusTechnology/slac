@@ -1,16 +1,12 @@
 package br.lisianthus.visao;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import com.google.gson.Gson;
+
 
 import java.io.PrintWriter;
 //import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.math.BigInteger;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -20,7 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import biz.source_code.miniTemplator.MiniTemplator;
 import biz.source_code.miniTemplator.MiniTemplator.TemplateSyntaxException;
-import br.lisianthus.controle.ControladorCadastroAluno;
+import br.lisianthus.controle.ControladorAluno;
 
 import br.lisianthus.modelo.Aluno;
 import br.lisianthus.utils.Retorno;
@@ -164,14 +160,14 @@ public class ServletAluno extends HttpServlet{
 		
 		Aluno aluno = new Aluno();
 		Retorno ret = new Retorno();
-		ControladorCadastroAluno controlealuno = new ControladorCadastroAluno();
+		ControladorAluno controlealuno = new ControladorAluno();
         
 		
 	
 		try{
 			
 			aluno.setId_aluno(1);
-			aluno.setCpf(new BigInteger(req.getParameter("cpf"))); //- Resolver 
+			aluno.setCpf(new Long(req.getParameter("cpf"))); //- Resolver 
 			aluno.setNome_aluno(req.getParameter("nome"));
 			System.out.println(req.getParameter("nome"));// Verificar como Colocar aqui para inserir 
 		    aluno.setSenha(req.getParameter("senha"));//-----
