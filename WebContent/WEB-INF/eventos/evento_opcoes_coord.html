@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Cadastro de Evento</title>
+<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
+<link href="bootstrap/css/css-project.css?version=15" rel="stylesheet">
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"
+	type="text/javascript"></script>
+<script type="text/javascript"
+	src="bootstrap/js/select_inserir.js?version=1"></script>
+</head>
+<body class="background">
+	<nav class="navbar navbar-default color">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-md-4">
+					<img alt="Brand" src="images/Logo_ueg_red.png">
+				</div>
+				<div class="col-md-4 text-center">
+					<h4 class="headslac">
+						<strong>SLAC</strong>
+					</h4>
+					<p class="headtextslac">
+						Sistema de Lançamento de <br>Atividades Complementares
+					</p>
+				</div>
+				<div class="col-md-4 text-right">
+					<h4 class="headslac">
+						<strong>Olá, <br> João Da Silva <span
+							class="glyphicon glyphicon-user"></span>
+						</strong>
+					</h4>
+				</div>
+			</div>
+		</div>
+	</nav>
+	<form action="eventos?op=salvar"
+		class="form-horizontal container-fluid" method="POST"
+		ENCTYPE="multipart/form-data">
+		<p class="text-center headslac">
+			<strong>Página Inicial<br> <br></strong>
+		</p>
+
+		<div class="row">
+			<div class="col-md-4">
+				<a href="eventos?op=alunoscoord""><img alt="Validação do aluno"
+					src="images/alunocoord.png" hspace="85" width="250" height="200" /></a>
+				<br> <br>
+
+				<p class="text-center headslac">
+					<strong>Validar aluno<br> <br></strong>
+				</p>
+				<br>
+
+				<p class="text-center headslac">Aprove o cadastro de um aluno
+					registrado!</p>
+			</div>
+
+			<div class="col-md-4">
+				<a href="eventos?op=index"><img alt="Atividades Complementares"
+					src="images/livro.png" hspace="80" width="280" height="220" /></a>
+
+				<p class="text-center headslac">
+					<strong>Validar atividades <br> complemetares
+						registradas<br></strong>
+				</p>
+
+				<br>
+				<p class="text-center headslac">Valide as atividades registradas
+					pelos alunos!</p>
+			</div>
+			<div class="col-md-4">
+				<a href="eventos?op=index"><img alt="Relatórios"
+					src="images/relatorios.png" hspace="80" width="280" height="220" /></a>
+
+				<p class="text-center headslac">
+					<strong>Gerar relatório de alunos<br> <br></strong>
+				</p>
+
+				<br>
+				<p class="text-center headslac">Emita relatórios dos alunos
+					diante as informações registradas!</p>
+
+			</div>
+		</div>
+
+	</form>
+</body>
+</html>

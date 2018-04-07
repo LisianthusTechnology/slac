@@ -16,6 +16,7 @@ import java.util.List;
 
 import java.io.InputStream;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.Iterator;
 
 import javax.servlet.ServletContext;
@@ -24,15 +25,18 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+
 import org.apache.tomcat.util.http.fileupload.RequestContext;
 
 import com.sun.xml.internal.messaging.saaj.util.ByteOutputStream;
 
 import biz.source_code.miniTemplator.MiniTemplator;
 import biz.source_code.miniTemplator.MiniTemplator.TemplateSyntaxException;
+import br.lisianthus.controle.ControladorAluno;
 import br.lisianthus.controle.ControladorAtividadeComplementar;
 import br.lisianthus.controle.ControladorModalidade;
 import br.lisianthus.controle.ControladorParticipacao;
+import br.lisianthus.modelo.Aluno;
 import br.lisianthus.modelo.AtividadeComplementar;
 import br.lisianthus.modelo.Modalidade;
 import org.apache.commons.*;
@@ -44,10 +48,12 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import br.lisianthus.modelo.Participacao;
 import br.lisianthus.utils.Retorno;
 
+
 @SuppressWarnings("serial")
 public class ServletCadastroEventos extends HttpServlet {
 
-	//private final String UPLOAD_DIRECTORY = "C:/uploads";
+    private final String UPLOAD_DIRECTORY = "C:/uploads";
+
 	ServletContext servletContext;
 	String separador;
 	String realPath;
@@ -96,7 +102,6 @@ public class ServletCadastroEventos extends HttpServlet {
 		op = op == null ? "index" : op;
 
 		if (op.equalsIgnoreCase("index") || op.equalsIgnoreCase("inserir")) {
-			// System.out.println("opcao:"+op);
 			MiniTemplator tpl = getMiniTemplator(op);
 
 			if (op.equalsIgnoreCase("inserir")) {
@@ -106,7 +111,7 @@ public class ServletCadastroEventos extends HttpServlet {
 			}
 		} else {
 			nomeMetodo = op + "Participacao";
-
+			System.out.println(nomeMetodo);
 			try {
 				Class<?> cls;
 
@@ -151,6 +156,12 @@ public class ServletCadastroEventos extends HttpServlet {
 		}
 	}
 
+	/*
+	 * public void inserirParticipacao(HttpServletRequest req, PrintWriter out)
+	 * throws IOException{ MiniTemplator tpl = this.getMiniTemplator("inserir");
+	 * localizarModalidade(req, out, tpl); }
+	 */
+
 	private Modalidade getModalidadeFromRequest(HttpServletRequest req) {
 
 		Integer id_mod = null;
@@ -171,9 +182,32 @@ public class ServletCadastroEventos extends HttpServlet {
 		Modalidade a = new Modalidade(id_mod, nome_mod);
 		return a;
 	}
+	
+	private Aluno getAlunoFromRequest(HttpServletRequest req){
+		Integer alunoid = null;
+		
+		String erroMessage = "";
+		try {
+			alunoid = preparaIdAluno(req);
+		} catch (NumberFormatException e) {
+			erroMessage = "Campo ID em formato inválido, aceita somente número!<BR>\n";
+		}
+		
+	
+		if (!erroMessage.equals("")) {
+			throw new RuntimeException(erroMessage);
+		}
+		
+		Aluno alu = new Aluno(alunoid);
+		return alu;
+
+	}
+	
+	
 
 	public void salvarParticipacao(HttpServletRequest req, PrintWriter out) throws IOException {
-		// Participacao participacao = new Participacao();
+		//Participacao participacao = new Participacao();
+		//receiveFile(req);
 		MiniTemplator t = getMiniTemplator("message");
 		Retorno ret = new Retorno();
 
@@ -183,7 +217,20 @@ public class ServletCadastroEventos extends HttpServlet {
 
 		out.println(t.generateOutput());
 	}
+	
+	public void opcoescoordParticipacao(HttpServletRequest req, PrintWriter out) throws TemplateSyntaxException, IOException{
+		MiniTemplator tpl = this.getMiniTemplator("opcoes_coord");
+		out.println(tpl.generateOutput());
+		
+	}
 
+	public void alunoscoordParticipacao(HttpServletRequest req, PrintWriter out) throws TemplateSyntaxException, IOException{
+		MiniTemplator tpl = this.getMiniTemplator("alunos_coord");
+		listarAlunosValidacao(req, out, tpl);
+		out.println(tpl.generateOutput());
+		
+	}
+	
 	/**
 	 * 
 	 * @param req
@@ -214,7 +261,71 @@ public class ServletCadastroEventos extends HttpServlet {
 		// chamando o método para listar as atividades
 		// listarAtividades(req, out, tpl);
 	}
+	
+	public void listarAlunosValidacao(HttpServletRequest req, PrintWriter out, MiniTemplator tpl) throws IOException{
+		ControladorAluno ctAluno = new ControladorAluno();
+		Aluno aluno = new Aluno();
+		
+		List<Aluno> listaAlunos = ctAluno.localizar(aluno);
+		
+		for (Aluno al : listaAlunos) {
+			tpl.setVariable("id_aluno", al.getId_aluno());
+			tpl.setVariable("nome",al.getNome_aluno());
+			tpl.setVariable("cpf",al.getCpf().toString());
+			tpl.setVariable("status", permissao(al.isPermissao()));
+			tpl.addBlock("manteraluno");
+		}
+		//out.println(tpl.generateOutput());
+	}
+	
+	public String permissao(boolean status){
+		String stt;
+		if(status){
+			stt = "VALIDADO";
+		}else{
+			stt = "INVALIDADO";
+		}
+		return stt;
+	}
 
+	//PEGA AS AÇÕES QUE O COORDENADOR TEM NA LISTA DE ALUNOS PARA VALIDAR OU INVALIDAR
+	public void acoesParticipacao(HttpServletRequest req, PrintWriter out) throws TemplateSyntaxException, IOException{
+		String op = req.getParameter("op");
+		System.out.println("opcao:"+op);
+		
+		ControladorAluno ctAluno = new ControladorAluno();
+		Aluno aluno = getAlunoFromRequest(req);
+		Retorno ret = null;
+		String status = req.getParameter("aluno_status");
+		System.out.println("status:"+status.toString());
+		if(status.equalsIgnoreCase("validar")){
+			aluno.setPermissao(true);
+			//System.out.println("Denrto da servlet"+ctAluno.obter(aluno.getId_aluno())+"permissao:"+aluno.getPermissao());
+			ret = ctAluno.alterar(aluno);
+			//System.out.println(ctAluno.obter(aluno.getId_aluno())+"permissao 2:"+aluno.getPermissao());
+			System.out.println("Retorno:" + ret.getMensagem());
+			MiniTemplator t = getMiniTemplator("message");
+			
+			t.setVariable("message", ret.getMensagem());
+
+			out.println(t.generateOutput());
+			
+		}else{
+			aluno.setPermissao(false);
+			//System.out.println("Denrto da servlet"+ctAluno.obter(aluno.getId_aluno())+"permissao:"+aluno.getPermissao());
+			ret = ctAluno.alterar(aluno);
+			//System.out.println(ctAluno.obter(aluno.getId_aluno())+"permissao 2:"+aluno.getPermissao());
+			System.out.println("Retorno:" + ret.getMensagem());
+			MiniTemplator t = getMiniTemplator("message");
+			
+			t.setVariable("message", ret.getMensagem());
+
+			out.println(t.generateOutput());
+		}
+		
+		
+		
+	}
 	/**
 	 * Na teoria esse método é para listar as atividades, no entanto, não sei em
 	 * que hora faço a chamada dele
@@ -259,7 +370,7 @@ public class ServletCadastroEventos extends HttpServlet {
 	public void listarAtividades(HttpServletRequest req, PrintWriter out, MiniTemplator tpl) throws IOException {
 		ControladorAtividadeComplementar cont = new ControladorAtividadeComplementar();
 		List<AtividadeComplementar> listAtividadeComplementar;
-
+		
 		String idModSelectedAux = tpl.getVariables().get("modalidade.id_mod");
 		Integer idModSelected;
 		Modalidade mod = new Modalidade();
@@ -284,11 +395,19 @@ public class ServletCadastroEventos extends HttpServlet {
 		Integer idInteger = id != null && !id.equals("") ? Integer.valueOf(id) : null;
 		return idInteger;
 	}
+	
+	private Integer preparaIdAluno(HttpServletRequest req){
+		String id = req.getParameter("id_aluno");//colocar type hidden
+		Integer idInteger = id != null && !id.equals("") ? Integer.valueOf(id) : null;
+		return idInteger;
+	}
 
 	private Integer preparaId(String id) {
 		Integer idInteger = id != null && !id.equals("") ? Integer.valueOf(id) : null;
 		return idInteger;
 	}
+
+	// Metodo que tirei da internet pra tentar pegar o arquivo e fazer upload
 
 	private Retorno receiveFile(HttpServletRequest req) {
 
@@ -382,19 +501,7 @@ public class ServletCadastroEventos extends HttpServlet {
 		return ret;
 
 	}
-
-	private Retorno tratarMensagem(Participacao part) {
-
-		Retorno ret = new Retorno();
-		String htmlResult = "";
-		if (part.getNome_ac_part() != null || part.getCh_cadastrada_part() != null
-				|| part.getData_inicio_ac_part() != null || part.getLocal_ac_part() != null
-				|| part.getAtividade_complementar_id_atividade() != null || part.getTipo_ac_part() != null) {
-
-			ret.setMensagem("Preencha os dados obrigatórios do formulário abaixo");
-			// frase de acordo com o protótipo
-		}
-		return ret;
-	}
-
 }
+
+
+

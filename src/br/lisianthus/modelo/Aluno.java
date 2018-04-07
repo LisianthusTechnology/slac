@@ -23,6 +23,11 @@ public class Aluno {
 		permissao = permissao_aluno;
 	}
 	
+	//USANDO ESSE METODO PRA PEGAR O ID DO ALUNO NA SERVLET E DEPOIS FAZER ALTERAÇÃO
+	public Aluno(Integer idaluno){
+		id_aluno = idaluno;
+	}
+	
 	public Integer getId_aluno() {
 		return id_aluno;
 	}
@@ -77,7 +82,7 @@ public class Aluno {
 	public void setPermissao(boolean permissao) {
 		this.permissao = permissao;
 	}
-	
+
 	
 	
 }
