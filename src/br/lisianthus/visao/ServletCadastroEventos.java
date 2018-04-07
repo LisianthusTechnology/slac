@@ -42,6 +42,7 @@ import br.lisianthus.utils.Retorno;
 @SuppressWarnings("serial")
 public class ServletCadastroEventos extends HttpServlet {
 
+
 	ServletContext servletContext;
 	String separador;
 	String realPath;
@@ -305,14 +306,18 @@ public class ServletCadastroEventos extends HttpServlet {
 			List<?> items = upload.parseRequest(req);
 
 			Iterator<?> itr = items.iterator();
-			part.setAluno_id_aluno(1);
-			// part.setId_participacaoo(5);
-			part.setCoordenador_ac_id_admin(1);
-			part.setCh_validada_part(30);
-			part.setStatus("A validar");
+	        part.setAluno_id_aluno(2);
+	        //part.setId_participacaoo(1);
+        	part.setCoordenador_ac_id_admin(1);
+        	part.setStatus("pendente");
+	        //part.setId_participacaoo(5);
+        	part.setCoordenador_ac_id_admin(1);
+        	part.setCh_validada_part(30);
+        	part.setStatus("A validar");
+
 
 			while (itr.hasNext()) {
-
+				
 				FileItem item = (FileItem) itr.next();
 				if (item.isFormField()) {
 					String campo = item.getFieldName();
@@ -354,10 +359,14 @@ public class ServletCadastroEventos extends HttpServlet {
 
 				System.out.println("Retorno:" + ret.getMensagem());
 			}
+			
 		} catch (Exception e) {
-			// TODO: handle exception
+
+			System.out.println("Erro:" + e);
 		}
+
 		return ret;
+
 	}
 
 	private Retorno tratarMensagem(Participacao part) {

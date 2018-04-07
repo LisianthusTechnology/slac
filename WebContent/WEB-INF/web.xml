@@ -15,16 +15,16 @@
     <servlet-name>ServletCadastroEventos</servlet-name>
     <servlet-class>br.lisianthus.visao.ServletCadastroEventos</servlet-class>
   </servlet>
-  <servlet-mapping>
-    <servlet-name>ServletCadastroEventos</servlet-name>
-    <url-pattern>/eventos</url-pattern>
-  </servlet-mapping>
   <servlet>
     <description></description>
     <display-name>ServletAluno</display-name>
     <servlet-name>ServletAluno</servlet-name>
     <servlet-class>br.lisianthus.visao.ServletAluno</servlet-class>
   </servlet>
+  <servlet-mapping>
+    <servlet-name>ServletCadastroEventos</servlet-name>
+    <url-pattern>/eventos</url-pattern>
+  </servlet-mapping>
   <servlet-mapping>
     <servlet-name>ServletAluno</servlet-name>
     <url-pattern>/aluno</url-pattern>
