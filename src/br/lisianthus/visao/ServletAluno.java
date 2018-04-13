@@ -54,15 +54,9 @@ public class ServletAluno extends HttpServlet{
 
 	public MiniTemplator getMiniTemplator(String op) throws TemplateSyntaxException, IOException {
 	
-		String caminhoAlunoIndex = realPath + separador + "WEB-INF" + separador + "aluno" + separador + "aluno_" + op
-				+ ".html";
-		
-		
-		System.out.println("CaminhoAlunoIndex" + caminhoAlunoIndex);
-		
-	
+		String caminhoAlunoIndex = realPath + separador + "WEB-INF" + separador + "aluno" + separador + "aluno_" 
+		+ op + ".html";
 		MiniTemplator tpa = new MiniTemplator(caminhoAlunoIndex);
-		
 		return tpa;
 	}
 	
@@ -144,53 +138,37 @@ public class ServletAluno extends HttpServlet{
 		MiniTemplator t = getMiniTemplator("message");
 		//Aluno aluno = new Aluno();
 		Retorno ret = new Retorno();
-		
-
-
 		ret = cadastroAluno(req);
-
 		t.setVariable("message", ret.getMensagem());
-
 		out.println(t.generateOutput());
-		
 	}
 	
 	
     private Retorno cadastroAluno (HttpServletRequest req){
-		
+
 		Aluno aluno = new Aluno();
 		Retorno ret = new Retorno();
 		ControladorAluno controlealuno = new ControladorAluno();
-        
-		
-	
+
 		try{
 			
 			aluno.setId_aluno(1);
 			aluno.setCpf(new Long(req.getParameter("cpf"))); //- Resolver 
-			aluno.setNome_aluno(req.getParameter("nome"));
-			System.out.println(req.getParameter("nome"));// Verificar como Colocar aqui para inserir 
+			aluno.setNome_aluno(req.getParameter("nome")); 
 		    aluno.setSenha(req.getParameter("senha"));//-----
 			aluno.setEmail(req.getParameter("email")); // Depois do Aluno e o msm Aqui
 			aluno.setMatricula(preparaId(req.getParameter("matricula")));
 			aluno.setAno_ingresso(preparaId(req.getParameter("anocurso")));
             aluno.setPermissao(true);//Verificar como colocar aqui tbm 
             aluno.setCoord_ac_id(1);
-            
-		
-           
-            
+         
             ret = controlealuno.inserir(aluno);
-            
-			
+        	
 		}catch (Exception e) {
 			// TODO: handle exception
 			System.out.println("Erro:"+e.getMessage());
 		}
-		return ret;
 		
+		return ret;
 	}
-
-
-
 }

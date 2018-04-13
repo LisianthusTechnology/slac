@@ -1,10 +1,4 @@
-<<<<<<< HEAD
-package br.lisianthus.teste;
 
-public class testeDAOAluno {
-
-}
-=======
 package br.lisianthus.teste;
 
 import java.util.List;
@@ -32,4 +26,4 @@ public class testeDAOAluno {
 		
 	}
 }
->>>>>>> c8b0a370e2c061cbe3f75d177165d11cb794654c
+

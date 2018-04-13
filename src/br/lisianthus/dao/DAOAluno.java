@@ -50,7 +50,7 @@ public class DAOAluno {
 	}
 	
 
-	public Retorno inserir_mod(Aluno aluno) {
+	public Retorno inserir(Aluno aluno) {
 		Retorno ret = new Retorno(false, "erro");
 		boolean permissao_aluno = true;
 		Retorno okValidar = validar(aluno);
@@ -252,13 +252,5 @@ public class DAOAluno {
 			e.printStackTrace();
 			return null;
 		}
-	}
-
-	private Long preparaAtributoLong(ResultSet rs, String atributo) throws SQLException {
-		Long numeroLong = null;
-		if (rs.getObject(atributo) != null) {
-			numeroLong = rs.getLong(atributo);
-		}
-		return numeroLong;
 	}
 }
