@@ -504,4 +504,30 @@ public class ServletCadastroEventos extends HttpServlet {
 			tpl.addBlock("manterparticipacao");
 		}
 	}
+	
+	public void visualizarParticipacao(HttpServletRequest req, PrintWriter out) throws TemplateSyntaxException, IOException{
+		MiniTemplator tpl = getMiniTemplator("visualizar");
+		buscarParticipacao(req, tpl);
+		out.println(tpl.generateOutput());
+	}
+	
+	private void buscarParticipacao(HttpServletRequest req, MiniTemplator tpl){
+		ControladorParticipacao controlePart = new ControladorParticipacao();
+		int id = preparaId(req.getParameter("id_part"));
+		Participacao part = new Participacao();
+		part.setId_participacaoo(id);
+
+		List<Participacao> listaPart = controlePart.buscarParticipacao(part);
+		for(Participacao p : listaPart){
+			tpl.setVariable("nomeEvento", p.getNome_ac_part());
+			tpl.setVariable("chCertificado", p.getCh_cadastrada_part());
+			tpl.setVariable("localEvento", p.getLocal_ac_part());
+			tpl.setVariable("dataInicio", p.getData_inicio_ac_part().toString());
+			//tpl.setVariable("modalidadeEvento", );
+			tpl.setVariable("certificado", p.getCertificado_part());
+			tpl.setVariable("tipoEvento", p.getTipo_ac_part());
+			//tpl.setVariable("descricao", p.get);
+		}
+		
+	}
 }
