@@ -252,7 +252,7 @@ public class ServletCadastroEventos extends HttpServlet {
 		// listarAtividades(req, out, tpl);
 	}
 	
-	public void listarAlunosValidacao(HttpServletRequest req, PrintWriter out, MiniTemplator tpl) throws IOException{
+	private void listarAlunosValidacao(HttpServletRequest req, PrintWriter out, MiniTemplator tpl) throws IOException{
 		ControladorAluno ctAluno = new ControladorAluno();
 		Aluno aluno = new Aluno();
 		
@@ -479,6 +479,29 @@ public class ServletCadastroEventos extends HttpServlet {
 		}
 
 		return ret;
+	}
+	
+	public void consultaParticipacao(HttpServletRequest req, PrintWriter out) throws TemplateSyntaxException, IOException{
+		MiniTemplator tpl = getMiniTemplator("consulta");
+		listarParticipacao(req, out, tpl);
+		out.println(tpl.generateOutput());
+	}
+	
+	private void listarParticipacao(HttpServletRequest req, PrintWriter out, MiniTemplator tpl){
+		ControladorParticipacao controlePart = new ControladorParticipacao();
+		Participacao part = new Participacao();
+		String auxPart = req.getParameter("pesquisaPart");
+		part.setNome_ac_part(auxPart);
+		
+		List<Participacao> listaPart = controlePart.listarParticipacaoConsulta(part);
 
+		for(Participacao p : listaPart){
+			tpl.setVariable("id_part", p.getId_participacao());
+			tpl.setVariable("chComputada", p.getCh_validada_part());
+			tpl.setVariable("chCadastrada", p.getCh_cadastrada_part());
+			tpl.setVariable("partCadastrada", p.getNome_ac_part());
+			tpl.setVariable("validacao", p.getStatus());
+			tpl.addBlock("manterparticipacao");
+		}
 	}
 }

@@ -26,7 +26,7 @@ public class Participacao {
 	
 	public Participacao(Integer atividade_complementar_id_atividade1, Integer aluno_id_aluno1, Integer id_participacao1, 
 			String certificado_part1, Integer coordenador_ac_id_admin1,
-			String status1, Date data_val1, String nome_ac_part1, java.util.Date data_inicio1, 
+			String status1, Date data_val1, String nome_ac_part1, Date data_inicio1, 
 			Integer ch_cadastrada_part1, Integer ch_validada_part1, String local_ac_part1, String tipo_ac_part1){
 		
 		atividade_complementar_id_atividade = atividade_complementar_id_atividade1;
@@ -50,6 +50,17 @@ public class Participacao {
 	}
 	
 	
+	public Participacao(Integer atividade_comp_id, Integer aluno_id, Integer participacao_id, String status_part,
+			String nome_ac, Integer ch_cadastrada, Integer ch_validada) {
+		atividade_complementar_id_atividade = atividade_comp_id;
+		aluno_id_aluno = aluno_id;
+		id_participacao = participacao_id;
+		status = status_part;
+		nome_ac_part = nome_ac;
+		ch_cadastrada_part = ch_cadastrada;
+		ch_validada_part = ch_validada;	
+	}
+
 	public Integer getAtividade_complementar_id_atividade() {
 		return atividade_complementar_id_atividade;
 	}

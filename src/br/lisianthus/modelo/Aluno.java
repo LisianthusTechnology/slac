@@ -29,6 +29,12 @@ public class Aluno {
 		id_aluno = idaluno;
 	}
 	
+	public Aluno(Long cpf2, String password) {
+		this.cpf = cpf2;
+		this.senha = password;
+		
+	}
+
 	public Integer getId_aluno() {
 		return id_aluno;
 	}

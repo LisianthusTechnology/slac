@@ -1,5 +1,7 @@
 package br.lisianthus.controle;
 
+import java.util.List;
+
 import br.lisianthus.dao.DAOParticipacao;
 import br.lisianthus.modelo.Aluno;
 import br.lisianthus.modelo.AtividadeComplementar;
@@ -56,4 +58,7 @@ public class ControladorParticipacao {
 		return false;
 	}
 
+	public List<Participacao> listarParticipacaoConsulta(Participacao part){
+		return dao.localizarConsulta(part);
+	}
 }
