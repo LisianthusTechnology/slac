@@ -192,8 +192,6 @@ public class ServletCadastroEventos extends HttpServlet {
 
 	}
 	
-	
-
 	public void salvarParticipacao(HttpServletRequest req, PrintWriter out) throws IOException {
 		//Participacao participacao = new Participacao();
 		//receiveFile(req);
@@ -219,6 +217,30 @@ public class ServletCadastroEventos extends HttpServlet {
 		listarAlunosValidacao(req, out, tpl);
 		out.println(tpl.generateOutput());
 		
+	}
+	
+	public void listarativcoordParticipacao(HttpServletRequest req, PrintWriter out)  throws TemplateSyntaxException, IOException{
+		MiniTemplator tpl = this.getMiniTemplator("listar_ativ_coord");
+		listarAtividadesParaCoord(req, out, tpl);
+		out.println(tpl.generateOutput());
+	}
+	
+	public void listarAtividadesParaCoord(HttpServletRequest req, PrintWriter out, MiniTemplator tpl) throws IOException{
+		ControladorParticipacao controlePart = new ControladorParticipacao();
+		Participacao part = new Participacao();
+		//String auxPart = req.getParameter("pesquisaPart");
+		//part.setNome_ac_part(auxPart);
+		List<Participacao> listaPart = controlePart.listarParticipacaoConsulta(part);
+		for(Participacao p : listaPart){
+			if(p.getStatus().equalsIgnoreCase("A validar")){
+			tpl.setVariable("id_part", p.getId_participacao());
+			tpl.setVariable("chComputada", p.getCh_validada_part());
+			tpl.setVariable("chCadastrada", p.getCh_cadastrada_part());
+			tpl.setVariable("partCadastrada", p.getNome_ac_part());
+			tpl.setVariable("validacao", p.getStatus());
+			tpl.addBlock("manterparticipacao");
+			}
+		}
 	}
 	
 	/**
@@ -277,7 +299,6 @@ public class ServletCadastroEventos extends HttpServlet {
 		}
 		return stt;
 	}
-
 	//PEGA AS AÇÕES QUE O COORDENADOR TEM NA LISTA DE ALUNOS PARA VALIDAR OU INVALIDAR
 	public void acoesParticipacao(HttpServletRequest req, PrintWriter out) throws TemplateSyntaxException, IOException{
 		String op = req.getParameter("op");
@@ -317,7 +338,7 @@ public class ServletCadastroEventos extends HttpServlet {
 		
 	}
 	/**
-	 * Na teoria esse método é para listar as atividades, no entanto, não sei em
+	* Na teoria esse método é para listar as atividades, no entanto, não sei em
 	 * que hora faço a chamada dele
 	 * 
 	 * @param req
@@ -397,7 +418,7 @@ public class ServletCadastroEventos extends HttpServlet {
 		return idInteger;
 	}
 
-	// Metodo que tirei da internet pra tentar pegar o arquivo e fazer upload
+	//Metodo que tirei da internet pra tentar pegar o arquivo e fazer upload
 
 	private Retorno receiveFile(HttpServletRequest req) {
 
@@ -421,11 +442,7 @@ public class ServletCadastroEventos extends HttpServlet {
 			Iterator<?> itr = items.iterator();
 	        part.setAluno_id_aluno(2);
 	        //part.setId_participacaoo(1);
-        	part.setCoordenador_ac_id_admin(1);
-        	part.setStatus("pendente");
-	        //part.setId_participacaoo(5);
-        	part.setCoordenador_ac_id_admin(1);
-        	part.setCh_validada_part(30);
+        	//part.setCoordenador_ac_id_admin(1);
         	part.setStatus("A validar");
 
 
@@ -492,16 +509,19 @@ public class ServletCadastroEventos extends HttpServlet {
 		Participacao part = new Participacao();
 		String auxPart = req.getParameter("pesquisaPart");
 		part.setNome_ac_part(auxPart);
-		
+		int totalChComputada = 0;
 		List<Participacao> listaPart = controlePart.listarParticipacaoConsulta(part);
 
 		for(Participacao p : listaPart){
+			//if(p.getStatus().equalsIgnoreCase("A validar")) NÃO SOMA O VALOR DA CARGA HORÁRIA
 			tpl.setVariable("id_part", p.getId_participacao());
 			tpl.setVariable("chComputada", p.getCh_validada_part());
 			tpl.setVariable("chCadastrada", p.getCh_cadastrada_part());
 			tpl.setVariable("partCadastrada", p.getNome_ac_part());
 			tpl.setVariable("validacao", p.getStatus());
+			totalChComputada += p.getCh_validada_part();
 			tpl.addBlock("manterparticipacao");
 		}
+		tpl.setVariable("totalChComputada", totalChComputada);
 	}
 }

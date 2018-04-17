@@ -152,14 +152,14 @@ public class ServletAluno extends HttpServlet{
 
 		try{
 			
-			aluno.setId_aluno(1);
+			//aluno.setId_aluno(1);
 			aluno.setCpf(new Long(req.getParameter("cpf"))); //- Resolver 
 			aluno.setNome_aluno(req.getParameter("nome")); 
 		    aluno.setSenha(req.getParameter("senha"));//-----
 			aluno.setEmail(req.getParameter("email")); // Depois do Aluno e o msm Aqui
 			aluno.setMatricula(preparaId(req.getParameter("matricula")));
 			aluno.setAno_ingresso(preparaId(req.getParameter("anocurso")));
-            aluno.setPermissao(true);//Verificar como colocar aqui tbm 
+            aluno.setPermissao(false);//Verificar como colocar aqui tbm 
             aluno.setCoord_ac_id(1);
          
             ret = controlealuno.inserir(aluno);
