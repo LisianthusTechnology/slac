@@ -504,6 +504,7 @@ public class ServletCadastroEventos extends HttpServlet {
 		out.println(tpl.generateOutput());
 	}
 	
+	
 	private void listarParticipacao(HttpServletRequest req, PrintWriter out, MiniTemplator tpl){
 		ControladorParticipacao controlePart = new ControladorParticipacao();
 		Participacao part = new Participacao();
@@ -524,7 +525,7 @@ public class ServletCadastroEventos extends HttpServlet {
 			tpl.addBlock("manterparticipacao");
 		}
 		tpl.setVariable("totalChComputada", totalChComputada);
-			tpl.addBlock("manterparticipacao");
+			
 		}
 	
 	public void visualizarParticipacao(HttpServletRequest req, PrintWriter out) throws TemplateSyntaxException, IOException{
