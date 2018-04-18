@@ -49,6 +49,9 @@ public class Participacao {
 		
 	}
 	
+	public Participacao(Integer participacao_id){
+		id_participacao = participacao_id;
+	}
 	
 	public Participacao(Integer atividade_comp_id, Integer aluno_id, Integer participacao_id, String status_part,
 			String nome_ac, Integer ch_cadastrada, Integer ch_validada) {

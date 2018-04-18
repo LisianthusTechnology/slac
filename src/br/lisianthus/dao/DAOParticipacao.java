@@ -140,25 +140,13 @@ public class DAOParticipacao {
 		return false;
 	}
 
-	public boolean alterar(Participacao participacao) throws RuntimeException {
-		if (participacao == null)
-			return false;
-
+	public Retorno alterar(Participacao participacao) throws RuntimeException {
+		Retorno retorno_part;
 		
-		String sql = "update participacao set "
-				+ "atividade_complementar_id_atividade= '" + preparaAtributoParaBD(participacao.getAtividade_complementar_id_atividade()) + "' " 
-				+ "aluno_id_alno= '"+ preparaAtributoParaBD(participacao.getAluno_id_aluno()) + "' "
-				+ "certificado_part= '" + preparaAtributoParaBD(participacao.getCertificado_part()) + "' "
-				+ "coordenador_ac_id_admin= '"+ preparaAtributoParaBD(participacao.getCoordenador_ac_id_admin()) + "' "
-				+ "status= '"+ preparaAtributoParaBD(participacao.getStatus()) + "' " 
-				+ "data_validacao_ac= '"+ preparaAtributoParaBD(participacao.getData_validaca_ac()) + "' "
-				+ "nome_ac_part= '" + preparaAtributoParaBD(participacao.getNome_ac_part()) + "' "
-				+ "data_inicio_ac_part= '"+ preparaAtributoParaBD(participacao.getData_inicio_ac_part()) + "' "
-				+ "ch_cadastrada_part= '"+ preparaAtributoParaBD(participacao.getCh_cadastrada_part()) + "' "
-				+ "ch_validada_part= '"+ preparaAtributoParaBD(participacao.getCh_validada_part()) + "' "
-				+ "local_ac_part= '"+ preparaAtributoParaBD(participacao.getTipo_ac_part()) + "' "
-				+ "tipo_ac_part= '"+ preparaAtributoParaBD(participacao.getTipo_ac_part()) + "' "
-				+ " where id_participacao= '"+ participacao.getId_participacao() + "'";
+		retorno_part = validar(participacao);
+			
+		
+		String sql = "update participacao set status= "+ preparaAtributoParaBD(participacao.getStatus()) + " where id_participacao = '"+ participacao.getId_participacao() + "'";
 		
 		System.out.println("SQL_update:" + sql);
 
@@ -166,14 +154,15 @@ public class DAOParticipacao {
 		try {
 			ok = executaSQL(sql);
 			if (ok > 0) {
-				return true;
+				retorno_part.setSucesso(true);
+				retorno_part.setMensagem("MUDANÇA DO STATUS da Participação realizada com sucesso");
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			throw new RuntimeException(e.getMessage());//tratar erros depois
 		}
 		
-		return false;
+		return retorno_part;
 	}
 
 	/**
@@ -295,8 +284,10 @@ public class DAOParticipacao {
 	
 	public Participacao obter(Integer id) {
 		if(id == null) return null;
-		String sql = "select atividade_camplementar_id_atividade, aluno_id_aluno, id_participacao, certificado_part, coord_ac_id_admin,"
-				+ "status, data_validacao_ac, nome_ac_part, data_inicio_ac_part, ch_cadastrada_part, ch_validada_part, local_ac_part, tipo_ac_part "
+		String sql = "select atividade_complementar_id_atividade, "+
+		"aluno_id_aluno, id_participacao, certificado_part, "+
+		"coordenador_ac_id_admin, status, data_validacao_ac, nome_ac_part, "+
+		"data_inicio_ac_part, ch_cadastrada_part, ch_validada_part, local_ac_part, tipo_ac_part "
 				+ "from participacao where id_participacao=" + id + "";
 	
 		try {
@@ -312,7 +303,7 @@ public class DAOParticipacao {
 				//participacao.setCertificado_part(resultSet.getString("certificado_part"));
 				participacao.setCoordenador_ac_id_admin(resultSet.getInt("coordenador_ac_id_admin"));
 				participacao.setStatus(resultSet.getString("status"));
-				participacao.setData_validaca_ac(resultSet.getDate("data_validaca_ac"));
+				participacao.setData_validaca_ac(resultSet.getDate("data_validacao_ac"));
 				participacao.setNome_ac_part(resultSet.getString("nome_ac_part"));
 				participacao.setData_inicio_ac_part(resultSet.getDate("data_inicio_ac_part"));
 				participacao.setCh_cadastrada_part(resultSet.getInt("ch_cadastrada_part"));

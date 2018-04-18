@@ -65,4 +65,12 @@ public class ControladorParticipacao {
 	public List<Participacao> buscarParticipacao(Participacao part){
 		return dao.localizar(part);
 	}
+	
+	public Retorno alterarParticipacao(Participacao part){
+		return dao.alterar(part);
+	}
+	
+	public Participacao obterParticipacao(Integer id_part){
+		return dao.obter(id_part);
+	}
 }
