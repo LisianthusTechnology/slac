@@ -189,7 +189,7 @@ public class DAOParticipacao {
 	public List<Participacao> localizar(Participacao participacao) throws RuntimeException {
 		ArrayList<Participacao> list = new ArrayList<Participacao>();
 
-		String sql = "select atividade_camplementar_id_atividade, aluno_id_aluno, id_participacao, certificado_part, coord_ac_id_admin,"
+		String sql = "select atividade_complementar_id_atividade, aluno_id_aluno, id_participacao, certificado_part, coordenador_ac_id_admin,"
 				+ "status, data_validacao_ac, nome_ac_part, data_inicio_ac_part, ch_cadastrada_part, ch_validada_part, local_ac_part, tipo_ac_part "
 				+ "from participacao ";
 
@@ -215,11 +215,11 @@ public class DAOParticipacao {
 			
 			while(result.next()){
 				 
-				Integer atividade_comp_id = result.getInt("atividade_complementar_id_atividde");
+				Integer atividade_comp_id = result.getInt("atividade_complementar_id_atividade");
 				Integer aluno_id = result.getInt("aluno_id_aluno");
 				Integer participacao_id = result.getInt("id_participacao");
 				String certificado_part = result.getString("certificado_part");
-				Integer coord_id = result.getInt("coord_ac_id_admin");
+				Integer coord_id = result.getInt("coordenador_ac_id_admin");
 				String status_part = result.getString("status");
 				Date data_val = result.getDate("data_validacao_ac");
 				String nome_ac = result.getString("nome_ac_part");

@@ -61,4 +61,8 @@ public class ControladorParticipacao {
 	public List<Participacao> listarParticipacaoConsulta(Participacao part){
 		return dao.localizarConsulta(part);
 	}
+	
+	public List<Participacao> buscarParticipacao(Participacao part){
+		return dao.localizar(part);
+	}
 }

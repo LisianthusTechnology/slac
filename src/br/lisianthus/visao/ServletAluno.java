@@ -152,7 +152,7 @@ public class ServletAluno extends HttpServlet{
 
 		try{
 			
-			//aluno.setId_aluno(1);
+			aluno.setId_aluno(1);
 			aluno.setCpf(new Long(req.getParameter("cpf"))); //- Resolver 
 			aluno.setNome_aluno(req.getParameter("nome")); 
 		    aluno.setSenha(req.getParameter("senha"));//-----
