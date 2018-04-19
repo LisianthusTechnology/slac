@@ -73,4 +73,8 @@ public class ControladorParticipacao {
 	public Participacao obterParticipacao(Integer id_part){
 		return dao.obter(id_part);
 	}
+	
+	public void obterModalidade(int id_ac){
+		
+	}
 }

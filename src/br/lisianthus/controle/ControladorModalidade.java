@@ -23,4 +23,8 @@ public class ControladorModalidade {
 	public Modalidade obter(Integer id){
 		return dao.obter(id);
 	}
+	
+	public Modalidade obterMod(Integer id_mod){
+		return dao.obterModalidade(id_mod);
+	}
 }

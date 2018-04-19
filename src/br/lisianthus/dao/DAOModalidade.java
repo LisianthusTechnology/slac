@@ -235,6 +235,33 @@ public class DAOModalidade {
 		}
 	}
 	
+	public Modalidade obterModalidade(Integer id) {
+		if(id == null) return null;
+		String sql = "select id_mod, nome_mod from modalidade where id_mod=" + id + "";
+	
+		try {
+			Statement stmt = con_m.createStatement();
+
+			ResultSet resultSet = stmt.executeQuery(sql);
+			if (resultSet.next()) {
+				Modalidade modalidade = new Modalidade();
+				
+				modalidade.setId_mod(resultSet.getInt("id_mod"));
+				modalidade.setNome_mod(resultSet.getString("nome_mod"));
+				
+				return modalidade;
+			} else {
+				return null;
+			}
+
+		} catch (SQLException e) {
+			// TODO remover após conclusão
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	
 	private Long preparaAtributoLong(ResultSet rs, String atributo) throws SQLException{
 		Long numeroLong = null;
 		if(rs.getObject(atributo) != null){

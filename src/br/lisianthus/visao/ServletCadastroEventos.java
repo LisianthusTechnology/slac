@@ -577,7 +577,9 @@ public class ServletCadastroEventos extends HttpServlet {
 			tpl.setVariable("chCadastrada", p.getCh_cadastrada_part());
 			tpl.setVariable("partCadastrada", p.getNome_ac_part());
 			tpl.setVariable("validacao", p.getStatus());
-			totalChComputada += p.getCh_validada_part();
+			if(p.getStatus().equalsIgnoreCase("VALIDADO")){
+				totalChComputada += p.getCh_validada_part();
+			}
 			tpl.addBlock("manterparticipacao");
 		}
 		tpl.setVariable("totalChComputada", totalChComputada);
@@ -600,6 +602,11 @@ public class ServletCadastroEventos extends HttpServlet {
 
 	private void buscarParticipacao(HttpServletRequest req, MiniTemplator tpl) {
 		ControladorParticipacao controlePart = new ControladorParticipacao();
+		ControladorAtividadeComplementar contAc = new ControladorAtividadeComplementar();
+		ControladorModalidade contMod = new ControladorModalidade();
+		AtividadeComplementar ac = new AtividadeComplementar();
+		Modalidade mod = new Modalidade();
+		
 		int id = preparaId(req.getParameter("id_part"));
 		Participacao part = new Participacao();
 		part.setId_participacaoo(id);
@@ -611,10 +618,12 @@ public class ServletCadastroEventos extends HttpServlet {
 			tpl.setVariable("chCertificado", p.getCh_cadastrada_part());
 			tpl.setVariable("localEvento", p.getLocal_ac_part());
 			tpl.setVariable("dataInicio", p.getData_inicio_ac_part().toString());
-			// tpl.setVariable("modalidadeEvento", );
+			ac = contAc.obter(p.getAtividade_complementar_id_atividade()); 
+			mod = contMod.obterMod(ac.getModalidade_id_mod());
+			tpl.setVariable("modalidadeEvento", mod.getNome_mod());
 			tpl.setVariable("certificado", p.getCertificado_part());
 			tpl.setVariable("tipoEvento", p.getTipo_ac_part());
-			// tpl.setVariable("descricao", p.get);
+			tpl.setVariable("descricaoEvento", ac.getDescricao_ac());
 		}
 
 	}
