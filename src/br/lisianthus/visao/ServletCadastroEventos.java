@@ -499,7 +499,7 @@ public class ServletCadastroEventos extends HttpServlet {
 			part.setAluno_id_aluno(2);
 			part.setCoordenador_ac_id_admin(1);
 			part.setCh_validada_part(30);
-			part.setStatus("A validar");
+			part.setStatus("A VALIDAR");
 
 			while (itr.hasNext()) {
 
