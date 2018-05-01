@@ -627,4 +627,29 @@ public class ServletCadastroEventos extends HttpServlet {
 		}
 
 	}
+	
+	public void cadastrarACParticipacao(HttpServletRequest req, PrintWriter out) throws TemplateSyntaxException, IOException{
+		MiniTemplator tpl = getMiniTemplator("cadastrar_atividade_complementar");
+		listarModalidade(req, out, tpl);
+		}
+	
+	public void salvarACParticipacao(HttpServletRequest req, PrintWriter out) throws TemplateSyntaxException, IOException{
+		MiniTemplator t = getMiniTemplator("message");
+		AtividadeComplementar ac = new AtividadeComplementar();
+		ControladorAtividadeComplementar controleAC = new ControladorAtividadeComplementar();
+		Retorno ret = null;
+		
+		if(ac != null){
+			ac.setCh_max_ac(preparaId(req.getParameter("chmaxima")));
+			ac.setCh_min_ac(preparaId(req.getParameter("chminima")));
+			ac.setDescricao_ac(req.getParameter("descricaoac"));
+			ac.setModalidade_id_mod(preparaId(req.getParameter("modalidade")));
+			ret = controleAC.inserir(ac);
+		}
+		
+		System.out.println(ret.getMensagem());
+		t.setVariable("message", ret.getMensagem());
+		out.println(t.generateOutput());
+
+	}
 }
