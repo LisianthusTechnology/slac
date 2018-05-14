@@ -1,18 +1,29 @@
 package br.lisianthus.visao;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import com.google.gson.Gson;
+import com.lowagie.text.BadElementException;
+import com.lowagie.text.Document;
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.ListItem;
+import com.lowagie.text.PageSize;
+import com.lowagie.text.Paragraph;
+import com.lowagie.text.Table;
+import com.lowagie.text.pdf.PdfWriter;
 
 import java.io.PrintWriter;
 //import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
-
+import java.util.Map;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 
 import javax.servlet.ServletContext;
@@ -31,6 +42,7 @@ import br.lisianthus.modelo.Aluno;
 import br.lisianthus.modelo.AtividadeComplementar;
 import br.lisianthus.modelo.Modalidade;
 
+import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
@@ -38,6 +50,11 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
 import br.lisianthus.modelo.Participacao;
 import br.lisianthus.utils.Retorno;
+import groovy.swing.impl.TableLayout;
+import net.sf.jasperreports.engine.JRResultSetDataSource;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
 
 @SuppressWarnings("serial")
 public class ServletCadastroEventos extends HttpServlet {
