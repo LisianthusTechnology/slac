@@ -33,7 +33,7 @@
 			</div>
 		</div>
 	</nav>
-	<form action="eventos?op=salvarAC" class="form-horizontal container-fluid" method="POST">
+	<form action="eventos?op=salvarAC" name="formac" class="form-horizontal container-fluid" method="POST">
 	<p class="text-center headslac"><strong>Cadastro de Atividades Complementares<br><br></strong></p>
 		<div class="form-group">
 			<label for="modalidadeEvento" class="col-sm-2 control-label">Modalidade:</label>
@@ -67,7 +67,7 @@
 				placeholder="Carga horária mínima da Atividade">
 			</div>
 		</div>
-		<input type="submit" value="Salvar" class="btnsave">
+		<input type="submit" value="Salvar" class="btnsave" onclick="return validar()">
 	</form>
 </body>
 </html>

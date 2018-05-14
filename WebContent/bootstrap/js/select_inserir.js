@@ -48,4 +48,20 @@ function carregarCertificado(){
     		});
         }
 	}
+
+}
+
+function validar() {
+	var descricao = formac.descricaoac.value;
+ 
+	if(formac.modalidade.selectedIndex==0){
+		alert('Preencha os campos obrigatorios do formulario abaixo!');
+		formac.modalidade.focus();
+		return false;
+	}
+	if (descricao == "") {
+		alert('Preencha os campos obrigatorios do formulario abaixo!');
+		formac.descricaoac.focus();
+		return false;
+	}
 }
