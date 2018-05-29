@@ -25,6 +25,11 @@ public class ControladorParticipacao {
 		return ret;
 	}
 	
+	public Participacao verifica_carga_horaria(){
+		System.out.println("ControladorParticipacao: "+dao.verificar_carga_horaria());
+		return dao.verificar_carga_horaria();
+	}
+	
 	private Participacao calcularChValida(Participacao part) {
 				AtividadeComplementar ac = new AtividadeComplementar();
 				ControladorAtividadeComplementar contAC = new ControladorAtividadeComplementar();

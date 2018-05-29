@@ -4,6 +4,7 @@ import java.util.List;
 
 import br.lisianthus.dao.DAOAluno;
 import br.lisianthus.modelo.Aluno;
+import br.lisianthus.modelo.Coordenador;
 import br.lisianthus.utils.Retorno;
 
 public class ControladorAluno {
@@ -27,6 +28,14 @@ public class ControladorAluno {
 		}catch (RuntimeException e) {
 			throw new RuntimeException(e.getMessage());
 		}
+	}
+	
+	public List<Aluno> listaRelatorio(Coordenador coord){
+		return daoaluno.listaParaRelatorio(coord);
+	}
+	
+	public Retorno inserir_data_conclusao(Aluno aluno){
+		return daoaluno.inserir_data_conclusao(aluno);
 	}
 	
 	public Retorno alterar(Aluno aluno){

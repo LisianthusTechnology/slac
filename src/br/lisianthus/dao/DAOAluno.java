@@ -1,15 +1,17 @@
 package br.lisianthus.dao;
 
-import java.math.BigInteger;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import br.lisianthus.modelo.Aluno;
+import br.lisianthus.modelo.Coordenador;
 import br.lisianthus.utils.Retorno;
 
 public class DAOAluno {
@@ -50,6 +52,41 @@ public class DAOAluno {
 	}
 	
 
+	public Retorno inserir_data_conclusao(Aluno aluno){
+		Retorno ret = new Retorno(false, "erro");
+		//Retorno okValidar = validar(aluno);
+		if (aluno == null) {
+			ret.setSucesso(false);
+			ret.setMensagem("ERRO na inclusão da DATA do ALUNO realizada com sucesso");
+			return ret;
+		}
+		
+		String sql = "update aluno set data_conclusao_carga = "+preparaAtributoParaBD(aluno.getData_carga_total_part())
+					+" where id_aluno= " + aluno.getId_aluno();
+		System.out.println("SQL-Aluno:" + sql);
+		
+
+		int ok = 0;
+		try {
+			ok = executaAlteracao(sql);
+		} catch (SQLException e) {
+			// e.printStackTrace();
+			String message = e.getMessage();
+			ret.setSucesso(false);
+			ret.setMensagem(message);
+			
+		}
+		
+		if (ok > 0) {
+			ret.setSucesso(true);
+			ret.setMensagem("inclusão da DATA do ALUNO realizada com sucesso");
+		}
+
+		System.out.println("Retorno:" + ret.getMensagem());
+
+		return ret;
+		
+	}
 	public Retorno inserir(Aluno aluno) {
 		Retorno ret = new Retorno(false, "erro");
 		boolean permissao_aluno = true;
@@ -252,5 +289,48 @@ public class DAOAluno {
 			e.printStackTrace();
 			return null;
 		}
+	}
+
+	public List<Aluno> listaParaRelatorio(Coordenador coord){
+		
+		ArrayList<Aluno> list = new ArrayList<Aluno>();
+		
+		String sql = "select "
+				+ "a.nome, a.matricula, a.ano_ingresso, a.data_conclusao_carga, c.nome_admin "
+				+ "from aluno a inner join coordenador_ac c on a.coordenador_ac_id_admin = "+coord.getId_admin()+
+				" where a.data_conclusao_carga is not null";
+		
+		try{
+			Statement stmt = con_a.createStatement();
+			ResultSet results = stmt.executeQuery(sql);
+			
+			
+			while(results.next()){
+			//	Aluno aluno = new Aluno();
+			//	aluno.setNome_admin(results.getString("nome_admin"));
+			//	aluno.setAno_ingresso(results.getInt("ano_ingresso"));
+			//	aluno.setData_conlusao_carga(results.getDate("data_conclusao_carga"));
+			//	aluno.setMatricula(results.getInt("matricula"));
+			//	aluno.setNome(results.getString("nome"));
+			//	System.out.println("SQL BUSCA:"+aluno.getData_conlusao_carga());
+				Integer matricula = results.getInt("matricula");
+					String nome = results.getString("nome");
+					Integer ano_ingresso = results.getInt("ano_ingresso");
+					Date data_conclusao_carga = results.getDate("data_conclusao_carga");
+					System.out.println("Alunos relatorio:"+data_conclusao_carga);
+					String nome_admin = results.getString("nome_admin");
+				//System.out.println("SQL BUSCA:"+data_conclusao_carga);
+					
+				Aluno aluno = new Aluno(nome_admin,nome, ano_ingresso, matricula, data_conclusao_carga);
+				
+				list.add(aluno);
+				
+			}
+		}catch(SQLException e){
+			//System.out.println("teste"+ e.getMessage());
+			throw new RuntimeException(e.getMessage());
+		}
+		
+		return list;
 	}
 }
