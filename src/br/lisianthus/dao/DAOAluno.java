@@ -253,4 +253,37 @@ public class DAOAluno {
 			return null;
 		}
 	}
+	
+	public Aluno obter(Aluno loginaluno){
+		String sql = "select id_aluno, cpf, nome, senha, email, matricula, "
+				+ "ano_ingresso, permissao, coordenador_ac_id_admin from aluno where cpf = '" 
+				+ loginaluno.getCpf()+ "' AND senha = '" + loginaluno.getSenha() + "'";
+		
+		try {
+			Statement stmt = con_a.createStatement();
+
+			ResultSet resultSet = stmt.executeQuery(sql);
+			if (resultSet.next()) {
+				Aluno aluno = new Aluno();
+
+				aluno.setId_aluno(resultSet.getInt("id_aluno"));
+				aluno.setCpf(resultSet.getLong("cpf"));
+				aluno.setNome_aluno(resultSet.getString("nome"));
+				aluno.setSenha(resultSet.getString("senha"));
+				aluno.setEmail(resultSet.getString("email"));
+				aluno.setMatricula(resultSet.getInt("matricula"));
+				aluno.setAno_ingresso(resultSet.getInt("ano_ingresso"));
+				aluno.setPermissao(resultSet.getBoolean("permissao"));
+				aluno.setCoord_ac_id(resultSet.getInt("coordenador_ac_id_admin"));
+				
+				return aluno;
+			} else {
+				return null;
+			}
+
+		} catch (SQLException e) { // TODO remover após conclusão
+			e.printStackTrace();
+			return null;
+		}
+	}
 }

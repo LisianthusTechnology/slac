@@ -20,6 +20,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import biz.source_code.miniTemplator.MiniTemplator;
 import biz.source_code.miniTemplator.MiniTemplator.TemplateSyntaxException;
@@ -29,6 +30,7 @@ import br.lisianthus.controle.ControladorModalidade;
 import br.lisianthus.controle.ControladorParticipacao;
 import br.lisianthus.modelo.Aluno;
 import br.lisianthus.modelo.AtividadeComplementar;
+import br.lisianthus.modelo.Coordenador;
 import br.lisianthus.modelo.Modalidade;
 
 import org.apache.commons.fileupload.FileItem;
@@ -93,8 +95,10 @@ public class ServletCadastroEventos extends HttpServlet {
 			MiniTemplator tpl = getMiniTemplator(op);
 
 			if (op.equalsIgnoreCase("inserir")) {
+				buscaDadosAluno(tpl, req);
 				listarModalidade(req, out, tpl);
-			} else {
+			} else if (op.equalsIgnoreCase("index")){
+				buscaDadosAluno(tpl, req);
 				out.println(tpl.generateOutput());
 			}
 		} else {
@@ -142,6 +146,12 @@ public class ServletCadastroEventos extends HttpServlet {
 
 			}
 		}
+	}
+
+	private void buscaDadosAluno(MiniTemplator tpl, HttpServletRequest req) {
+		HttpSession session = req.getSession(true);
+		Aluno aluno = (Aluno) session.getAttribute("Aluno");
+		tpl.setVariable("nome_aluno", aluno.getNome_aluno());
 	}
 
 	/*
@@ -205,9 +215,19 @@ public class ServletCadastroEventos extends HttpServlet {
 
 	public void opcoescoordParticipacao(HttpServletRequest req, PrintWriter out)
 			throws TemplateSyntaxException, IOException {
-		MiniTemplator tpl = this.getMiniTemplator("opcoes_coord");
-		out.println(tpl.generateOutput());
-
+			MiniTemplator tpl = this.getMiniTemplator("opcoes_coord");
+			buscaDadoCoord(req, tpl, out);
+			out.println(tpl.generateOutput());
+		
+	}
+	
+	private void buscaDadoCoord(HttpServletRequest req, MiniTemplator tpl, PrintWriter out){
+		HttpSession session = req.getSession(true);
+		String logado = (String) session.getAttribute("loggedIn");
+		if(logado.equalsIgnoreCase("true")){
+			Coordenador coord = (Coordenador) session.getAttribute("Coordenador");	
+			tpl.setVariable("nome_coord", coord.getNome());
+		}
 	}
 
 	public void alunoscoordParticipacao(HttpServletRequest req, PrintWriter out)
@@ -308,22 +328,21 @@ public class ServletCadastroEventos extends HttpServlet {
 		ControladorParticipacao ctp = new ControladorParticipacao();
 		Participacao part = getParticipacaoFromRequest(req);
 		part = ctp.obterParticipacao(part.getId_participacao());
-		System.out.println("Id da ativiade: "+part.getId_participacao());
+		System.out.println("Id da ativiade: " + part.getId_participacao());
 		Retorno ret = null;
 		if (part != null) {
 			if (op_validacao.equalsIgnoreCase("validar")) {
-				System.out.println("Nome da ativiade: "+part.getNome_ac_part());
+				System.out.println("Nome da ativiade: " + part.getNome_ac_part());
 				part.setStatus("VALIDADO");
 			} else {
 				part.setStatus("INVALIDADO");// VER COMO COLOCAR A OBSERVAÇÃO DO
-												// COORDENADOR
-
+												// COORDENADO
 			}
 		}
 		MiniTemplator t = getMiniTemplator("message");
 		ret = ctp.alterarParticipacao(part);
 		t.setVariable("message", ret.getMensagem());
-		System.out.println("Mensagem: "+ret.getMensagem());
+		System.out.println("Mensagem: " + ret.getMensagem());
 		out.println(t.generateOutput());
 	}
 
@@ -359,11 +378,8 @@ public class ServletCadastroEventos extends HttpServlet {
 		System.out.println("status:" + status.toString());
 		if (status.equalsIgnoreCase("validar")) {
 			aluno.setPermissao(true);
-			// System.out.println("Denrto da
-			// servlet"+ctAluno.obter(aluno.getId_aluno())+"permissao:"+aluno.getPermissao());
 			ret = ctAluno.alterar(aluno);
-			// System.out.println(ctAluno.obter(aluno.getId_aluno())+"permissao
-			// 2:"+aluno.getPermissao());
+	
 			System.out.println("Retorno:" + ret.getMensagem());
 			MiniTemplator t = getMiniTemplator("message");
 
@@ -577,7 +593,7 @@ public class ServletCadastroEventos extends HttpServlet {
 			tpl.setVariable("chCadastrada", p.getCh_cadastrada_part());
 			tpl.setVariable("partCadastrada", p.getNome_ac_part());
 			tpl.setVariable("validacao", p.getStatus());
-			if(p.getStatus().equalsIgnoreCase("VALIDADO")){
+			if (p.getStatus().equalsIgnoreCase("VALIDADO")) {
 				totalChComputada += p.getCh_validada_part();
 			}
 			tpl.addBlock("manterparticipacao");
@@ -606,7 +622,7 @@ public class ServletCadastroEventos extends HttpServlet {
 		ControladorModalidade contMod = new ControladorModalidade();
 		AtividadeComplementar ac = new AtividadeComplementar();
 		Modalidade mod = new Modalidade();
-		
+
 		int id = preparaId(req.getParameter("id_part"));
 		Participacao part = new Participacao();
 		part.setId_participacaoo(id);
@@ -618,7 +634,7 @@ public class ServletCadastroEventos extends HttpServlet {
 			tpl.setVariable("chCertificado", p.getCh_cadastrada_part());
 			tpl.setVariable("localEvento", p.getLocal_ac_part());
 			tpl.setVariable("dataInicio", p.getData_inicio_ac_part().toString());
-			ac = contAc.obter(p.getAtividade_complementar_id_atividade()); 
+			ac = contAc.obter(p.getAtividade_complementar_id_atividade());
 			mod = contMod.obterMod(ac.getModalidade_id_mod());
 			tpl.setVariable("modalidadeEvento", mod.getNome_mod());
 			tpl.setVariable("certificado", p.getCertificado_part());
@@ -627,26 +643,28 @@ public class ServletCadastroEventos extends HttpServlet {
 		}
 
 	}
-	
-	public void cadastrarACParticipacao(HttpServletRequest req, PrintWriter out) throws TemplateSyntaxException, IOException{
+
+	public void cadastrarACParticipacao(HttpServletRequest req, PrintWriter out)
+			throws TemplateSyntaxException, IOException {
 		MiniTemplator tpl = getMiniTemplator("cadastrar_atividade_complementar");
 		listarModalidade(req, out, tpl);
-		}
-	
-	public void salvarACParticipacao(HttpServletRequest req, PrintWriter out) throws TemplateSyntaxException, IOException{
+	}
+
+	public void salvarACParticipacao(HttpServletRequest req, PrintWriter out)
+			throws TemplateSyntaxException, IOException {
 		MiniTemplator t = getMiniTemplator("message");
 		AtividadeComplementar ac = new AtividadeComplementar();
 		ControladorAtividadeComplementar controleAC = new ControladorAtividadeComplementar();
 		Retorno ret = null;
-		
-		if(ac != null){
+
+		if (ac != null) {
 			ac.setCh_max_ac(preparaId(req.getParameter("chmaxima")));
 			ac.setCh_min_ac(preparaId(req.getParameter("chminima")));
 			ac.setDescricao_ac(req.getParameter("descricaoac"));
 			ac.setModalidade_id_mod(preparaId(req.getParameter("modalidade")));
 			ret = controleAC.inserir(ac);
 		}
-		
+
 		System.out.println(ret.getMensagem());
 		t.setVariable("message", ret.getMensagem());
 		out.println(t.generateOutput());

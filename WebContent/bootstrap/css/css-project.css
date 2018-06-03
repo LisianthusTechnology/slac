@@ -66,3 +66,7 @@ a:active {
 	border: none;
     border-radius: 2px;  
 }
+
+.alert{
+	color: red;
+}

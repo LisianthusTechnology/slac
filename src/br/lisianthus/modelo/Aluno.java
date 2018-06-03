@@ -1,5 +1,4 @@
 package br.lisianthus.modelo;
-import java.math.BigInteger;
 
 public class Aluno {
 

@@ -37,4 +37,10 @@ public class ControladorAluno {
 	public Aluno obter(Integer id_aluno){
 		return daoaluno.obter(id_aluno);
 	}
+	
+	public Aluno obter(Aluno loginaluno){
+		
+		Aluno aluno = daoaluno.obter(loginaluno);
+		return aluno;
+	}
 }
