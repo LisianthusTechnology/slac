@@ -13,6 +13,7 @@ import com.lowagie.text.PageSize;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.Table;
 import com.lowagie.text.pdf.PdfWriter;
+import com.lowagie.text.pdf.codec.Base64.OutputStream;
 import com.sun.org.apache.bcel.internal.generic.DALOAD;
 
 import java.io.PrintWriter;
@@ -51,6 +52,7 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.commons.io.output.ByteArrayOutputStream;
 
 import br.lisianthus.modelo.Participacao;
 import br.lisianthus.utils.Retorno;
@@ -84,7 +86,15 @@ public class ServletCadastroEventos extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		executaPagina(request, response);
+		try {
+			executaPagina(request, response);
+		} catch (TemplateSyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JRException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -105,22 +115,27 @@ public class ServletCadastroEventos extends HttpServlet {
 	 *            escrita na tela, entre outras formas.
 	 * @throws TemplateSyntaxException
 	 * @throws IOException
+	 * @throws JRException 
 	 */
 
 	private void executaPagina(HttpServletRequest req, HttpServletResponse resp)
-			throws TemplateSyntaxException, IOException {
+			throws TemplateSyntaxException, IOException, JRException {
 
 		String nomeMetodo = null;
 		String op = req.getParameter("op");
 		PrintWriter out = resp.getWriter();
 		op = op == null ? "index" : op;
 
-		if (op.equalsIgnoreCase("index") || op.equalsIgnoreCase("inserir")) {
+		if (op.equalsIgnoreCase("index") || op.equalsIgnoreCase("inserir") || op.equalsIgnoreCase("gerarRelatorio")) {
 			MiniTemplator tpl = getMiniTemplator(op);
 
 			if (op.equalsIgnoreCase("inserir")) {
 				listarModalidade(req, out, tpl);
-			} else {
+			} else if(op.equalsIgnoreCase("gerarRelatorio")){
+				
+				gerarRelatorio(resp);
+				
+			}else {
 				out.println(tpl.generateOutput());
 			}
 		} else {
@@ -609,7 +624,7 @@ public class ServletCadastroEventos extends HttpServlet {
 		
 	}
 	
-	public void gerarRelatorioParticipacao(HttpServletRequest req, PrintWriter out) throws JRException{
+	public void gerarRelatorio(HttpServletResponse resp) throws JRException{
 		
 		//String jasper = JasperCompileManager.compileReportToFile(jrxml);
 		String caminhoRelatorio = "C:/PROG2/WorkspaceProjetoLisianthus/projetoSLAC/WebContent/jasper/novoRelatorioAlunos.jrxml";
@@ -625,7 +640,6 @@ public class ServletCadastroEventos extends HttpServlet {
 		// escreve na saida do response
 		//Files.copy(pdf.toPath(), output);
 		
-		
 		JasperReport report = JasperCompileManager.compileReport(caminhoRelatorio);
 		
 		Coordenador coord = new Coordenador();
@@ -636,15 +650,23 @@ public class ServletCadastroEventos extends HttpServlet {
 		//System.out.println("Relatorio:" +relatorio.iterator().toString());
 		//System.out.println("Relatorio:" +relatorio.get(1).getNome());
 			
-		
+		//JasperExportManager.exportReportToPdfStream(report, Stream);
+		//private ByteArrayOutputStream Stream = new ByteArrayOutputStream();
+		//JasperExportManager.exportReportToPdfStream(report, Stream);
 		JasperPrint print = JasperFillManager.fillReport(report, null, new JRBeanCollectionDataSource(relatorio));
 		//System.out.println("Teste relatorio:"+print.getName());
 		
 		 //JasperViewer viewer = new JasperViewer( print , true );
 		// JasperViewer.viewReport(print, false); 
+		//OutputStream ot = resp.getOutputStream();
+		String caminhoRela = "C:/Users/Eloisa/Documents/UEG 2018/Relatorio_Alunos_3.pdf";
 		
+		resp.setContentType("application/pdf");
 		
 		JasperExportManager.exportReportToPdfFile(print, "C:/Users/Eloisa/Documents/UEG 2018/Relatorio_Alunos_3.pdf");	
+		
+		resp.setHeader("Content-Disposition", "atachment; filename=\""+caminhoRela);
+		
 		
 	}
 	public void consultaParticipacao(HttpServletRequest req, PrintWriter out)
