@@ -1,22 +1,35 @@
 package br.lisianthus.visao;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import com.google.gson.Gson;
+import com.lowagie.text.BadElementException;
+import com.lowagie.text.Document;
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.ListItem;
+import com.lowagie.text.PageSize;
+import com.lowagie.text.Paragraph;
+import com.lowagie.text.Table;
+import com.lowagie.text.pdf.PdfWriter;
+import com.sun.org.apache.bcel.internal.generic.DALOAD;
 
 import java.io.PrintWriter;
 //import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
-
+import java.util.Map;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -28,11 +41,13 @@ import br.lisianthus.controle.ControladorAluno;
 import br.lisianthus.controle.ControladorAtividadeComplementar;
 import br.lisianthus.controle.ControladorModalidade;
 import br.lisianthus.controle.ControladorParticipacao;
+import br.lisianthus.dao.DAOAluno;
 import br.lisianthus.modelo.Aluno;
 import br.lisianthus.modelo.AtividadeComplementar;
 import br.lisianthus.modelo.Coordenador;
 import br.lisianthus.modelo.Modalidade;
 
+import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
@@ -40,6 +55,16 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
 import br.lisianthus.modelo.Participacao;
 import br.lisianthus.utils.Retorno;
+import groovy.swing.impl.TableLayout;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JRResultSetDataSource;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.view.JasperViewer;
 
 @SuppressWarnings("serial")
 public class ServletCadastroEventos extends HttpServlet {
@@ -104,6 +129,7 @@ public class ServletCadastroEventos extends HttpServlet {
 		} else {
 			nomeMetodo = op + "Participacao";
 			System.out.println(nomeMetodo);
+			cargahorariatotal();
 			try {
 				Class<?> cls;
 
@@ -501,6 +527,7 @@ public class ServletCadastroEventos extends HttpServlet {
 		Participacao part = new Participacao();
 		Retorno ret = new Retorno();
 		ControladorParticipacao controle = new ControladorParticipacao();
+		
 
 		if (dir.mkdir()) {
 			System.out.println("Diretorio criado com sucesso!" + dir.getPath());
@@ -512,7 +539,7 @@ public class ServletCadastroEventos extends HttpServlet {
 			List<?> items = upload.parseRequest(req);
 
 			Iterator<?> itr = items.iterator();
-			part.setAluno_id_aluno(2);
+			part.setAluno_id_aluno(1);
 			part.setCoordenador_ac_id_admin(1);
 			part.setCh_validada_part(30);
 			part.setStatus("A VALIDAR");
@@ -557,7 +584,7 @@ public class ServletCadastroEventos extends HttpServlet {
 						+ "," + part.getCoordenador_ac_id_admin());
 
 				ret = controle.inserir(part);
-
+				
 				System.out.println("Retorno:" + ret.getMensagem());
 			}
 
@@ -569,6 +596,71 @@ public class ServletCadastroEventos extends HttpServlet {
 		return ret;
 	}
 
+	/*
+	 * executar este metodo quando executar a aplicação, pq ai quando executar 
+	 * o código ele ja faz a verificação e bloqueia o aluno impedindo de cadastrar uma nova atividade
+	 */
+	
+	public void cargahorariatotal(){
+		
+		Aluno aluno = new Aluno();
+		Participacao participacao = new Participacao();
+		Date data_conclusao_part = new Date();
+		Retorno ret_aluno = new Retorno();
+		ControladorAluno controle_aluno = new ControladorAluno();
+		ControladorParticipacao controle_part = new ControladorParticipacao();
+		
+		participacao = controle_part.verifica_carga_horaria();
+		System.out.println("Dentro da carga horaria:"+participacao.getCh_validada_part());
+		if(participacao.getCh_validada_part() >= 200){
+			//bloqueio do cadastro da participacao
+			System.out.println("ID do ALUNO: "+participacao.getAluno_id_aluno()+ " Data: "+data_conclusao_part);
+			
+			aluno.setData_carga_total_part(data_conclusao_part);
+			aluno.setId_aluno(participacao.getAluno_id_aluno());
+			System.out.println("Inserção da data: "+ controle_aluno.inserir_data_conclusao(aluno).getMensagem());
+		}
+		
+	}
+	
+	public void gerarRelatorioParticipacao(HttpServletRequest req, PrintWriter out) throws JRException{
+		
+		//String jasper = JasperCompileManager.compileReportToFile(jrxml);
+		String caminhoRelatorio = "C:/PROG2/WorkspaceProjetoLisianthus/projetoSLAC/WebContent/jasper/novoRelatorioAlunos.jrxml";
+		System.out.println(caminhoRelatorio);
+		//C:\PROG2\WorkspaceProjetoLisianthus\projetoSLAC\WebContent\jasper\relacaoAlunos.jrxml
+		ControladorAluno contraluno = new ControladorAluno();
+		String jrxml = "C:/PROG2/WorkspaceProjetoLisianthus/projetoSLAC/WebContent/jasper/novoRelatorioAlunos.jrxml";
+
+		String jasper = JasperCompileManager.compileReportToFile(jrxml);
+
+		System.out.println(jasper);
+		 
+		// escreve na saida do response
+		//Files.copy(pdf.toPath(), output);
+		
+		
+		JasperReport report = JasperCompileManager.compileReport(caminhoRelatorio);
+		
+		Coordenador coord = new Coordenador();
+		coord.setId_admin(1);
+		
+		List<Aluno> relatorio = contraluno.listaRelatorio(coord);
+		
+		//System.out.println("Relatorio:" +relatorio.iterator().toString());
+		//System.out.println("Relatorio:" +relatorio.get(1).getNome());
+			
+		
+		JasperPrint print = JasperFillManager.fillReport(report, null, new JRBeanCollectionDataSource(relatorio));
+		//System.out.println("Teste relatorio:"+print.getName());
+		
+		 //JasperViewer viewer = new JasperViewer( print , true );
+		// JasperViewer.viewReport(print, false); 
+		
+		
+		JasperExportManager.exportReportToPdfFile(print, "C:/Users/Eloisa/Documents/UEG 2018/Relatorio_Alunos_3.pdf");	
+		
+	}
 	public void consultaParticipacao(HttpServletRequest req, PrintWriter out)
 			throws TemplateSyntaxException, IOException {
 		MiniTemplator tpl = getMiniTemplator("consulta");
