@@ -354,7 +354,7 @@ public class DAOAluno {
 					String nome_admin = results.getString("nome_admin");
 				//System.out.println("SQL BUSCA:"+data_conclusao_carga);
 					
-				Aluno aluno = new Aluno(nome_admin,nome, ano_ingresso, matricula, data_conclusao_carga);
+				Aluno aluno = new Aluno(nome_admin,nome, matricula, ano_ingresso, data_conclusao_carga);
 				
 				list.add(aluno);
 				
