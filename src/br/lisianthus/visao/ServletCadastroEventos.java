@@ -105,7 +105,7 @@ public class ServletCadastroEventos extends HttpServlet {
 		PrintWriter out = resp.getWriter();
 		op = op == null ? "index" : op;
 
-		if (op.equalsIgnoreCase("index") || op.equalsIgnoreCase("inserir") || op.equalsIgnoreCase("gerarRelatorio")) {
+		if (op.equalsIgnoreCase("index") || op.equalsIgnoreCase("inserir")) {
 			MiniTemplator tpl = getMiniTemplator(op);
 
 			if (op.equalsIgnoreCase("inserir")) {
@@ -113,12 +113,12 @@ public class ServletCadastroEventos extends HttpServlet {
 				listarModalidade(req, out, tpl);
 			} else if (op.equalsIgnoreCase("index")){
 				buscaDadosAluno(tpl, req);
-			} else if(op.equalsIgnoreCase("gerarRelatorio")){
-				gerarRelatorio(resp);
 			}else {
 				out.println(tpl.generateOutput());
 			}
-		} else {
+		} else if (op.equalsIgnoreCase("gerarRelatorio")){
+			gerarRelatorio(resp);
+		}else{
 			nomeMetodo = op + "Participacao";
 			System.out.println(nomeMetodo);
 			cargahorariatotal();
@@ -618,11 +618,11 @@ public class ServletCadastroEventos extends HttpServlet {
 	public void gerarRelatorio(HttpServletResponse resp) throws JRException{
 		
 		//String jasper = JasperCompileManager.compileReportToFile(jrxml);
-		String caminhoRelatorio = "C:/relatorios/novoRelatorioAlunos.jrxml";
+		String caminhoRelatorio = "C:/PROG2/WorkspacePIDS/slac/WebContent/jasper/novoRelatorioAlunos.jrxml";
 		System.out.println(caminhoRelatorio);
 		//C:\PROG2\WorkspaceProjetoLisianthus\projetoSLAC\WebContent\jasper\relacaoAlunos.jrxml
 		ControladorAluno contraluno = new ControladorAluno();
-		String jrxml = "C:/relatorios/novoRelatorioAlunos.jrxml";
+		String jrxml = "C:/PROG2/WorkspacePIDS/slac/WebContent/jasper/novoRelatorioAlunos.jrxml";
 
 		String jasper = JasperCompileManager.compileReportToFile(jrxml);
 
@@ -650,11 +650,11 @@ public class ServletCadastroEventos extends HttpServlet {
 		 //JasperViewer viewer = new JasperViewer( print , true );
 		// JasperViewer.viewReport(print, false); 
 		//OutputStream ot = resp.getOutputStream();
-		String caminhoRela = "C:/Users/Eloisa/Documents/UEG 2018/Relatorio_Alunos_3.pdf";
+		String caminhoRela = "C:/relatorios/Relatorio_Alunos_3.pdf";
 		
 		resp.setContentType("application/pdf");
 		
-		JasperExportManager.exportReportToPdfFile(print, "C:/Users/Eloisa/Documents/UEG 2018/Relatorio_Alunos_3.pdf");	
+		JasperExportManager.exportReportToPdfFile(print, "C:/relatorios/Relatorio_Alunos_3.pdf");	
 		
 		resp.setHeader("Content-Disposition", "atachment; filename=\""+caminhoRela);
 		
