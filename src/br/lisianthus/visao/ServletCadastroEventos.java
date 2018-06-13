@@ -1,9 +1,25 @@
 package br.lisianthus.visao;
 
 import java.io.File;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+
 import com.google.gson.Gson;
 
+import com.lowagie.text.BadElementException;
+import com.lowagie.text.Document;
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.ListItem;
+import com.lowagie.text.PageSize;
+import com.lowagie.text.Paragraph;
+import com.lowagie.text.Table;
+import com.lowagie.text.pdf.PdfWriter;
+import com.sun.org.apache.bcel.internal.generic.DALOAD;
 
 import java.io.PrintWriter;
 //import java.lang.reflect.Field;
@@ -16,6 +32,9 @@ import java.util.Iterator;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
+
+import javax.servlet.ServletOutputStream;
+import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -40,12 +59,19 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import br.lisianthus.modelo.Participacao;
 import br.lisianthus.utils.Retorno;
 import net.sf.jasperreports.engine.JRException;
+
+import net.sf.jasperreports.engine.JRExporterParameter;
+import net.sf.jasperreports.engine.JRResultSetDataSource;
 import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperPrintManager;
 import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.JasperRunManager;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.engine.export.JRPdfExporter;
+import net.sf.jasperreports.view.JasperViewer;
 
 @SuppressWarnings("serial")
 public class ServletCadastroEventos extends HttpServlet {
@@ -94,7 +120,7 @@ public class ServletCadastroEventos extends HttpServlet {
 	 *            escrita na tela, entre outras formas.
 	 * @throws TemplateSyntaxException
 	 * @throws IOException
-	 * @throws JRException 
+	 * @throws JRException
 	 */
 
 	private void executaPagina(HttpServletRequest req, HttpServletResponse resp)
@@ -120,6 +146,7 @@ public class ServletCadastroEventos extends HttpServlet {
 		} else if (op.equalsIgnoreCase("gerarRelatorio")){
 			gerarRelatorio(resp);
 		}else{
+			
 			nomeMetodo = op + "Participacao";
 			System.out.println(nomeMetodo);
 			cargahorariatotal();
@@ -165,7 +192,9 @@ public class ServletCadastroEventos extends HttpServlet {
 
 			}
 		}
+
 	}
+	// }
 
 	private void buscaDadosAluno(MiniTemplator tpl, HttpServletRequest req) {
 		HttpSession session = req.getSession(true);
@@ -520,7 +549,6 @@ public class ServletCadastroEventos extends HttpServlet {
 		Participacao part = new Participacao();
 		Retorno ret = new Retorno();
 		ControladorParticipacao controle = new ControladorParticipacao();
-		
 
 		if (dir.mkdir()) {
 			System.out.println("Diretorio criado com sucesso!" + dir.getPath());
@@ -577,7 +605,7 @@ public class ServletCadastroEventos extends HttpServlet {
 						+ "," + part.getCoordenador_ac_id_admin());
 
 				ret = controle.inserir(part);
-				
+
 				System.out.println("Retorno:" + ret.getMensagem());
 			}
 
@@ -590,77 +618,60 @@ public class ServletCadastroEventos extends HttpServlet {
 	}
 
 	/*
-	 * executar este metodo quando executar a aplicação, pq ai quando executar 
-	 * o código ele ja faz a verificação e bloqueia o aluno impedindo de cadastrar uma nova atividade
+	 * executar este metodo quando executar a aplicação, pq ai quando executar o
+	 * código ele ja faz a verificação e bloqueia o aluno impedindo de cadastrar
+	 * uma nova atividade
 	 */
-	
-	public void cargahorariatotal(){
-		
+
+	public void cargahorariatotal() {
+
 		Aluno aluno = new Aluno();
 		Participacao participacao = new Participacao();
 		Date data_conclusao_part = new Date();
 		Retorno ret_aluno = new Retorno();
 		ControladorAluno controle_aluno = new ControladorAluno();
 		ControladorParticipacao controle_part = new ControladorParticipacao();
-		
+
 		participacao = controle_part.verifica_carga_horaria();
-		System.out.println("Dentro da carga horaria:"+participacao.getCh_validada_part());
-		if(participacao.getCh_validada_part() >= 200){
-			//bloqueio do cadastro da participacao
-			System.out.println("ID do ALUNO: "+participacao.getAluno_id_aluno()+ " Data: "+data_conclusao_part);
-			
+		aluno = controle_aluno.verifica_se_tem_dataconclusao(participacao.getAluno_id_aluno());
+		System.out.println("Dentro da carga horaria:" + participacao.getCh_validada_part());
+		
+		if (participacao.getCh_validada_part() >= 200 && aluno.getData_conclusao_carga() == null){
+			// bloqueio do cadastro da participacao
+			System.out.println("ID do ALUNO: " + participacao.getAluno_id_aluno() + " Data: " + data_conclusao_part);
+
 			aluno.setData_carga_total_part(data_conclusao_part);
 			aluno.setId_aluno(participacao.getAluno_id_aluno());
-			System.out.println("Inserção da data: "+ controle_aluno.inserir_data_conclusao(aluno).getMensagem());
+			System.out.println("Inserção da data: " + controle_aluno.inserir_data_conclusao(aluno).getMensagem());
 		}
-		
+
 	}
+
+	public void gerarRelatorio(HttpServletResponse resp) throws JRException, IOException {
+
+		String caminhoRelatorio = "C:/PROG2/WorkspaceProjetoLisianthus/projetoSLAC/WebContent/jasper/novoRelatorioAlunos.jrxml";
 	
-	public void gerarRelatorio(HttpServletResponse resp) throws JRException{
-		
-		//String jasper = JasperCompileManager.compileReportToFile(jrxml);
-		String caminhoRelatorio = "C:/PROG2/WorkspacePIDS/slac/WebContent/jasper/novoRelatorioAlunos.jrxml";
-		System.out.println(caminhoRelatorio);
-		//C:\PROG2\WorkspaceProjetoLisianthus\projetoSLAC\WebContent\jasper\relacaoAlunos.jrxml
 		ControladorAluno contraluno = new ControladorAluno();
 		String jrxml = "C:/PROG2/WorkspacePIDS/slac/WebContent/jasper/novoRelatorioAlunos.jrxml";
 
 		String jasper = JasperCompileManager.compileReportToFile(jrxml);
 
-		System.out.println(jasper);
-		 
-		// escreve na saida do response
-		//Files.copy(pdf.toPath(), output);
-		
 		JasperReport report = JasperCompileManager.compileReport(caminhoRelatorio);
-		
+
 		Coordenador coord = new Coordenador();
 		coord.setId_admin(1);
-		
+
 		List<Aluno> relatorio = contraluno.listaRelatorio(coord);
-		
-		//System.out.println("Relatorio:" +relatorio.iterator().toString());
-		//System.out.println("Relatorio:" +relatorio.get(1).getNome());
-			
-		//JasperExportManager.exportReportToPdfStream(report, Stream);
-		//private ByteArrayOutputStream Stream = new ByteArrayOutputStream();
-		//JasperExportManager.exportReportToPdfStream(report, Stream);
+
 		JasperPrint print = JasperFillManager.fillReport(report, null, new JRBeanCollectionDataSource(relatorio));
-		//System.out.println("Teste relatorio:"+print.getName());
+
+		JasperExportManager.exportReportToPdfFile(print, "Relatorio_Alunos.pdf");
 		
-		 //JasperViewer viewer = new JasperViewer( print , true );
-		// JasperViewer.viewReport(print, false); 
-		//OutputStream ot = resp.getOutputStream();
-		String caminhoRela = "C:/relatorios/Relatorio_Alunos_3.pdf";
-		
-		resp.setContentType("application/pdf");
-		
-		JasperExportManager.exportReportToPdfFile(print, "C:/relatorios/Relatorio_Alunos_3.pdf");	
-		
-		resp.setHeader("Content-Disposition", "atachment; filename=\""+caminhoRela);
-		
+		 JasperViewer.viewReport(print, false);
+
 		
 	}
+
 	public void consultaParticipacao(HttpServletRequest req, PrintWriter out)
 			throws TemplateSyntaxException, IOException {
 		MiniTemplator tpl = getMiniTemplator("consulta");

@@ -51,5 +51,8 @@ public class ControladorAluno {
 		
 		Aluno aluno = daoaluno.obter(loginaluno);
 		return aluno;
+}
+	public Aluno verifica_se_tem_dataconclusao(Integer id) {
+		return daoaluno.verfica_data_aluno(id);
 	}
 }

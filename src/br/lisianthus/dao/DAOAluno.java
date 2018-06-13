@@ -12,6 +12,7 @@ import java.util.List;
 
 import br.lisianthus.modelo.Aluno;
 import br.lisianthus.modelo.Coordenador;
+import br.lisianthus.modelo.Participacao;
 import br.lisianthus.utils.Retorno;
 
 public class DAOAluno {
@@ -365,5 +366,27 @@ public class DAOAluno {
 		}
 		
 		return list;
+	}
+
+	public Aluno verfica_data_aluno(Integer id) {
+		
+		String sql = "select data_conclusao_carga from aluno where id_aluno = "+id;
+
+
+		try {
+			Aluno alun = new Aluno();
+			Statement stmt = con_a.createStatement();
+			ResultSet resultSet = stmt.executeQuery(sql);
+			if (resultSet.next()) {
+				
+				alun.setData_conclusao_carga(resultSet.getDate("data_conclusao_carga"));
+				return alun;
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			
+		}
+		return null;
 	}
 }
