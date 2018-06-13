@@ -99,31 +99,6 @@ public class ServletSessionLogin extends HttpServlet {
 	}
 
 
-	
-
-	  public static boolean login(String userName, String password) {
-
-		  String usuario = userName;
-
-		  if(usuario.contains("^[a-Z]")){
-			  if(userName != null && userName.equals("joilson")&&
-					  password != null && password.equals("senha")){
-				  return true;
-			  }
-			  else{
-				  return false;
-			  }
-		  }else{
-			  if(userName != null && userName.equals("70327896175")&&
-					  password != null && password.equals("senha")){
-				  return true;
-			  }else{
-				  return false;
-			  }
-		  }
-	  }
-
-
 	public static Coordenador loginCoord(String userName, String password) {
 
 			ControladorCoordenador cont = new ControladorCoordenador();
