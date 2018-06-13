@@ -113,6 +113,7 @@ public class ServletCadastroEventos extends HttpServlet {
 				listarModalidade(req, out, tpl);
 			} else if (op.equalsIgnoreCase("index")){
 				buscaDadosAluno(tpl, req);
+				out.println(tpl.generateOutput());
 			}else {
 				out.println(tpl.generateOutput());
 			}
@@ -679,17 +680,36 @@ public class ServletCadastroEventos extends HttpServlet {
 		for (Participacao p : listaPart) {
 			// if(p.getStatus().equalsIgnoreCase("A validar")) NÃO SOMA O VALOR
 			// DA CARGA HORÁRIA
-			tpl.setVariable("id_part", p.getId_participacao());
-			tpl.setVariable("chComputada", p.getCh_validada_part());
-			tpl.setVariable("chCadastrada", p.getCh_cadastrada_part());
-			tpl.setVariable("partCadastrada", p.getNome_ac_part());
-			tpl.setVariable("validacao", p.getStatus());
-			if (p.getStatus().equalsIgnoreCase("VALIDADO")) {
-				totalChComputada += p.getCh_validada_part();
+			if(p.getStatus().equalsIgnoreCase("VALIDADO")){
+				tpl.setVariable("id_part", p.getId_participacao());
+				tpl.setVariable("chComputada", p.getCh_validada_part());
+				tpl.setVariable("chCadastrada", p.getCh_cadastrada_part());
+				tpl.setVariable("partCadastrada", p.getNome_ac_part());
+				tpl.setVariable("validacao", p.getStatus());
+					totalChComputada += p.getCh_validada_part();
+				tpl.addBlock("manterparticipacao");
+				
+			}else if(p.getStatus().equalsIgnoreCase("A VALIDAR")){
+				tpl.setVariable("id_part", p.getId_participacao());
+				tpl.setVariable("chComputada", p.getCh_validada_part());
+				tpl.setVariable("chCadastrada", p.getCh_cadastrada_part());
+				tpl.setVariable("partCadastrada", p.getNome_ac_part());
+				tpl.setVariable("validacao", p.getStatus());
+				tpl.addBlock("participacaovalidar");
+			}else{
+				tpl.setVariable("id_part", p.getId_participacao());
+				tpl.setVariable("chComputada", p.getCh_validada_part());
+				tpl.setVariable("chCadastrada", p.getCh_cadastrada_part());
+				tpl.setVariable("partCadastrada", p.getNome_ac_part());
+				tpl.setVariable("validacao", p.getStatus());
+				
+				tpl.addBlock("participacaoinvalidado");
 			}
-			tpl.addBlock("manterparticipacao");
+			
+			
 		}
 		tpl.setVariable("totalChComputada", totalChComputada);
+		
 
 	}
 
