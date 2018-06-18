@@ -8,10 +8,8 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import br.lisianthus.modelo.Aluno;
 import br.lisianthus.modelo.AtividadeComplementar;
 import br.lisianthus.modelo.Modalidade;
-import br.lisianthus.modelo.Participacao;
 import br.lisianthus.utils.Retorno;
 
 public class DAOAtividadeComplementar {
@@ -127,7 +125,7 @@ public class DAOAtividadeComplementar {
 		}
 		if (ok > 0) {
 			ret.setSucesso(true);
-			ret.setMensagem("inclusão da Atividade realizada com sucesso");
+			ret.setMensagem("Inclusão da atividade realizada com sucesso");
 		}
 
 		System.out.println("Retorno:" + ret.getMensagem());

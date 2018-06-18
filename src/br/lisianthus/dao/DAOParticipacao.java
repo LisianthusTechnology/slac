@@ -113,7 +113,7 @@ public class DAOParticipacao {
 		}
 		if (ok > 0) {
 			ret.setSucesso(true);
-			ret.setMensagem("inclusão do participacao realizada com sucesso");
+			ret.setMensagem("Inclusão da participação realizada com sucesso!");
 		}
 
 		System.out.println("Retorno DAO:" + ret.getMensagem());

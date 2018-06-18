@@ -199,7 +199,9 @@ public class ServletCadastroEventos extends HttpServlet {
 	private void buscaDadosAluno(MiniTemplator tpl, HttpServletRequest req) {
 		HttpSession session = req.getSession(true);
 		Aluno aluno = (Aluno) session.getAttribute("Aluno");
-		tpl.setVariable("nome_aluno", aluno.getNome_aluno());
+		if(aluno != null){
+			tpl.setVariable("nome_aluno", aluno.getNome_aluno());
+		}
 	}
 
 	/*
@@ -251,11 +253,11 @@ public class ServletCadastroEventos extends HttpServlet {
 	public void salvarParticipacao(HttpServletRequest req, PrintWriter out) throws IOException {
 		// Participacao participacao = new Participacao();
 		// receiveFile(req);
-		MiniTemplator t = getMiniTemplator("message");
+		MiniTemplator t = getMiniTemplator("index");
 		Retorno ret = new Retorno();
 
 		ret = receiveFile(req);
-
+		buscaDadosAluno(t, req);
 		t.setVariable("message", ret.getMensagem());
 
 		out.println(t.generateOutput());
@@ -675,6 +677,7 @@ public class ServletCadastroEventos extends HttpServlet {
 	public void consultaParticipacao(HttpServletRequest req, PrintWriter out)
 			throws TemplateSyntaxException, IOException {
 		MiniTemplator tpl = getMiniTemplator("consulta");
+		buscaDadosAluno(tpl, req);
 		listarParticipacao(req, out, tpl);
 		out.println(tpl.generateOutput());
 	}
@@ -734,6 +737,7 @@ public class ServletCadastroEventos extends HttpServlet {
 	public void visualizarParticipacao(HttpServletRequest req, PrintWriter out)
 			throws TemplateSyntaxException, IOException {
 		MiniTemplator tpl = getMiniTemplator("visualizar");
+		buscaDadosAluno(tpl, req);
 		buscarParticipacao(req, tpl);
 		out.println(tpl.generateOutput());
 	}
