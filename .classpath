@@ -13,21 +13,5 @@
 			<attribute name="owner.project.facets" value="java"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/Users/Eloisa/Documents/UEG 2018/PIDS II/jasperreports-5.6.0.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Eloisa/Documents/UEG 2018/PIDS II/commons-beanutils-1.8.0.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Eloisa/Documents/UEG 2018/PIDS II/commons-collections-3.2.1.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Eloisa/Documents/UEG 2018/PIDS II/commons-digester-2.1.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Eloisa/Documents/UEG 2018/PIDS II/commons-logging-1.1.1.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Eloisa/Documents/UEG 2018/PIDS II/groovy-all-2.0.1.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Eloisa/Documents/UEG 2018/PIDS II/iText-2.1.7.js2.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Eloisa/Documents/UEG 2018/PIDS II/jasperreports-fonts-5.6.0.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Eloisa/Documents/UEG 2018/PIDS II/JasperReport/commons-collections-3.1.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Eloisa/Documents/UEG 2018/PIDS II/JasperReport/commons-digester-1.7.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Eloisa/Documents/UEG 2018/PIDS II/JasperReport/commons-logging-1.1.1.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Eloisa/Documents/UEG 2018/PIDS II/JasperReport/groovy-all-1.5.3.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Eloisa/Documents/UEG 2018/PIDS II/JasperReport/itext-2.1.7.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Eloisa/Documents/UEG 2018/PIDS II/JasperReport/jasperreports-5.5.1.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Eloisa/Documents/UEG 2018/PIDS II/JasperReport/poi-3.9.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Eloisa/Documents/UEG 2018/PIDS II/JasperReport/servlet-api-2.4.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

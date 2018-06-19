@@ -1,5 +1,6 @@
 package br.lisianthus.controle;
 
+import java.util.Date;
 import java.util.List;
 
 import br.lisianthus.dao.DAOAluno;
@@ -30,8 +31,8 @@ public class ControladorAluno {
 		}
 	}
 	
-	public List<Aluno> listaRelatorio(Coordenador coord){
-		return daoaluno.listaParaRelatorio(coord);
+	public List<Aluno> listaRelatorio(Date inicio, Date fim){
+		return daoaluno.listaParaRelatorio(inicio, fim);
 	}
 	
 	public Retorno inserir_data_conclusao(Aluno aluno){
@@ -46,7 +47,12 @@ public class ControladorAluno {
 	public Aluno obter(Integer id_aluno){
 		return daoaluno.obter(id_aluno);
 	}
-
+	
+	public Aluno obter(Aluno loginaluno){
+		
+		Aluno aluno = daoaluno.obter(loginaluno);
+		return aluno;
+}
 	public Aluno verifica_se_tem_dataconclusao(Integer id) {
 		return daoaluno.verfica_data_aluno(id);
 	}

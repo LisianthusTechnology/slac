@@ -2631,6 +2631,7 @@ input[type="search"] {
 .form-group {
   margin-bottom: 15px;
 }
+
 .radio,
 .checkbox {
   position: relative;
@@ -2978,6 +2979,7 @@ select[multiple].input-lg {
   margin-right: -15px;
   margin-left: -15px;
 }
+
 @media (min-width: 768px) {
   .form-horizontal .control-label {
     padding-top: 7px;

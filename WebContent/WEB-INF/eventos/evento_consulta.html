@@ -40,7 +40,7 @@
 			</div>
 			<div class="col-lg-4">
     			<div class="input-group">
-      				<input type="text" name="pesquisaPart" class="form-control" placeholder="Procurar por...">
+      				<input type="text" name="pesquisaPart" class="form-control" placeholder="Procurar por nome...">
       				<span class="input-group-btn">
         				<input class="btn btn-default" type="submit" value="Pesquisar">
       				</span>
@@ -60,7 +60,7 @@
 				</tr>
 			</thead>
 			<!-- $beginBlock manterparticipacao -->
-			<tr>
+			<tr class="success">
 				<td>${chComputada}</td>
 				<td>${chCadastrada}</td>
 				<td>${partCadastrada}</td>
@@ -69,7 +69,41 @@
 				</td>
 			</tr>
 			<!-- $endBlock manterparticipacao-->
+			<tr>
+				<td>-</td>
+				<td>-</td>
+				<td>-</td>
+				<td>-</td>
+				<td>-</td>
+			</tr>
 			
+			<!-- $beginBlock participacaovalidar -->
+			<tr class="warning">
+				<td>${chComputada}</td>
+				<td>${chCadastrada}</td>
+				<td>${partCadastrada}</td>
+				<td>${validacao}</td>
+				<td><a href="eventos?op=visualizar&id_part=${id_part}">Visualizar</a>
+				</td>
+			</tr>
+			<!-- $endBlock participacaovalidar-->
+			<tr>
+				<td>-</td>
+				<td>-</td>
+				<td>-</td>
+				<td>-</td>
+				<td>-</td>
+			</tr>
+			<!-- $beginBlock participacaoinvalidado -->
+			<tr class="danger">
+				<td>${chComputada}</td>
+				<td>${chCadastrada}</td>
+				<td>${partCadastrada}</td>
+				<td>${validacao}</td>
+				<td><a href="eventos?op=visualizar&id_part=${id_part}">Visualizar</a>
+				</td>
+			</tr>
+			<!-- $endBlock participacaoinvalidado-->
 		</table>
 		<br>
 		<h5>Total de horas computadas:${totalChComputada}</h5>

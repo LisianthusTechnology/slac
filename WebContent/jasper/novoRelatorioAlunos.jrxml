@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.1.1.final using JasperReports Library version 6.1.1  -->
-<!-- 2018-05-27T23:03:10 -->
+<!-- 2018-06-15T16:23:37 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="novoRelatorioAlunos" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="13acf49e-4913-4d1b-bccc-113817ad15d1">
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<style name="Title" forecolor="#FFFFFF" fontName="Times New Roman" fontSize="50" isBold="false"/>
@@ -14,14 +14,11 @@
 		</conditionalStyle>
 	</style>
 	<queryString>
-		<![CDATA[select a.nome, a.matricula, a.ano_ingresso, a.data_conclusao_carga, c.nome_admin 
-from aluno a inner join coordenador_ac c on a.coordenador_ac_id_admin = c.id_admin 
-where a.data_conclusao_carga is not null]]>
+		<![CDATA[select nome, matricula, ano_ingresso, data_conclusao_carga from aluno where data_conclusao_carga is not null]]>
 	</queryString>
 	<field name="nome" class="java.lang.String"/>
 	<field name="matricula" class="java.lang.Integer"/>
 	<field name="ano_ingresso" class="java.lang.Integer"/>
-	<field name="nome_admin" class="java.lang.String"/>
 	<field name="data_conclusao_carga" class="java.util.Date"/>
 	<background>
 		<band splitType="Stretch"/>
@@ -46,20 +43,6 @@ where a.data_conclusao_carga is not null]]>
 						<font size="12"/>
 					</textElement>
 					<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
-				</textField>
-				<staticText>
-					<reportElement style="Column header" x="2" y="7" width="98" height="18" forecolor="#47525E" uuid="e3683cd5-15c1-4a8b-b885-884270c4d415"/>
-					<textElement>
-						<font isBold="false"/>
-					</textElement>
-					<text><![CDATA[Coordenador:]]></text>
-				</staticText>
-				<textField>
-					<reportElement x="100" y="7" width="240" height="23" forecolor="#000000" uuid="c1187b53-ad0d-4376-8a90-02cf272cad5c"/>
-					<textElement verticalAlignment="Top">
-						<font size="12"/>
-					</textElement>
-					<textFieldExpression><![CDATA[$F{nome_admin}]]></textFieldExpression>
 				</textField>
 			</frame>
 		</band>
@@ -135,19 +118,12 @@ where a.data_conclusao_carga is not null]]>
 		</band>
 	</detail>
 	<columnFooter>
-		<band height="29" splitType="Stretch">
-			<line>
-				<reportElement positionType="FixRelativeToBottom" x="0" y="3" width="555" height="1" uuid="1133a906-5b71-476e-9f3e-bc97c97058c1"/>
-				<graphicElement>
-					<pen lineWidth="0.5" lineColor="#999999"/>
-				</graphicElement>
-			</line>
-		</band>
+		<band height="40" splitType="Stretch"/>
 	</columnFooter>
 	<pageFooter>
-		<band height="32" splitType="Stretch">
+		<band height="110" splitType="Stretch">
 			<frame>
-				<reportElement mode="Opaque" x="0" y="1" width="555" height="24" forecolor="#D0B48E" backcolor="#E5E9F2" uuid="729c3539-f946-4d0e-a0a7-bda2815ea1b0"/>
+				<reportElement mode="Opaque" x="-1" y="80" width="555" height="24" forecolor="#D0B48E" backcolor="#E5E9F2" uuid="729c3539-f946-4d0e-a0a7-bda2815ea1b0"/>
 				<textField evaluationTime="Report">
 					<reportElement style="Column header" x="513" y="0" width="40" height="20" forecolor="#47525E" uuid="4834e99c-7f6c-485a-b098-50e5187f2ab4"/>
 					<textElement verticalAlignment="Middle">
@@ -170,6 +146,36 @@ where a.data_conclusao_carga is not null]]>
 					<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
 				</textField>
 			</frame>
+			<staticText>
+				<reportElement x="40" y="33" width="188" height="37" uuid="da0d27b5-d91f-4efd-87eb-c8a04bd3f2c8"/>
+				<textElement textAlignment="Center">
+					<font fontName="Times New Roman" size="12"/>
+				</textElement>
+				<text><![CDATA[Assinatura do Coordenador de Atividades Complementares]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="320" y="37" width="188" height="37" uuid="9ad9af40-49c7-4520-91ed-8a7666f4d924"/>
+				<textElement textAlignment="Center">
+					<font fontName="Times New Roman" size="12"/>
+				</textElement>
+				<text><![CDATA[Assinatura da Secretaria Acadêmica]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="10" y="10" width="230" height="23" uuid="2177ac19-b418-41d7-a939-221bf09756c0"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[______________________________________]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="299" y="10" width="230" height="23" uuid="9de964e0-aa41-48dd-8d25-e817699e7cab"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[______________________________________]]></text>
+			</staticText>
+			<line>
+				<reportElement positionType="FixRelativeToBottom" x="0" y="70" width="555" height="1" uuid="1133a906-5b71-476e-9f3e-bc97c97058c1"/>
+				<graphicElement>
+					<pen lineWidth="0.5" lineColor="#999999"/>
+				</graphicElement>
+			</line>
 		</band>
 	</pageFooter>
 	<summary>
