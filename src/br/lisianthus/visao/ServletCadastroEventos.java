@@ -248,6 +248,7 @@ public class ServletCadastroEventos extends HttpServlet {
 	
 	public void dataRelatorioParticipacao(HttpServletRequest req, PrintWriter out) throws TemplateSyntaxException, IOException{
 		MiniTemplator tpl = this.getMiniTemplator("datas_relatorio");
+		buscaDadoCoord(req, tpl, out);
 		out.println(tpl.generateOutput());
 	}
 	
@@ -263,6 +264,7 @@ public class ServletCadastroEventos extends HttpServlet {
 	public void alunoscoordParticipacao(HttpServletRequest req, PrintWriter out)
 			throws TemplateSyntaxException, IOException {
 		MiniTemplator tpl = this.getMiniTemplator("alunos_coord");
+		buscaDadoCoord(req, tpl, out);
 		listarAlunosValidacao(req, out, tpl);
 		out.println(tpl.generateOutput());
 
@@ -271,6 +273,7 @@ public class ServletCadastroEventos extends HttpServlet {
 	public void listarativcoordParticipacao(HttpServletRequest req, PrintWriter out)
 			throws TemplateSyntaxException, IOException {
 		MiniTemplator tpl = this.getMiniTemplator("listar_ativ_coord");
+		buscaDadoCoord(req, tpl, out);
 		listarAtividadesParaCoord(req, out, tpl);
 		out.println(tpl.generateOutput());
 	}
@@ -369,9 +372,11 @@ public class ServletCadastroEventos extends HttpServlet {
 												// COORDENADO
 			}
 		}
-		MiniTemplator t = getMiniTemplator("message");
+		MiniTemplator t = getMiniTemplator("listar_ativ_coord");
 		ret = ctp.alterarParticipacao(part);
 		t.setVariable("message", ret.getMensagem());
+		buscaDadoCoord(req, t, out);
+		listarAtividadesParaCoord(req, out, t);
 		System.out.println("Mensagem: " + ret.getMensagem());
 		out.println(t.generateOutput());
 	}
@@ -411,24 +416,22 @@ public class ServletCadastroEventos extends HttpServlet {
 			ret = ctAluno.alterar(aluno);
 	
 			System.out.println("Retorno:" + ret.getMensagem());
-			MiniTemplator t = getMiniTemplator("message");
+			MiniTemplator t = getMiniTemplator("alunos_coord");
 
 			t.setVariable("message", ret.getMensagem());
-
+			listarAlunosValidacao(req, out, t);
 			out.println(t.generateOutput());
 
 		} else {
 			aluno.setPermissao(false);
-			// System.out.println("Denrto da
-			// servlet"+ctAluno.obter(aluno.getId_aluno())+"permissao:"+aluno.getPermissao());
+			
 			ret = ctAluno.alterar(aluno);
-			// System.out.println(ctAluno.obter(aluno.getId_aluno())+"permissao
-			// 2:"+aluno.getPermissao());
+
 			System.out.println("Retorno:" + ret.getMensagem());
-			MiniTemplator t = getMiniTemplator("message");
+			MiniTemplator t = getMiniTemplator("alunos_coord");
 
 			t.setVariable("message", ret.getMensagem());
-
+			listarAlunosValidacao(req, out, t);
 			out.println(t.generateOutput());
 		}
 
@@ -543,7 +546,9 @@ public class ServletCadastroEventos extends HttpServlet {
 
 			Iterator<?> itr = items.iterator();
 
-			//part.setAluno_id_aluno(1);
+			HttpSession session = req.getSession(true);
+			Aluno aluno = (Aluno) session.getAttribute("Aluno");
+			part.setAluno_id_aluno(aluno.getId_aluno());
 			//part.setCoordenador_ac_id_admin(1);
 			//part.setCh_validada_part(30);
 			part.setStatus("A VALIDAR");
@@ -660,7 +665,7 @@ public class ServletCadastroEventos extends HttpServlet {
 
 	public void gerarRelatorio(Date inicio, Date fim) throws JRException, IOException {
 
-		String caminhoRelatorio = "C:/Users/Eloisa/Downloads/slac-master/WebContent/jasper/novoRelatorioAlunos.jrxml";
+		String caminhoRelatorio = "C:/Users/gleycy.souza/WorkspacePIDS/slac/WebContent/jasper/novoRelatorioAlunos.jrxml";
 	
 		ControladorAluno contraluno = new ControladorAluno();
 		
@@ -670,7 +675,7 @@ public class ServletCadastroEventos extends HttpServlet {
 
 		JasperPrint print = JasperFillManager.fillReport(report, null, new JRBeanCollectionDataSource(relatorio));
 
-		JasperExportManager.exportReportToPdfFile(print, "Relatorio_Alunos.pdf");
+		JasperExportManager.exportReportToPdfFile(print, "C:/Users/gleycy.souza/WorkspacePIDS/Relatorio_Alunos.pdf");
 		
 		 JasperViewer.viewReport(print, false);
 
@@ -775,12 +780,13 @@ public class ServletCadastroEventos extends HttpServlet {
 	public void cadastrarACParticipacao(HttpServletRequest req, PrintWriter out)
 			throws TemplateSyntaxException, IOException {
 		MiniTemplator tpl = getMiniTemplator("cadastrar_atividade_complementar");
+		buscaDadoCoord(req, tpl, out);
 		listarModalidade(req, out, tpl);
 	}
 
 	public void salvarACParticipacao(HttpServletRequest req, PrintWriter out)
 			throws TemplateSyntaxException, IOException {
-		MiniTemplator t = getMiniTemplator("message");
+		MiniTemplator t = getMiniTemplator("opcoes_coord");
 		AtividadeComplementar ac = new AtividadeComplementar();
 		ControladorAtividadeComplementar controleAC = new ControladorAtividadeComplementar();
 		Retorno ret = null;
@@ -794,6 +800,7 @@ public class ServletCadastroEventos extends HttpServlet {
 		}
 
 		System.out.println(ret.getMensagem());
+		buscaDadoCoord(req, t, out);
 		t.setVariable("message", ret.getMensagem());
 		out.println(t.generateOutput());
 

@@ -49,7 +49,6 @@ public class ControladorAluno {
 	}
 	
 	public Aluno obter(Aluno loginaluno){
-		
 		Aluno aluno = daoaluno.obter(loginaluno);
 		return aluno;
 }

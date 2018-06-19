@@ -115,7 +115,7 @@ public class ServletSessionLogin extends HttpServlet {
 			ControladorAluno contA = new ControladorAluno();
 			Aluno a = new Aluno(new Long(userName), password);
 			Aluno aluno = contA.obter(a);
-			if(aluno != null){
+			if(aluno != null && aluno.isPermissao()){
 				return aluno;
 			}
 		return null;
