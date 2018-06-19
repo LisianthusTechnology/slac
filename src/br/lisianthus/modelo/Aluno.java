@@ -15,11 +15,10 @@ public class Aluno {
 		
 	}
 	
-	public Aluno(Integer idaluno, Integer matri, Integer anoingresso, Integer coordid, Long cpf_aluno, String nomealuno, String senha_aluno, String email_a, boolean permissao_aluno){
+	public Aluno(Integer idaluno, Integer matri, Integer anoingresso, Long cpf_aluno, String nomealuno, String senha_aluno, String email_a, boolean permissao_aluno){
 		id_aluno = idaluno;
 		matricula = matri;
 		ano_ingresso = anoingresso;
-		coord_ac_id = coordid;
 		cpf = cpf_aluno;
 		nome_aluno = nomealuno;
 		senha = senha_aluno;
@@ -28,8 +27,8 @@ public class Aluno {
 		
 	}
 	
-	public Aluno (String nomeadmin, String nomealuno, int matricula_aluno, int anoingresso, Date dataconlusao_carga){
-		nome_admin = nomeadmin;
+	public Aluno (String nomealuno, int matricula_aluno, int anoingresso, Date dataconlusao_carga){
+
 		nome = nomealuno;
 		matricula = matricula_aluno;
 		ano_ingresso = anoingresso;

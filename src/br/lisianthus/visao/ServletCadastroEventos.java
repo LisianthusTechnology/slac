@@ -2,29 +2,14 @@ package br.lisianthus.visao;
 
 import java.io.File;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-
 import com.google.gson.Gson;
-
-import com.lowagie.text.BadElementException;
-import com.lowagie.text.Document;
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.ListItem;
-import com.lowagie.text.PageSize;
-import com.lowagie.text.Paragraph;
-import com.lowagie.text.Table;
-import com.lowagie.text.pdf.PdfWriter;
-import com.sun.org.apache.bcel.internal.generic.DALOAD;
 
 import java.io.PrintWriter;
 //import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Date;
@@ -33,8 +18,6 @@ import java.util.Iterator;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 
-import javax.servlet.ServletOutputStream;
-import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -60,17 +43,12 @@ import br.lisianthus.modelo.Participacao;
 import br.lisianthus.utils.Retorno;
 import net.sf.jasperreports.engine.JRException;
 
-import net.sf.jasperreports.engine.JRExporterParameter;
-import net.sf.jasperreports.engine.JRResultSetDataSource;
 import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperPrintManager;
 import net.sf.jasperreports.engine.JasperReport;
-import net.sf.jasperreports.engine.JasperRunManager;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
-import net.sf.jasperreports.engine.export.JRPdfExporter;
 import net.sf.jasperreports.view.JasperViewer;
 
 @SuppressWarnings("serial")
@@ -143,10 +121,7 @@ public class ServletCadastroEventos extends HttpServlet {
 			}else {
 				out.println(tpl.generateOutput());
 			}
-		} else if (op.equalsIgnoreCase("gerarRelatorio")){
-			gerarRelatorio(resp);
-		}else{
-			
+		}else{			
 			nomeMetodo = op + "Participacao";
 			System.out.println(nomeMetodo);
 			cargahorariatotal();
@@ -267,6 +242,11 @@ public class ServletCadastroEventos extends HttpServlet {
 			buscaDadoCoord(req, tpl, out);
 			out.println(tpl.generateOutput());
 		
+	}
+	
+	public void dataRelatorioParticipacao(HttpServletRequest req, PrintWriter out) throws TemplateSyntaxException, IOException{
+		MiniTemplator tpl = this.getMiniTemplator("datas_relatorio");
+		out.println(tpl.generateOutput());
 	}
 	
 	private void buscaDadoCoord(HttpServletRequest req, MiniTemplator tpl, PrintWriter out){
@@ -560,9 +540,10 @@ public class ServletCadastroEventos extends HttpServlet {
 			List<?> items = upload.parseRequest(req);
 
 			Iterator<?> itr = items.iterator();
-			part.setAluno_id_aluno(1);
-			part.setCoordenador_ac_id_admin(1);
-			part.setCh_validada_part(30);
+
+			//part.setAluno_id_aluno(1);
+			//part.setCoordenador_ac_id_admin(1);
+			//part.setCh_validada_part(30);
 			part.setStatus("A VALIDAR");
 
 			while (itr.hasNext()) {
@@ -584,7 +565,7 @@ public class ServletCadastroEventos extends HttpServlet {
 						part.setAtividade_complementar_id_atividade(preparaId(valor));
 					} else if (campo.equals("dataInicioEvento")) {
 						String dataEmUmFormato = valor;
-						SimpleDateFormat formato = new SimpleDateFormat("dd-MM-yyyy");
+						SimpleDateFormat formato = new SimpleDateFormat("dd/mm/yyyy");
 						Date data = formato.parse(dataEmUmFormato);
 						part.setData_inicio_ac_part(data);
 					}
@@ -646,22 +627,44 @@ public class ServletCadastroEventos extends HttpServlet {
 		}
 
 	}
+	
+	public void verificadataParticipacao(HttpServletRequest req, PrintWriter out) throws ParseException, JRException, IOException{
+		boolean data;
+		String inicio = req.getParameter("dtRelatorioInicio");
+		String fim  = req.getParameter("dtRelatorioFinal");
+		
+		//System.out.println("Teste das datas:"+inicio+", "+fim);
+		SimpleDateFormat formatodata = new SimpleDateFormat("yyyy-mm-dd");
+		//SimpleDateFormat formatodatafim = new SimpleDateFormat("yyyy-mm-dd");
+		Date inicio_data_conversao = formatodata.parse(inicio);
+		Date fim_data_conversao = formatodata.parse(fim);
+		//System.out.println("Teste das datas conversao:"+formatodata.format(inicio_data_conversao)+", "+formatodata.format(fim_data_conversao));
+		
+		if (inicio_data_conversao.before(fim_data_conversao)){
+			data = true;
+		}else if (inicio_data_conversao.after(fim_data_conversao)){
+			data = false;
+		}else{
+			data = true;
+		}
+		if(data){
+			gerarRelatorio(inicio_data_conversao, fim_data_conversao);
+			//System.out.println("Teste das datas:"+inicio_data_conversao+", "+fim_data_conversao);
+		}
+	//	return data;
+		
+	}
 
-	public void gerarRelatorio(HttpServletResponse resp) throws JRException, IOException {
 
-		String caminhoRelatorio = "C:/PROG2/WorkspaceProjetoLisianthus/projetoSLAC/WebContent/jasper/novoRelatorioAlunos.jrxml";
+	public void gerarRelatorio(Date inicio, Date fim) throws JRException, IOException {
+
+		String caminhoRelatorio = "C:/Users/Eloisa/Downloads/slac-master/WebContent/jasper/novoRelatorioAlunos.jrxml";
 	
 		ControladorAluno contraluno = new ControladorAluno();
-		String jrxml = "C:/PROG2/WorkspacePIDS/slac/WebContent/jasper/novoRelatorioAlunos.jrxml";
-
-		String jasper = JasperCompileManager.compileReportToFile(jrxml);
-
+		
 		JasperReport report = JasperCompileManager.compileReport(caminhoRelatorio);
 
-		Coordenador coord = new Coordenador();
-		coord.setId_admin(1);
-
-		List<Aluno> relatorio = contraluno.listaRelatorio(coord);
+		List<Aluno> relatorio = contraluno.listaRelatorio(inicio, fim);
 
 		JasperPrint print = JasperFillManager.fillReport(report, null, new JRBeanCollectionDataSource(relatorio));
 
@@ -669,7 +672,6 @@ public class ServletCadastroEventos extends HttpServlet {
 		
 		 JasperViewer.viewReport(print, false);
 
-		
 	}
 
 	public void consultaParticipacao(HttpServletRequest req, PrintWriter out)

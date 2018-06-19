@@ -40,39 +40,17 @@
 		class="form-horizontal container-fluid" method="POST"
 		ENCTYPE="multipart/form-data">
 <input type="hidden" name="id_aluno" value="id_aluno">
-		<div class="row">
 
-			<div class="col-sm-3">
-				<p class="text-cor headslac">
-
-					<strong>Nome do aluno<br>
-					<br></strong>
-				</p>
-
-			</div>
-
-			<div class="col-sm-3">
-				<p class="text-cor headslac">
-
-					<strong>CPF<br> <br></strong>
-				</p>
-			</div>
-
-			<div class="col-sm-3">
-				<p class="text-cor headslac">
-
-					<strong>Status<br> <br></strong>
-				</p>
-			</div>
-
-			<div class="col-sm-3">
-				<p class="text-cor headslac">
-
-					<strong>Ações<br> <br></strong>
-				</p>
-			</div>
-		</div>
 <table class="table table-striped table-bordered table-hover" name="aluno">
+
+			<thead>
+				<tr>
+					<th class="centralizar">Nome do aluno</th>
+					<th class="centralizar">CPF</th>
+					<th class="centralizar">Status</th>
+					<th class="centralizar">Açoes</th>
+				</tr>
+			</thead>
 <!-- $beginBlock manteraluno -->
 		<tr>
 			<td>${nome}</td>

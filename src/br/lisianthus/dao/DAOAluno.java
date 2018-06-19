@@ -6,6 +6,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -96,12 +97,11 @@ public class DAOAluno {
 			return okValidar;
 		}
 
-		String sql = "insert into aluno(cpf, nome, senha, email, matricula, ano_ingresso, permissao, coordenador_ac_id_admin)"
+		String sql = "insert into aluno(cpf, nome, senha, email, matricula, ano_ingresso, permissao)"
 				+ " values(" + "" + preparaAtributoParaBD(aluno.getCpf()) + ","
 				+ preparaAtributoParaBD(aluno.getNome_aluno()) + "," + preparaAtributoParaBD(aluno.getSenha()) + ","
 				+ preparaAtributoParaBD(aluno.getEmail()) + "," + preparaAtributoParaBD(aluno.getMatricula()) + ","
-				+ preparaAtributoParaBD(aluno.getAno_ingresso()) + "," + preparaAtributoParaBD(aluno.isPermissao())
-				+ "," + preparaAtributoParaBD(aluno.getCoord_ac_id()) + ")";
+				+ preparaAtributoParaBD(aluno.getAno_ingresso()) + "," + preparaAtributoParaBD(aluno.isPermissao())+ ")";
 		System.out.println("SQL-Aluno:" + sql);
 		int ok = 0;
 		try {
@@ -213,7 +213,7 @@ public class DAOAluno {
 	public List<Aluno> localizar(Aluno aluno) throws RuntimeException {
 		ArrayList<Aluno> list = new ArrayList<Aluno>();
 
-		String sql = "select id_aluno, cpf, nome, senha, email, matricula, ano_ingresso, permissao, coordenador_ac_id_admin from aluno";
+		String sql = "select id_aluno, cpf, nome, senha, email, matricula, ano_ingresso, permissao from aluno";
 
 		String auxId = "";
 		String auxNome = "";
@@ -245,9 +245,8 @@ public class DAOAluno {
 				Integer matricula_a = result.getInt("matricula");
 				Integer ano_ingresso_a = result.getInt("ano_ingresso");
 				boolean permissao_a = result.getBoolean("permissao");
-				Integer coord_id_a = result.getInt("coordenador_ac_id_admin");
 
-				Aluno a = new Aluno(aluno_id, matricula_a, ano_ingresso_a, coord_id_a, cpf_a, nome_a, senha_a, email_a,
+				Aluno a = new Aluno(aluno_id, matricula_a, ano_ingresso_a, cpf_a, nome_a, senha_a, email_a,
 						permissao_a);
 
 				list.add(a);
@@ -294,7 +293,7 @@ public class DAOAluno {
 	
 	public Aluno obter(Aluno loginaluno){
 		String sql = "select id_aluno, cpf, nome, senha, email, matricula, "
-				+ "ano_ingresso, permissao, coordenador_ac_id_admin from aluno where cpf = '" 
+				+ "ano_ingresso, permissao from aluno where cpf = '" 
 				+ loginaluno.getCpf()+ "' AND senha = '" + loginaluno.getSenha() + "'";
 		
 		try {
@@ -312,7 +311,6 @@ public class DAOAluno {
 				aluno.setMatricula(resultSet.getInt("matricula"));
 				aluno.setAno_ingresso(resultSet.getInt("ano_ingresso"));
 				aluno.setPermissao(resultSet.getBoolean("permissao"));
-				aluno.setCoord_ac_id(resultSet.getInt("coordenador_ac_id_admin"));
 				
 				return aluno;
 			} else {
@@ -325,37 +323,29 @@ public class DAOAluno {
 			}
 		}
 
-	public List<Aluno> listaParaRelatorio(Coordenador coord){
+public List<Aluno> listaParaRelatorio(Date data_inicio, Date data_fim){
 		
 		ArrayList<Aluno> list = new ArrayList<Aluno>();
+		SimpleDateFormat formatodata = new SimpleDateFormat("yyyy-mm-dd");
 		
-		String sql = "select "
-				+ "a.nome, a.matricula, a.ano_ingresso, a.data_conclusao_carga, c.nome_admin "
-				+ "from aluno a inner join coordenador_ac c on a.coordenador_ac_id_admin = "+coord.getId_admin()+
-				" where a.data_conclusao_carga is not null";
+		String sql = "select * from aluno where data_conclusao_carga BETWEEN '"+formatodata.format(data_inicio)+"' AND '"+formatodata.format(data_fim)+"'";
 		
+		System.out.println("Minha SQL:"+sql);
 		try{
 			Statement stmt = con_a.createStatement();
 			ResultSet results = stmt.executeQuery(sql);
 			
 			
 			while(results.next()){
-			//	Aluno aluno = new Aluno();
-			//	aluno.setNome_admin(results.getString("nome_admin"));
-			//	aluno.setAno_ingresso(results.getInt("ano_ingresso"));
-			//	aluno.setData_conlusao_carga(results.getDate("data_conclusao_carga"));
-			//	aluno.setMatricula(results.getInt("matricula"));
-			//	aluno.setNome(results.getString("nome"));
-			//	System.out.println("SQL BUSCA:"+aluno.getData_conlusao_carga());
+	
 				Integer matricula = results.getInt("matricula");
 					String nome = results.getString("nome");
 					Integer ano_ingresso = results.getInt("ano_ingresso");
 					Date data_conclusao_carga = results.getDate("data_conclusao_carga");
 					System.out.println("Alunos relatorio:"+data_conclusao_carga);
-					String nome_admin = results.getString("nome_admin");
-				//System.out.println("SQL BUSCA:"+data_conclusao_carga);
+				
 					
-				Aluno aluno = new Aluno(nome_admin,nome, matricula, ano_ingresso, data_conclusao_carga);
+				Aluno aluno = new Aluno(nome, matricula, ano_ingresso, data_conclusao_carga);
 				
 				list.add(aluno);
 				
