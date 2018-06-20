@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 <title>Visualizar Participacao</title>
 <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
 <link href="bootstrap/css/css-project.css?version=16" rel="stylesheet">
@@ -22,7 +22,7 @@
 						<strong>SLAC</strong>
 					</h4>
 					<p class="headtextslac">
-						Sistema de Lan√ßamento de <br>Atividades Complementares
+						Sistema de LanÁamento de <br>Atividades Complementares
 					</p>
 				</div>
 				<div class="col-md-4 text-right">
@@ -31,7 +31,7 @@
           					<h4  class="headslac" class="dropdown-toggle" data-toggle="dropdown" role="button"
            						aria-haspopup="true" aria-expanded="false">
            						<strong><span class="glyphicon glyphicon-user"></span>
-           							Ol√°, <br> ${nome_coord}	
+           							Ol·, <br> ${nome_coord}	
 								</strong>
 								<span class="caret"></span>
 							</h4>
@@ -51,7 +51,7 @@
     	<div class="col-sm-4">
       		<input type="text" class="form-control" name="nomeEvento" id="nomeEvento" readonly value="${nomeEvento}">
     	</div>
-    	<label for="chCertificadoEvento" class="col-sm-3 control-label">Carga Hor√°ria do Certificado:</label>
+    	<label for="chCertificadoEvento" class="col-sm-3 control-label">Carga Hor·ria do Certificado:</label>
     	<div class="col-sm-2">
       		<input type="text" class="form-control" name="chCertificado" id="chCertificadoEvento"  readonly value="${chCertificado}">
    	 	</div>
@@ -81,7 +81,7 @@
     	<div class="col-sm-4">
       		<input type="text" class="form-control" name="tipoEvento" id="tipoEvento" readonly value="${tipoEvento}">
     	</div>
-    	<label for="descricaoEvento" class="col-sm-3 control-label">Descri√ß√£o:</label>
+    	<label for="descricaoEvento" class="col-sm-3 control-label">DescriÁ„o:</label>
     	<div class="col-sm-2">
       		<textarea class="form-control" name="descricaoEvento" id="descricaoEvento" readonly>${descricaoEvento}</textarea>
    	 	</div>
@@ -89,7 +89,7 @@
     <a href="eventos?op=listarativcoord" class="btnvoltar">Voltar</a> 
     <a href="eventos?op=validacaoparticipacao&id_part=${id_participacao}&part_status=validar" class="btnvoltar">VALIDAR</a> 
     <a href="eventos?op=validacaoparticipacao&id_part=${id_participacao}&part_status=invalidar" class="btnvoltar">INVALIDAR</a>
-</div>
+
 </form>
 </body>
 </html>

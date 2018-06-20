@@ -665,7 +665,7 @@ public class ServletCadastroEventos extends HttpServlet {
 
 	public void gerarRelatorio(Date inicio, Date fim) throws JRException, IOException {
 
-		String caminhoRelatorio = "C:/Users/gleycy.souza/WorkspacePIDS/slac/WebContent/jasper/novoRelatorioAlunos.jrxml";
+		String caminhoRelatorio = "C:/PROG2/WorkspacePIDS/slac/WebContent/jasper/novoRelatorioAlunos.jrxml";
 	
 		ControladorAluno contraluno = new ControladorAluno();
 		
@@ -675,7 +675,7 @@ public class ServletCadastroEventos extends HttpServlet {
 
 		JasperPrint print = JasperFillManager.fillReport(report, null, new JRBeanCollectionDataSource(relatorio));
 
-		JasperExportManager.exportReportToPdfFile(print, "C:/Users/gleycy.souza/WorkspacePIDS/Relatorio_Alunos.pdf");
+		JasperExportManager.exportReportToPdfFile(print, "Relatorio_Alunos.pdf");
 		
 		 JasperViewer.viewReport(print, false);
 
@@ -737,6 +737,7 @@ public class ServletCadastroEventos extends HttpServlet {
 	public void visualizarcoordParticipacao(HttpServletRequest req, PrintWriter out)
 			throws TemplateSyntaxException, IOException {
 		MiniTemplator tpl = getMiniTemplator("validar_ativ_coord");
+		buscaDadoCoord(req, tpl, out);
 		buscarParticipacao(req, tpl);
 		out.println(tpl.generateOutput());
 	}
