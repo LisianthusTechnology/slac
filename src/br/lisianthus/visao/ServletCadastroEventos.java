@@ -656,6 +656,9 @@ public class ServletCadastroEventos extends HttpServlet {
 		}
 		if(data){
 			gerarRelatorio(inicio_data_conversao, fim_data_conversao);
+			MiniTemplator tpl =  getMiniTemplator("datas_relatorio");
+			buscaDadoCoord(req, tpl, out);
+			out.println(tpl.generateOutput());
 			//System.out.println("Teste das datas:"+inicio_data_conversao+", "+fim_data_conversao);
 		}
 	//	return data;
@@ -675,7 +678,7 @@ public class ServletCadastroEventos extends HttpServlet {
 
 		JasperPrint print = JasperFillManager.fillReport(report, null, new JRBeanCollectionDataSource(relatorio));
 
-		JasperExportManager.exportReportToPdfFile(print, "C:/Users/gleycy.souza/WorkspacePIDS/Relatorio_Alunos.pdf");
+		JasperExportManager.exportReportToPdfFile(print, "Relatorio_Alunos.pdf");
 		
 		 JasperViewer.viewReport(print, false);
 
