@@ -2,24 +2,8 @@ package br.lisianthus.visao;
 
 import java.io.File;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-
 import com.google.gson.Gson;
-
-import com.lowagie.text.BadElementException;
-import com.lowagie.text.Document;
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.ListItem;
-import com.lowagie.text.PageSize;
-import com.lowagie.text.Paragraph;
-import com.lowagie.text.Table;
-import com.lowagie.text.pdf.PdfWriter;
-import com.sun.org.apache.bcel.internal.generic.DALOAD;
 
 import java.io.PrintWriter;
 //import java.lang.reflect.Field;
@@ -34,8 +18,6 @@ import java.util.Iterator;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 
-import javax.servlet.ServletOutputStream;
-import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -58,20 +40,16 @@ import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
 import br.lisianthus.modelo.Participacao;
+import br.lisianthus.utils.Mensagens;
 import br.lisianthus.utils.Retorno;
 import net.sf.jasperreports.engine.JRException;
 
-import net.sf.jasperreports.engine.JRExporterParameter;
-import net.sf.jasperreports.engine.JRResultSetDataSource;
 import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperPrintManager;
 import net.sf.jasperreports.engine.JasperReport;
-import net.sf.jasperreports.engine.JasperRunManager;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
-import net.sf.jasperreports.engine.export.JRPdfExporter;
 import net.sf.jasperreports.view.JasperViewer;
 
 @SuppressWarnings("serial")
@@ -81,7 +59,8 @@ public class ServletCadastroEventos extends HttpServlet {
 	String separador;
 	String realPath;
 	String contextPath;
-
+	Mensagens msg = new Mensagens();
+	
 	public void init() {
 		servletContext = getServletContext();
 		separador = System.getProperty("file.separator");
@@ -144,8 +123,7 @@ public class ServletCadastroEventos extends HttpServlet {
 			}else {
 				out.println(tpl.generateOutput());
 			}
-		} else{
-			
+		}else{			
 			nomeMetodo = op + "Participacao";
 			System.out.println(nomeMetodo);
 			cargahorariatotal();
@@ -198,7 +176,9 @@ public class ServletCadastroEventos extends HttpServlet {
 	private void buscaDadosAluno(MiniTemplator tpl, HttpServletRequest req) {
 		HttpSession session = req.getSession(true);
 		Aluno aluno = (Aluno) session.getAttribute("Aluno");
-		tpl.setVariable("nome_aluno", aluno.getNome_aluno());
+		if(aluno != null){
+			tpl.setVariable("nome_aluno", aluno.getNome_aluno());
+		}
 	}
 
 	/*
@@ -214,7 +194,7 @@ public class ServletCadastroEventos extends HttpServlet {
 		try {
 			id_mod = preparaIdModalidade(req);
 		} catch (NumberFormatException e) {
-			erroMessage = "Campo ID em formato inválido, aceita somente número!<BR>\n";
+			erroMessage = msg.ERRO6+"<BR>\n";
 		}
 
 		String nome_mod = req.getParameter("nome");
@@ -235,7 +215,7 @@ public class ServletCadastroEventos extends HttpServlet {
 		try {
 			alunoid = preparaIdAluno(req);
 		} catch (NumberFormatException e) {
-			erroMessage = "Campo ID em formato inválido, aceita somente número!<BR>\n";
+			erroMessage = msg.ERRO6+"<BR>\n";
 		}
 
 		if (!erroMessage.equals("")) {
@@ -250,13 +230,13 @@ public class ServletCadastroEventos extends HttpServlet {
 	public void salvarParticipacao(HttpServletRequest req, PrintWriter out) throws IOException {
 		// Participacao participacao = new Participacao();
 		// receiveFile(req);
-		MiniTemplator t = getMiniTemplator("message");
-		Retorno ret = new Retorno();
+		MiniTemplator t = getMiniTemplator("index");
+		Retorno ret; //= new Retorno();
 
 		ret = receiveFile(req);
-
+		buscaDadosAluno(t, req);
 		t.setVariable("message", ret.getMensagem());
-
+		System.out.println("Mensagem"+ret.getMensagem());
 		out.println(t.generateOutput());
 	}
 
@@ -270,6 +250,7 @@ public class ServletCadastroEventos extends HttpServlet {
 	
 	public void dataRelatorioParticipacao(HttpServletRequest req, PrintWriter out) throws TemplateSyntaxException, IOException{
 		MiniTemplator tpl = this.getMiniTemplator("datas_relatorio");
+		buscaDadoCoord(req, tpl, out);
 		out.println(tpl.generateOutput());
 	}
 	
@@ -285,6 +266,7 @@ public class ServletCadastroEventos extends HttpServlet {
 	public void alunoscoordParticipacao(HttpServletRequest req, PrintWriter out)
 			throws TemplateSyntaxException, IOException {
 		MiniTemplator tpl = this.getMiniTemplator("alunos_coord");
+		buscaDadoCoord(req, tpl, out);
 		listarAlunosValidacao(req, out, tpl);
 		out.println(tpl.generateOutput());
 
@@ -293,6 +275,7 @@ public class ServletCadastroEventos extends HttpServlet {
 	public void listarativcoordParticipacao(HttpServletRequest req, PrintWriter out)
 			throws TemplateSyntaxException, IOException {
 		MiniTemplator tpl = this.getMiniTemplator("listar_ativ_coord");
+		buscaDadoCoord(req, tpl, out);
 		listarAtividadesParaCoord(req, out, tpl);
 		out.println(tpl.generateOutput());
 	}
@@ -305,7 +288,7 @@ public class ServletCadastroEventos extends HttpServlet {
 		// part.setNome_ac_part(auxPart);
 		List<Participacao> listaPart = controlePart.listarParticipacaoConsulta(part);
 		for (Participacao p : listaPart) {
-			if (p.getStatus().equalsIgnoreCase("A validar")) {
+			if (p.getStatus().equalsIgnoreCase("A VALIDAR")) {
 				tpl.setVariable("id_part", p.getId_participacao());
 				tpl.setVariable("chComputada", p.getCh_validada_part());
 				tpl.setVariable("chCadastrada", p.getCh_cadastrada_part());
@@ -383,7 +366,7 @@ public class ServletCadastroEventos extends HttpServlet {
 		System.out.println("Id da ativiade: " + part.getId_participacao());
 		Retorno ret = null;
 		if (part != null) {
-			if (op_validacao.equalsIgnoreCase("validar")) {
+			if (op_validacao.equalsIgnoreCase("VALIDAR")) {
 				System.out.println("Nome da ativiade: " + part.getNome_ac_part());
 				part.setStatus("VALIDADO");
 			} else {
@@ -391,9 +374,11 @@ public class ServletCadastroEventos extends HttpServlet {
 												// COORDENADO
 			}
 		}
-		MiniTemplator t = getMiniTemplator("message");
+		MiniTemplator t = getMiniTemplator("listar_ativ_coord");
 		ret = ctp.alterarParticipacao(part);
 		t.setVariable("message", ret.getMensagem());
+		buscaDadoCoord(req, t, out);
+		listarAtividadesParaCoord(req, out, t);
 		System.out.println("Mensagem: " + ret.getMensagem());
 		out.println(t.generateOutput());
 	}
@@ -405,7 +390,7 @@ public class ServletCadastroEventos extends HttpServlet {
 		try {
 			partid = preparaIdParticipacao(req);
 		} catch (NumberFormatException e) {
-			erroMessage = "Campo ID em formato inválido, aceita somente número!<BR>\n";
+			erroMessage = msg.ERRO6+"<BR>\n";
 		}
 
 		if (!erroMessage.equals("")) {
@@ -428,29 +413,27 @@ public class ServletCadastroEventos extends HttpServlet {
 		Retorno ret = null;
 		String status = req.getParameter("aluno_status");
 		System.out.println("status:" + status.toString());
-		if (status.equalsIgnoreCase("validar")) {
+		if (status.equalsIgnoreCase("validar")) { //VERIFICAR SE NÃO VAI DAR ERRO POR ESTAR COM LETRA MAIUSCULA NO BANCO DE DADOS
 			aluno.setPermissao(true);
 			ret = ctAluno.alterar(aluno);
 	
 			System.out.println("Retorno:" + ret.getMensagem());
-			MiniTemplator t = getMiniTemplator("message");
+			MiniTemplator t = getMiniTemplator("alunos_coord");
 
 			t.setVariable("message", ret.getMensagem());
-
+			listarAlunosValidacao(req, out, t);
 			out.println(t.generateOutput());
 
 		} else {
 			aluno.setPermissao(false);
-			// System.out.println("Denrto da
-			// servlet"+ctAluno.obter(aluno.getId_aluno())+"permissao:"+aluno.getPermissao());
+			
 			ret = ctAluno.alterar(aluno);
-			// System.out.println(ctAluno.obter(aluno.getId_aluno())+"permissao
-			// 2:"+aluno.getPermissao());
+
 			System.out.println("Retorno:" + ret.getMensagem());
-			MiniTemplator t = getMiniTemplator("message");
+			MiniTemplator t = getMiniTemplator("alunos_coord");
 
 			t.setVariable("message", ret.getMensagem());
-
+			listarAlunosValidacao(req, out, t);
 			out.println(t.generateOutput());
 		}
 
@@ -564,7 +547,10 @@ public class ServletCadastroEventos extends HttpServlet {
 			List<?> items = upload.parseRequest(req);
 
 			Iterator<?> itr = items.iterator();
-			//part.setAluno_id_aluno(1);
+
+			HttpSession session = req.getSession(true);
+			Aluno aluno = (Aluno) session.getAttribute("Aluno");
+			part.setAluno_id_aluno(aluno.getId_aluno());
 			//part.setCoordenador_ac_id_admin(1);
 			//part.setCh_validada_part(30);
 			part.setStatus("A VALIDAR");
@@ -632,7 +618,6 @@ public class ServletCadastroEventos extends HttpServlet {
 		Aluno aluno = new Aluno();
 		Participacao participacao = new Participacao();
 		Date data_conclusao_part = new Date();
-		Retorno ret_aluno = new Retorno();
 		ControladorAluno controle_aluno = new ControladorAluno();
 		ControladorParticipacao controle_part = new ControladorParticipacao();
 
@@ -681,10 +666,9 @@ public class ServletCadastroEventos extends HttpServlet {
 
 	public void gerarRelatorio(Date inicio, Date fim) throws JRException, IOException {
 
-		String caminhoRelatorio = "C:/Users/Eloisa/Downloads/slac-master/WebContent/jasper/novoRelatorioAlunos.jrxml";
+		String caminhoRelatorio = "C:/Users/gleycy.souza/WorkspacePIDS/slac/WebContent/jasper/novoRelatorioAlunos.jrxml";
 	
 		ControladorAluno contraluno = new ControladorAluno();
-		
 		
 		JasperReport report = JasperCompileManager.compileReport(caminhoRelatorio);
 
@@ -692,7 +676,7 @@ public class ServletCadastroEventos extends HttpServlet {
 
 		JasperPrint print = JasperFillManager.fillReport(report, null, new JRBeanCollectionDataSource(relatorio));
 
-		JasperExportManager.exportReportToPdfFile(print, "Relatorio_Alunos.pdf");
+		JasperExportManager.exportReportToPdfFile(print, "C:/Users/gleycy.souza/WorkspacePIDS/Relatorio_Alunos.pdf");
 		
 		 JasperViewer.viewReport(print, false);
 
@@ -701,6 +685,7 @@ public class ServletCadastroEventos extends HttpServlet {
 	public void consultaParticipacao(HttpServletRequest req, PrintWriter out)
 			throws TemplateSyntaxException, IOException {
 		MiniTemplator tpl = getMiniTemplator("consulta");
+		buscaDadosAluno(tpl, req);
 		listarParticipacao(req, out, tpl);
 		out.println(tpl.generateOutput());
 	}
@@ -760,6 +745,7 @@ public class ServletCadastroEventos extends HttpServlet {
 	public void visualizarParticipacao(HttpServletRequest req, PrintWriter out)
 			throws TemplateSyntaxException, IOException {
 		MiniTemplator tpl = getMiniTemplator("visualizar");
+		buscaDadosAluno(tpl, req);
 		buscarParticipacao(req, tpl);
 		out.println(tpl.generateOutput());
 	}
@@ -795,12 +781,13 @@ public class ServletCadastroEventos extends HttpServlet {
 	public void cadastrarACParticipacao(HttpServletRequest req, PrintWriter out)
 			throws TemplateSyntaxException, IOException {
 		MiniTemplator tpl = getMiniTemplator("cadastrar_atividade_complementar");
+		buscaDadoCoord(req, tpl, out);
 		listarModalidade(req, out, tpl);
 	}
 
 	public void salvarACParticipacao(HttpServletRequest req, PrintWriter out)
 			throws TemplateSyntaxException, IOException {
-		MiniTemplator t = getMiniTemplator("message");
+		MiniTemplator t = getMiniTemplator("opcoes_coord");
 		AtividadeComplementar ac = new AtividadeComplementar();
 		ControladorAtividadeComplementar controleAC = new ControladorAtividadeComplementar();
 		Retorno ret = null;
@@ -814,6 +801,7 @@ public class ServletCadastroEventos extends HttpServlet {
 		}
 
 		System.out.println(ret.getMensagem());
+		buscaDadoCoord(req, t, out);
 		t.setVariable("message", ret.getMensagem());
 		out.println(t.generateOutput());
 

@@ -9,13 +9,14 @@ import java.sql.Statement;
 import br.lisianthus.modelo.AtividadeComplementar;
 import br.lisianthus.modelo.Coordenador;
 import br.lisianthus.modelo.Modalidade;
+import br.lisianthus.utils.Mensagens;
 import br.lisianthus.utils.Retorno;
 
 public class DAOCoordenador {
 
 	private static DAOCoordenador dao_c;
 	private Connection con_c;
-
+	private Mensagens msg = new Mensagens();
 	private DAOCoordenador(){
 		
 		
@@ -66,14 +67,14 @@ public class DAOCoordenador {
 		
 		if(coord == null){
 			ret.setSucesso(false);
-			ret.setMensagem("Coordenador não foi definido, objeto inválido");
+			ret.setMensagem("Coordenador "+msg.ERRO2);
 		}else if(coord.getNome() == null || 
 				coord.getNome().equals("")){
 			ret.setSucesso(false);
-			ret.setMensagem("O campo Nome é de preenchimento obrigatório");
+			ret.setMensagem(msg.ERRO5);
 		}else if(coord.getId()== null || coord.getId().intValue()<=0){
 			ret.setSucesso(false);
-			ret.setMensagem("O campo Id é de preenchimento obrigatório e deve ser maior que 0!");
+			ret.setMensagem(msg.ERRO6);
 		}
 		
 		return ret;
@@ -100,14 +101,14 @@ public class DAOCoordenador {
 			//e.printStackTrace();
 			String message=e.getMessage();
 			if(e.getMessage().contains("coordenador_pkey")){
-				message = "ERRO:01 - Já existe um Coordenador com este id ";
+				message = msg.ERRO1;
 			}
 			ret.setSucesso(false);
 			ret.setMensagem(message);
 		}
 		if (ok > 0) {
 			ret.setSucesso(true);
-			ret.setMensagem("inclusão do Coordenador realizada com sucesso");
+			ret.setMensagem("Coordenador "+msg.SUCESSO);
 		}
 		
 		System.out.println("Retorno:"+ ret.getMensagem());
