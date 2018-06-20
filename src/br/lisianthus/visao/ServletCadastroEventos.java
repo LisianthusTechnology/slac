@@ -40,6 +40,7 @@ import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
 import br.lisianthus.modelo.Participacao;
+import br.lisianthus.utils.Mensagens;
 import br.lisianthus.utils.Retorno;
 import net.sf.jasperreports.engine.JRException;
 
@@ -58,7 +59,8 @@ public class ServletCadastroEventos extends HttpServlet {
 	String separador;
 	String realPath;
 	String contextPath;
-
+	Mensagens msg = new Mensagens();
+	
 	public void init() {
 		servletContext = getServletContext();
 		separador = System.getProperty("file.separator");
@@ -192,7 +194,7 @@ public class ServletCadastroEventos extends HttpServlet {
 		try {
 			id_mod = preparaIdModalidade(req);
 		} catch (NumberFormatException e) {
-			erroMessage = "Campo ID em formato inválido, aceita somente número!<BR>\n";
+			erroMessage = msg.ERRO6+"<BR>\n";
 		}
 
 		String nome_mod = req.getParameter("nome");
@@ -213,7 +215,7 @@ public class ServletCadastroEventos extends HttpServlet {
 		try {
 			alunoid = preparaIdAluno(req);
 		} catch (NumberFormatException e) {
-			erroMessage = "Campo ID em formato inválido, aceita somente número!<BR>\n";
+			erroMessage = msg.ERRO6+"<BR>\n";
 		}
 
 		if (!erroMessage.equals("")) {
@@ -229,12 +231,11 @@ public class ServletCadastroEventos extends HttpServlet {
 		// Participacao participacao = new Participacao();
 		// receiveFile(req);
 		MiniTemplator t = getMiniTemplator("index");
-		Retorno ret = new Retorno();
-
+		Retorno ret; //= new Retorno();
 		ret = receiveFile(req);
 		buscaDadosAluno(t, req);
 		t.setVariable("message", ret.getMensagem());
-
+		System.out.println("Mensagem"+ret.getMensagem());
 		out.println(t.generateOutput());
 	}
 
@@ -286,7 +287,7 @@ public class ServletCadastroEventos extends HttpServlet {
 		// part.setNome_ac_part(auxPart);
 		List<Participacao> listaPart = controlePart.listarParticipacaoConsulta(part);
 		for (Participacao p : listaPart) {
-			if (p.getStatus().equalsIgnoreCase("A validar")) {
+			if (p.getStatus().equalsIgnoreCase("A VALIDAR")) {
 				tpl.setVariable("id_part", p.getId_participacao());
 				tpl.setVariable("chComputada", p.getCh_validada_part());
 				tpl.setVariable("chCadastrada", p.getCh_cadastrada_part());
@@ -364,7 +365,7 @@ public class ServletCadastroEventos extends HttpServlet {
 		System.out.println("Id da ativiade: " + part.getId_participacao());
 		Retorno ret = null;
 		if (part != null) {
-			if (op_validacao.equalsIgnoreCase("validar")) {
+			if (op_validacao.equalsIgnoreCase("VALIDAR")) {
 				System.out.println("Nome da ativiade: " + part.getNome_ac_part());
 				part.setStatus("VALIDADO");
 			} else {
@@ -388,7 +389,7 @@ public class ServletCadastroEventos extends HttpServlet {
 		try {
 			partid = preparaIdParticipacao(req);
 		} catch (NumberFormatException e) {
-			erroMessage = "Campo ID em formato inválido, aceita somente número!<BR>\n";
+			erroMessage = msg.ERRO6+"<BR>\n";
 		}
 
 		if (!erroMessage.equals("")) {
@@ -411,7 +412,7 @@ public class ServletCadastroEventos extends HttpServlet {
 		Retorno ret = null;
 		String status = req.getParameter("aluno_status");
 		System.out.println("status:" + status.toString());
-		if (status.equalsIgnoreCase("validar")) {
+		if (status.equalsIgnoreCase("validar")) { //VERIFICAR SE NÃO VAI DAR ERRO POR ESTAR COM LETRA MAIUSCULA NO BANCO DE DADOS
 			aluno.setPermissao(true);
 			ret = ctAluno.alterar(aluno);
 	
@@ -616,7 +617,6 @@ public class ServletCadastroEventos extends HttpServlet {
 		Aluno aluno = new Aluno();
 		Participacao participacao = new Participacao();
 		Date data_conclusao_part = new Date();
-		Retorno ret_aluno = new Retorno();
 		ControladorAluno controle_aluno = new ControladorAluno();
 		ControladorParticipacao controle_part = new ControladorParticipacao();
 
@@ -675,7 +675,7 @@ public class ServletCadastroEventos extends HttpServlet {
 
 		JasperPrint print = JasperFillManager.fillReport(report, null, new JRBeanCollectionDataSource(relatorio));
 
-		JasperExportManager.exportReportToPdfFile(print, "Relatorio_Alunos.pdf");
+		JasperExportManager.exportReportToPdfFile(print, "C:/Users/gleycy.souza/WorkspacePIDS/Relatorio_Alunos.pdf");
 		
 		 JasperViewer.viewReport(print, false);
 

@@ -16,6 +16,7 @@ import br.lisianthus.controle.ControladorAluno;
 import br.lisianthus.controle.ControladorCoordenador;
 import br.lisianthus.modelo.Aluno;
 import br.lisianthus.modelo.Coordenador;
+import br.lisianthus.utils.Mensagens;
 import br.lisianthus.utils.Retorno;
 
 public class ServletSessionLogin extends HttpServlet {
@@ -88,11 +89,13 @@ public class ServletSessionLogin extends HttpServlet {
 			throws ServletException, IOException {
 		HttpSession session = request.getSession();
 		session.invalidate();
+		Mensagens msg = new Mensagens();
+		
 		PrintWriter out = response.getWriter();
 
 		MiniTemplator tpl = getMiniTemplator("index");
 		if (withErrorMessage) {
-			tpl.setVariable("mensagem", "Erro ao realizar login");
+			tpl.setVariable("mensagem", msg.ERRO7);
 		}
 
 		out.println(tpl.generateOutput());

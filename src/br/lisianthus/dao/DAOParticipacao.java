@@ -11,6 +11,7 @@ import java.util.Date;
 import java.util.List;
 
 import br.lisianthus.modelo.Participacao;
+import br.lisianthus.utils.Mensagens;
 import br.lisianthus.utils.Retorno;
 
 //teste git
@@ -50,9 +51,6 @@ public class DAOParticipacao {
 	public Participacao verificar_carga_horaria() {
 		String sql = "select aluno_id_aluno, SUM(ch_validada_part) as ch_validada_part from participacao where status = 'VALIDADO' group by aluno_id_aluno";
 
-		//int carga_horaria = 0;
-		
-
 
 		try {
 			Participacao participacao = new Participacao();
@@ -76,7 +74,7 @@ public class DAOParticipacao {
 
 	public Retorno inserir(Participacao participacao) {
 		Retorno ret = new Retorno(false, "erro");
-
+		Mensagens msg = new Mensagens();
 		Retorno okValidar = validar(participacao);
 		if (!okValidar.isSucesso()) {
 			return okValidar;
@@ -106,14 +104,14 @@ public class DAOParticipacao {
 			// e.printStackTrace();
 			String message = e.getMessage();
 			if (e.getMessage().contains("participacao_pkey")) {
-				message = "ERRO:01 - Já existe um participacao com este id ";
+				message = msg.ERRO1;
 			}
 			ret.setSucesso(false);
 			ret.setMensagem(message);
 		}
 		if (ok > 0) {
 			ret.setSucesso(true);
-			ret.setMensagem("Inclusão da participação realizada com sucesso!");
+			ret.setMensagem("Participação "+msg.SUCESSO);
 		}
 
 		System.out.println("Retorno DAO:" + ret.getMensagem());
@@ -124,13 +122,13 @@ public class DAOParticipacao {
 
 	private Retorno validar(Participacao participacao) {
 		Retorno ret = new Retorno(true, "");
-
+		Mensagens msg = new Mensagens();
 		if (participacao == null) {
 			ret.setSucesso(false);
-			ret.setMensagem("participacao não foi definido, objeto inválido");
+			ret.setMensagem("Participação "+msg.ERRO2);
 		} else if (participacao.getNome_ac_part() == null || participacao.getNome_ac_part().equals("")) {
 			ret.setSucesso(false);
-			ret.setMensagem("O campo Nome é de preenchimento obrigatório");
+			ret.setMensagem(msg.ERRO3);
 		}
 		return ret;
 	}
@@ -166,7 +164,7 @@ public class DAOParticipacao {
 
 	public Retorno alterar(Participacao participacao) throws RuntimeException {
 		Retorno retorno_part;
-
+		Mensagens msg = new Mensagens();
 		retorno_part = validar(participacao);
 
 		String sql = "update participacao set status= " + preparaAtributoParaBD(participacao.getStatus())
@@ -179,7 +177,7 @@ public class DAOParticipacao {
 			ok = executaSQL(sql);
 			if (ok > 0) {
 				retorno_part.setSucesso(true);
-				retorno_part.setMensagem("MUDANÇA DO STATUS da Participação realizada com sucesso");
+				retorno_part.setMensagem(msg.ALTERASTATUS);
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

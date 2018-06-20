@@ -14,6 +14,7 @@ import java.util.List;
 import br.lisianthus.modelo.Aluno;
 import br.lisianthus.modelo.Coordenador;
 import br.lisianthus.modelo.Participacao;
+import br.lisianthus.utils.Mensagens;
 import br.lisianthus.utils.Retorno;
 
 public class DAOAluno {
@@ -56,10 +57,12 @@ public class DAOAluno {
 
 	public Retorno inserir_data_conclusao(Aluno aluno){
 		Retorno ret = new Retorno(false, "erro");
+		Mensagens msg = new Mensagens();
+		
 		//Retorno okValidar = validar(aluno);
 		if (aluno == null) {
 			ret.setSucesso(false);
-			ret.setMensagem("ERRO na inclusão da DATA do ALUNO realizada com sucesso");
+			ret.setMensagem(msg.ERRO4);
 			return ret;
 		}
 		
@@ -81,7 +84,7 @@ public class DAOAluno {
 		
 		if (ok > 0) {
 			ret.setSucesso(true);
-			ret.setMensagem("inclusão da DATA do ALUNO realizada com sucesso");
+			ret.setMensagem("Data de Conclusão da Carga Horária "+msg.SUCESSO);
 		}
 
 		System.out.println("Retorno:" + ret.getMensagem());
@@ -91,7 +94,8 @@ public class DAOAluno {
 	}
 	public Retorno inserir(Aluno aluno) {
 		Retorno ret = new Retorno(false, "erro");
-		boolean permissao_aluno = true;
+		Mensagens msg = new Mensagens();
+		
 		Retorno okValidar = validar(aluno);
 		if (!okValidar.isSucesso()) {
 			return okValidar;
@@ -110,14 +114,14 @@ public class DAOAluno {
 			// e.printStackTrace();
 			String message = e.getMessage();
 			if (e.getMessage().contains("Aluno_pkey")) {
-				message = "ERRO:01 - Já existe um Aluno com este id ";
+				message = msg.ERRO1;
 			}
 			ret.setSucesso(false);
 			ret.setMensagem(message);
 		}
 		if (ok > 0) {
 			ret.setSucesso(true);
-			ret.setMensagem("inclusão do Aluno realizada com sucesso");
+			ret.setMensagem("Aluno "+msg.SUCESSO);
 		}
 
 		System.out.println("Retorno:" + ret.getMensagem());
@@ -128,13 +132,14 @@ public class DAOAluno {
 
 	private Retorno validar(Aluno aluno) {
 		Retorno ret = new Retorno(true, "");
-
+		Mensagens msg = new Mensagens();
+		
 		if (aluno == null) {
 			ret.setSucesso(false);
-			ret.setMensagem("Aluno não foi definido, objeto inválido");
+			ret.setMensagem("Aluno "+msg.ERRO2);
 		} else if (aluno.getNome_aluno() == null || aluno.getNome_aluno().equals("")) {
 			ret.setSucesso(false);
-			ret.setMensagem("O campo Nome é de preenchimento obrigatório");
+			ret.setMensagem(msg.ERRO5);
 		} 
 
 		return ret;
@@ -172,6 +177,7 @@ public class DAOAluno {
 	
 	public Retorno alterar(Aluno aluno) throws RuntimeException {
 		Retorno testeret;
+		Mensagens msg = new Mensagens();
 		
 		testeret = validar(aluno);
 			
@@ -186,7 +192,7 @@ public class DAOAluno {
 			ok = executaAlteracao(sql);
 			if (ok > 0) {
 				testeret.setSucesso(true);
-				testeret.setMensagem("ALTERAÇÃO do Aluno realizada com sucesso");
+				testeret.setMensagem(msg.ALTERASTATUS);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

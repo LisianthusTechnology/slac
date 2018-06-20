@@ -10,6 +10,7 @@ import java.util.List;
 
 import br.lisianthus.modelo.AtividadeComplementar;
 import br.lisianthus.modelo.Modalidade;
+import br.lisianthus.utils.Mensagens;
 import br.lisianthus.utils.Retorno;
 
 public class DAOAtividadeComplementar {
@@ -105,7 +106,8 @@ public class DAOAtividadeComplementar {
 	
 	public Retorno inserir(AtividadeComplementar ac) {
 		Retorno ret = new Retorno(false, "erro");
-
+		Mensagens msg = new Mensagens();
+		
 		String sql = "insert into atividade_complementar(descricao_ac, ch_min_ac, ch_max_ac, modalidade_id_mod)"
 				+ " values(" + "" + preparaAtributoParaBD(ac.getDescricao_ac()) + ","
 				+ preparaAtributoParaBD(ac.getCh_min_ac()) + "," + preparaAtributoParaBD(ac.getCh_max_ac()) + ","
@@ -118,14 +120,14 @@ public class DAOAtividadeComplementar {
 			// e.printStackTrace();
 			String message = e.getMessage();
 			if (e.getMessage().contains("AtividadeComplementar_pkey")) {
-				message = "ERRO:01 - Já existe um Atividade com este id ";
+				message = msg.ERRO1;
 			}
 			ret.setSucesso(false);
 			ret.setMensagem(message);
 		}
 		if (ok > 0) {
 			ret.setSucesso(true);
-			ret.setMensagem("Inclusão da atividade realizada com sucesso");
+			ret.setMensagem("Atividade Complementar "+msg.SUCESSO);
 		}
 
 		System.out.println("Retorno:" + ret.getMensagem());
