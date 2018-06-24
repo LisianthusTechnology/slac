@@ -5,9 +5,10 @@ public class Mensagens {
 
 	public final String SUCESSO = "salvo com sucesso!";
 	public final String CAMPOVAZIO = "Preencha os campos obrigatórios do formulário!";
-	public final String ERROLOGIN = "Login ou senha inválidos. Tente novamente.";
+	public final String ERROLOGIN = "Login ou senha inválidos. Tente novamente."; //ver se ta usando mesmo
 	public final String VALIDAALUNO = "Aluno validado com sucesso!";
 	public final String INVALIDAALUNO = "Aluno invalidado com sucesso!";
+	public final String LOGININVALIDO = "Seu login está inválido ou aguardando validação do coordenador. Procure o Coordenador de Atividades Complementares ou responsável para saber qual sua situação dentro do SLAC.";
 	public final String AVISO = "Faça atividades referentes à outras modalidades!"; 
 	/*AÇÃO NÃO IMPLEMENTADA*/
 	public final String ARQPDF = "Arquivo deve ser em formato PDF!";
@@ -22,4 +23,5 @@ public class Mensagens {
 	public final String ERRO5 = "O campo NOME é de preenchimento obrigatório!";
 	public final String ERRO6 = "O campo Id é de preenchimento obrigatório e deve ser maior que 0!";
 	public final String ERRO7 = "Erro ao realizar login. Tente novamente.";	
+	public final String ERRO8 = "Erro na conversão (String para Integer)";
 }

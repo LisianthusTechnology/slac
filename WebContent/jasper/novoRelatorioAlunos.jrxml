@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.1.1.final using JasperReports Library version 6.1.1  -->
-<!-- 2018-06-15T16:23:37 -->
+<!-- 2018-06-24T15:17:24 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="novoRelatorioAlunos" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="13acf49e-4913-4d1b-bccc-113817ad15d1">
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<style name="Title" forecolor="#FFFFFF" fontName="Times New Roman" fontSize="50" isBold="false"/>
@@ -17,14 +17,14 @@
 		<![CDATA[select nome, matricula, ano_ingresso, data_conclusao_carga from aluno where data_conclusao_carga is not null]]>
 	</queryString>
 	<field name="nome" class="java.lang.String"/>
-	<field name="matricula" class="java.lang.Integer"/>
+	<field name="matricula" class="java.lang.Long"/>
 	<field name="ano_ingresso" class="java.lang.Integer"/>
 	<field name="data_conclusao_carga" class="java.util.Date"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="160" splitType="Stretch">
+		<band height="158" splitType="Stretch">
 			<frame>
 				<reportElement mode="Opaque" x="0" y="0" width="553" height="95" backcolor="#E5E9F2" uuid="6c6ca4e1-17cd-4913-93d6-5e670ea9ae8a"/>
 				<staticText>
@@ -36,7 +36,7 @@
 				</staticText>
 			</frame>
 			<frame>
-				<reportElement mode="Opaque" x="0" y="100" width="553" height="32" forecolor="#000000" backcolor="#E5E9F2" uuid="e3c14156-5b51-4201-918b-97fdc012e5d4"/>
+				<reportElement mode="Opaque" x="0" y="100" width="553" height="50" forecolor="#000000" backcolor="#E5E9F2" uuid="e3c14156-5b51-4201-918b-97fdc012e5d4"/>
 				<textField pattern="EEEEE dd MMMMM yyyy">
 					<reportElement x="408" y="6" width="144" height="20" forecolor="#47525E" uuid="5c3301e7-a737-4c59-8a2f-a6c79fd1adb8"/>
 					<textElement textAlignment="Right">
@@ -44,6 +44,20 @@
 					</textElement>
 					<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
 				</textField>
+				<staticText>
+					<reportElement style="Column header" x="0" y="2" width="170" height="28" forecolor="#47525E" uuid="5a5835cf-0c1f-4df9-96f0-51fab5e79030"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="13" isBold="false"/>
+					</textElement>
+					<text><![CDATA[Curso: História]]></text>
+				</staticText>
+				<staticText>
+					<reportElement style="Column header" x="290" y="2" width="115" height="28" forecolor="#47525E" uuid="81fb144b-b034-4a2f-b329-e70bc415ab34"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="13" isBold="false"/>
+					</textElement>
+					<text><![CDATA[Data da emissão:]]></text>
+				</staticText>
 			</frame>
 		</band>
 	</title>
@@ -118,7 +132,7 @@
 		</band>
 	</detail>
 	<columnFooter>
-		<band height="40" splitType="Stretch"/>
+		<band height="17" splitType="Stretch"/>
 	</columnFooter>
 	<pageFooter>
 		<band height="110" splitType="Stretch">

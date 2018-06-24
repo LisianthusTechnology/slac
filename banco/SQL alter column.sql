@@ -4,4 +4,6 @@ ALTER TABLE modalidade ALTER COLUMN nome_mod TYPE varchar(100) USING nome_mod::v
 
 ALTER TABLE participacao ALTER COLUMN certificado_part TYPE varchar(200) 
 
+ALTER TABLE aluno ALTER COLUMN matricula TYPE bigint
+
 ALTER TABLE aluno DROP COLUMN coordenador_ac_id_admin 

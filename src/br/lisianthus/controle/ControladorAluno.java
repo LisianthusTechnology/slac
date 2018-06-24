@@ -18,7 +18,7 @@ public class ControladorAluno {
 	
 	public Retorno inserir(Aluno aluno){
 		
-		Retorno ret = new Retorno();
+		Retorno ret;// = new Retorno();
 		ret = daoaluno.inserir(aluno);
 		return ret;
 	}

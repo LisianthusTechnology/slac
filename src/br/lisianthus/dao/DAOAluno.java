@@ -104,9 +104,9 @@ public class DAOAluno {
 		String sql = "insert into aluno(cpf, nome, senha, email, matricula, ano_ingresso, permissao)"
 				+ " values(" + "" + preparaAtributoParaBD(aluno.getCpf()) + ","
 				+ preparaAtributoParaBD(aluno.getNome_aluno()) + "," + preparaAtributoParaBD(aluno.getSenha()) + ","
-				+ preparaAtributoParaBD(aluno.getEmail()) + "," + preparaAtributoParaBD(aluno.getMatricula()) + ","
-				+ preparaAtributoParaBD(aluno.getAno_ingresso()) + "," + preparaAtributoParaBD(aluno.isPermissao())+ ")";
-		System.out.println("SQL-Aluno:" + sql);
+				+ preparaAtributoParaBD(aluno.getEmail()) + ", '" + aluno.getMatricula() + "', '"
+				+ aluno.getAno_ingresso() + "'," + aluno.isPermissao()+ ")";
+		System.out.println("SQL-Aluno-Inserir:" + sql);
 		int ok = 0;
 		try {
 			ok = executaAlteracao(sql);
@@ -116,6 +116,7 @@ public class DAOAluno {
 			if (e.getMessage().contains("Aluno_pkey")) {
 				message = msg.ERRO1;
 			}
+			
 			ret.setSucesso(false);
 			ret.setMensagem(message);
 		}
@@ -248,7 +249,7 @@ public class DAOAluno {
 				String nome_a = result.getString("nome");
 				String senha_a = result.getString("senha");
 				String email_a = result.getString("email");
-				Integer matricula_a = result.getInt("matricula");
+				Long matricula_a = result.getLong("matricula");
 				Integer ano_ingresso_a = result.getInt("ano_ingresso");
 				boolean permissao_a = result.getBoolean("permissao");
 
@@ -281,7 +282,7 @@ public class DAOAluno {
 				aluno.setNome_aluno(resultSet.getString("nome"));
 				aluno.setSenha(resultSet.getString("senha"));
 				aluno.setEmail(resultSet.getString("email"));
-				aluno.setMatricula(resultSet.getInt("matricula"));
+				aluno.setMatricula(resultSet.getLong("matricula"));
 				aluno.setAno_ingresso(resultSet.getInt("ano_ingresso"));
 				aluno.setPermissao(resultSet.getBoolean("permissao"));
 				aluno.setCoord_ac_id(resultSet.getInt("coordenador_ac_id_admin"));
@@ -314,7 +315,7 @@ public class DAOAluno {
 				aluno.setNome_aluno(resultSet.getString("nome"));
 				aluno.setSenha(resultSet.getString("senha"));
 				aluno.setEmail(resultSet.getString("email"));
-				aluno.setMatricula(resultSet.getInt("matricula"));
+				aluno.setMatricula(resultSet.getLong("matricula"));
 				aluno.setAno_ingresso(resultSet.getInt("ano_ingresso"));
 				aluno.setPermissao(resultSet.getBoolean("permissao"));
 				
@@ -344,7 +345,7 @@ public List<Aluno> listaParaRelatorio(Date data_inicio, Date data_fim){
 			
 			while(results.next()){
 	
-				Integer matricula = results.getInt("matricula");
+					Long matricula = results.getLong("matricula");
 					String nome = results.getString("nome");
 					Integer ano_ingresso = results.getInt("ano_ingresso");
 					Date data_conclusao_carga = results.getDate("data_conclusao_carga");
