@@ -1,122 +1,134 @@
 package br.lisianthus.visao;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import biz.source_code.miniTemplator.MiniTemplator;
+import biz.source_code.miniTemplator.MiniTemplator.TemplateSyntaxException;
+import br.lisianthus.controle.ControladorAluno;
+import br.lisianthus.controle.ControladorCoordenador;
 import br.lisianthus.modelo.Aluno;
+import br.lisianthus.modelo.Coordenador;
+import br.lisianthus.utils.Mensagens;
+import br.lisianthus.utils.Retorno;
 
-public class ServletSessionLogin extends HttpServlet{
-	
-	  public void doGet(HttpServletRequest request, HttpServletResponse
-	    response) throws ServletException, IOException {
-	 
-	    sendLoginForm(request, response, false);
-	  }
+public class ServletSessionLogin extends HttpServlet {
 
-	  public void doPost(HttpServletRequest request, HttpServletResponse
-	    response) throws ServletException, IOException {
+	ServletContext servletContext;
+	String separador;
+	String realPath;
+	String contextPath;
 
-	    String userName = request.getParameter("loginaluno");
-	    String password = request.getParameter("senha");
-	    if(userName.contains("^[a-Z]")){
-		    if (login(userName, password)) {
-			      //send HttpSession Object to the browser
-			      HttpSession session = request.getSession(true);
-			      session.setAttribute("loggedIn", new String("true"));
-			      String url = (String) session.getAttribute("UltimaURL");//se aluno mostrar uma tela, se coordd mostrar outra
-			      url = url==null ? "eventos?op=opcoes_coord" : url;//se url for igual a nulo vai pra pagina principal se nao entra no update
-			      response.sendRedirect(url);
-			    }
-			    else {
-			      sendLoginForm(request, response, true);
-			    }
+	public void init() {
+		servletContext = getServletContext();
+		separador = System.getProperty("file.separator");
+		realPath = servletContext.getRealPath("/");
+		contextPath = servletContext.getContextPath();
+
+	}
+
+	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		sendLoginForm(request, response, false);
+
+	}
+
+	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		realizaLogin(request, response);
+	}
+
+	private void realizaLogin(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+		String userName = request.getParameter("loginaluno");
+		String password = request.getParameter("senha");
+		Retorno ret = new Retorno();
+
+		if (userName.matches("[a-zA-Z]*")) {
+			Coordenador coord = loginCoord(userName, password);
+			if(coord != null){
+				ret.setSucesso();
+			}
+			if (ret.isSucesso()) {
+				// send HttpSession Object to the browser
+				HttpSession session = request.getSession(true);
+				session.setAttribute("loggedIn", new String("true"));
+				session.setAttribute("Coordenador", coord);
+				String url = (String) session.getAttribute("UltimaURL");
+				url = url == null ? "eventos?op=opcoescoord" : url;
+				response.sendRedirect(url);
+			} else {
+				sendLoginForm(request, response, true);
+			}
+		} else if (userName.matches("^[0-9]*")){
+			Aluno aluno = loginAluno(userName, password);
+			if(aluno != null){
+				ret.setSucesso();
+			}
+			if (ret.isSucesso()) {
+				// send HttpSession Object to the browser
+				HttpSession session = request.getSession(true);
+				session.setAttribute("loggedIn", new String("true"));
+				session.setAttribute("Aluno", aluno);
+				String url = (String) session.getAttribute("UltimaURL");
+				url = url == null ? "eventos?op=index" : url;
+				response.sendRedirect(url);
+			} else {
+				sendLoginForm(request, response, true);
+			}
 		}else{
-	    
-	    if (login(userName, password)) {
-	      //send HttpSession Object to the browser
-	      HttpSession session = request.getSession(true);
-	      session.setAttribute("loggedIn", new String("true"));
-	      String url = (String) session.getAttribute("UltimaURL");//se aluno mostrar uma tela, se coordd mostrar outra
-	      url = url==null ? "eventos?op=index" : url;//se url for igual a nulo vai pra pagina principal se nao entra no update
-	      response.sendRedirect(url);
-	    }
-	    else {
-	      sendLoginForm(request, response, true);
-	    }
+			sendLoginForm(request, response, true);
 		}
-	  }
+	}
 
-	  private void sendLoginForm(HttpServletRequest request, HttpServletResponse response, boolean
-	    withErrorMessage)
-	    throws ServletException, IOException {
+	private void sendLoginForm(HttpServletRequest request, HttpServletResponse response, boolean withErrorMessage)
+			throws ServletException, IOException {
+		HttpSession session = request.getSession();
+		session.invalidate();
+		Mensagens msg = new Mensagens();
+		
+		PrintWriter out = response.getWriter();
 
-	    response.setContentType("text/html");
-	    PrintWriter out = response.getWriter();
-	    out.println("<HTML>");
-	    out.println("<HEAD>");
-	    out.println("<TITLE>Login</TITLE>");
-	    out.println("<link rel=stylesheet type=text/css href=estilo.css>");
-	    out.println("</HEAD>");
-	    out.println("<BODY>");
-	    out.println("<CENTER>");
-	    out.println("<div>");
-	    if (withErrorMessage) {
-	      out.println("Falha ao fazer login. Tente novamente.<BR>");
-	    }
-	    out.println("<BR>");
-	    out.println("<BR><H2>Login</H2>");
-	    out.println("<BR>");
-	    out.println("<BR>Por favor insira login e senha.");
-	    out.println("<BR>");
-	    out.println("<BR><FORM METHOD=POST>");
-	    out.println("<input type='hidden' name='id' value='"+request.getParameter("id")+"'>");
-	    out.println("<TABLE>");
-	    out.println("<TR>");
-	    out.println("<TD>Nome de usuário:</TD>");
-	    out.println("<TD><INPUT TYPE=TEXT NAME=userName></TD>");
-	    out.println("</TR>");
-	    out.println("<TR>");
-	    out.println("<TD>Senha:</TD>");
-	    out.println("<TD><INPUT TYPE=PASSWORD NAME=password></TD>");
-	    out.println("</TR>");
-	    out.println("<TR>");
-	    out.println("<TD ALIGN=RIGHT COLSPAN=2>");
-	    out.println("<a class=buttonWhite href=search>Voltar</a>");
-	    out.println("<INPUT class=buttonColor TYPE=SUBMIT VALUE=Login></TD>");
-	    out.println("</TR>");
-	    out.println("</TABLE>");
-	    out.println("</FORM>");
-	    out.println("</div>");
-	    out.println("</CENTER>");
-	    out.println("</BODY>");
-	    out.println("</HTML>");
-	  }
+		MiniTemplator tpl = getMiniTemplator("index");
+		if (withErrorMessage) {
+			tpl.setVariable("mensagem", msg.ERRO7);
+		}
 
-	  public static boolean login(String userName, String password) {
+		out.println(tpl.generateOutput());
+	}
 
-		  String usuario = userName;
 
-		  if(usuario.contains("^[a-Z]")){
-			  if(userName != null && userName.equals("joilson")&&
-					  password != null && password.equals("senha")){
-				  return true;
-			  }
-			  else{
-				  return false;
-			  }
-		  }else{
-			  if(userName != null && userName.equals("70327896175")&&
-					  password != null && password.equals("senha")){
-				  return true;
-			  }else{
-				  return false;
-			  }
-		  }
-	  }
+	public static Coordenador loginCoord(String userName, String password) {
+
+			ControladorCoordenador cont = new ControladorCoordenador();
+			Coordenador coord = new Coordenador(userName, password);
+			Coordenador coordenador = cont.obter(coord);
+			if (coordenador != null) {
+				return coordenador;
+			}
+		return null;
+	}
+
+	public static Aluno loginAluno(String userName, String password){
+			
+			ControladorAluno contA = new ControladorAluno();
+			Aluno a = new Aluno(new Long(userName), password);
+			Aluno aluno = contA.obter(a);
+			if(aluno != null && aluno.isPermissao()){
+				return aluno;
+			}
+		return null;
+	}
+
+	public MiniTemplator getMiniTemplator(String op) throws TemplateSyntaxException, IOException {
+		String caminhoAmigoIndex = realPath + separador + "WEB-INF" + separador + "login" + separador + "login_" + op
+				+ ".html";
+		System.out.println("CaminhoAmigoIndex:" + caminhoAmigoIndex);
+		MiniTemplator tpl = new MiniTemplator(caminhoAmigoIndex);
+		return tpl;
+	}
 }
-

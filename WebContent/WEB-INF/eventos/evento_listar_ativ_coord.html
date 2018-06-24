@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 <title>Cadastro de Evento</title>
 <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
 <link href="bootstrap/css/css-project.css?version=17" rel="stylesheet">
@@ -10,6 +10,8 @@
 	type="text/javascript"></script>
 <script type="text/javascript"
 	src="bootstrap/js/select_inserir.js?version=1"></script>
+<script src="bootstrap/js/bootstrap.js"></script>
+	
 </head>
 <body class="background">
 	<nav class="navbar navbar-default color">
@@ -23,15 +25,24 @@
 						<strong>SLAC</strong>
 					</h4>
 					<p class="headtextslac">
-						Sistema de Lan√ßamento de <br>Atividades Complementares
+						Sistema de LanÁamento de <br>Atividades Complementares
 					</p>
 				</div>
 				<div class="col-md-4 text-right">
-					<h4 class="headslac">
-						<strong>Ol√°, <br> Jo√£o Da Silva <span
-							class="glyphicon glyphicon-user"></span>
-						</strong>
-					</h4>
+					<ul class="nav navbar-nav navbar-right">
+						<li class="dropdown">
+          					<h4  class="headslac" class="dropdown-toggle" data-toggle="dropdown" role="button"
+           						aria-haspopup="true" aria-expanded="false">
+           						<strong><span class="glyphicon glyphicon-user"></span>
+           							Ol·, <br> ${nome_coord}	
+								</strong>
+								<span class="caret"></span>
+							</h4>
+          					<ul class="dropdown-menu">
+            					<li><a href="login?op=index">Sair</a>
+          					</ul>
+        				</li>
+        			</ul>
 				</div>
 			</div>
 		</div>
@@ -61,11 +72,11 @@
 			name="listaparticipacao">
 			<thead>
 				<tr>
-					<th class="centralizar">Carga hor√°ria computada</th>
-					<th class="centralizar">Carga hor√°ria da atividade</th>
-					<th class="centralizar">Atividades Cadastradas</th>
-					<th class="centralizar">Valida√ß√µes</th>
-					<th class="centralizar">A√ßoes
+					<th class="centralizar">Carga hor·ria computada</th>
+					<th class="centralizar">Carga hor·ria da atividade</th>
+					<th class="centralizar">Nome do evento</th>
+					<th class="centralizar">ValidaÁıes</th>
+					<th class="centralizar">AÁoes
 					<th>
 				</tr>
 			</thead>
@@ -83,7 +94,8 @@
 		</table>
 		<br>
 		<br>
-		<a href="eventos?op=index" class="btnvoltar">Voltar</a> 
+		<p>${message}</p>
+		<a href="eventos?op=opcoescoord" class="btnvoltar">Voltar</a> 
 	</form>
 </body>
 </html>

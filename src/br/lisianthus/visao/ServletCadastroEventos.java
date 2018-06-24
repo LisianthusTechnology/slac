@@ -1,6 +1,7 @@
 package br.lisianthus.visao;
 
 import java.io.File;
+
 import java.io.IOException;
 import com.google.gson.Gson;
 
@@ -8,18 +9,19 @@ import java.io.PrintWriter;
 //import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
-
 import java.util.Date;
 import java.util.Iterator;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
+
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import biz.source_code.miniTemplator.MiniTemplator;
 import biz.source_code.miniTemplator.MiniTemplator.TemplateSyntaxException;
@@ -29,6 +31,7 @@ import br.lisianthus.controle.ControladorModalidade;
 import br.lisianthus.controle.ControladorParticipacao;
 import br.lisianthus.modelo.Aluno;
 import br.lisianthus.modelo.AtividadeComplementar;
+import br.lisianthus.modelo.Coordenador;
 import br.lisianthus.modelo.Modalidade;
 
 import org.apache.commons.fileupload.FileItem;
@@ -37,7 +40,17 @@ import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
 import br.lisianthus.modelo.Participacao;
+import br.lisianthus.utils.Mensagens;
 import br.lisianthus.utils.Retorno;
+import net.sf.jasperreports.engine.JRException;
+
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.view.JasperViewer;
 
 @SuppressWarnings("serial")
 public class ServletCadastroEventos extends HttpServlet {
@@ -46,19 +59,27 @@ public class ServletCadastroEventos extends HttpServlet {
 	String separador;
 	String realPath;
 	String contextPath;
-
+	Mensagens msg = new Mensagens();
+	
 	public void init() {
 		servletContext = getServletContext();
 		separador = System.getProperty("file.separator");
 		realPath = servletContext.getRealPath("/");
 		contextPath = servletContext.getContextPath();
-
 	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		executaPagina(request, response);
+		try {
+			executaPagina(request, response);
+		} catch (TemplateSyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JRException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -79,10 +100,11 @@ public class ServletCadastroEventos extends HttpServlet {
 	 *            escrita na tela, entre outras formas.
 	 * @throws TemplateSyntaxException
 	 * @throws IOException
+	 * @throws JRException
 	 */
 
 	private void executaPagina(HttpServletRequest req, HttpServletResponse resp)
-			throws TemplateSyntaxException, IOException {
+			throws TemplateSyntaxException, IOException, JRException {
 
 		String nomeMetodo = null;
 		String op = req.getParameter("op");
@@ -93,13 +115,18 @@ public class ServletCadastroEventos extends HttpServlet {
 			MiniTemplator tpl = getMiniTemplator(op);
 
 			if (op.equalsIgnoreCase("inserir")) {
+				buscaDadosAluno(tpl, req);
 				listarModalidade(req, out, tpl);
-			} else {
+			} else if (op.equalsIgnoreCase("index")){
+				buscaDadosAluno(tpl, req);
+				out.println(tpl.generateOutput());
+			}else {
 				out.println(tpl.generateOutput());
 			}
-		} else {
+		}else{			
 			nomeMetodo = op + "Participacao";
 			System.out.println(nomeMetodo);
+			cargahorariatotal();
 			try {
 				Class<?> cls;
 
@@ -142,6 +169,16 @@ public class ServletCadastroEventos extends HttpServlet {
 
 			}
 		}
+
+	}
+	// }
+
+	private void buscaDadosAluno(MiniTemplator tpl, HttpServletRequest req) {
+		HttpSession session = req.getSession(true);
+		Aluno aluno = (Aluno) session.getAttribute("Aluno");
+		if(aluno != null){
+			tpl.setVariable("nome_aluno", aluno.getNome_aluno());
+		}
 	}
 
 	/*
@@ -157,7 +194,7 @@ public class ServletCadastroEventos extends HttpServlet {
 		try {
 			id_mod = preparaIdModalidade(req);
 		} catch (NumberFormatException e) {
-			erroMessage = "Campo ID em formato inválido, aceita somente número!<BR>\n";
+			erroMessage = msg.ERRO6+"<BR>\n";
 		}
 
 		String nome_mod = req.getParameter("nome");
@@ -178,7 +215,7 @@ public class ServletCadastroEventos extends HttpServlet {
 		try {
 			alunoid = preparaIdAluno(req);
 		} catch (NumberFormatException e) {
-			erroMessage = "Campo ID em formato inválido, aceita somente número!<BR>\n";
+			erroMessage = msg.ERRO6+"<BR>\n";
 		}
 
 		if (!erroMessage.equals("")) {
@@ -193,26 +230,42 @@ public class ServletCadastroEventos extends HttpServlet {
 	public void salvarParticipacao(HttpServletRequest req, PrintWriter out) throws IOException {
 		// Participacao participacao = new Participacao();
 		// receiveFile(req);
-		MiniTemplator t = getMiniTemplator("message");
-		Retorno ret = new Retorno();
-
+		MiniTemplator t = getMiniTemplator("index");
+		Retorno ret; //= new Retorno();
 		ret = receiveFile(req);
-
+		buscaDadosAluno(t, req);
 		t.setVariable("message", ret.getMensagem());
-
+		System.out.println("Mensagem"+ret.getMensagem());
 		out.println(t.generateOutput());
 	}
 
 	public void opcoescoordParticipacao(HttpServletRequest req, PrintWriter out)
 			throws TemplateSyntaxException, IOException {
-		MiniTemplator tpl = this.getMiniTemplator("opcoes_coord");
+			MiniTemplator tpl = this.getMiniTemplator("opcoes_coord");
+			buscaDadoCoord(req, tpl, out);
+			out.println(tpl.generateOutput());
+		
+	}
+	
+	public void dataRelatorioParticipacao(HttpServletRequest req, PrintWriter out) throws TemplateSyntaxException, IOException{
+		MiniTemplator tpl = this.getMiniTemplator("datas_relatorio");
+		buscaDadoCoord(req, tpl, out);
 		out.println(tpl.generateOutput());
-
+	}
+	
+	private void buscaDadoCoord(HttpServletRequest req, MiniTemplator tpl, PrintWriter out){
+		HttpSession session = req.getSession(true);
+		String logado = (String) session.getAttribute("loggedIn");
+		if(logado.equalsIgnoreCase("true")){
+			Coordenador coord = (Coordenador) session.getAttribute("Coordenador");	
+			tpl.setVariable("nome_coord", coord.getNome());
+		}
 	}
 
 	public void alunoscoordParticipacao(HttpServletRequest req, PrintWriter out)
 			throws TemplateSyntaxException, IOException {
 		MiniTemplator tpl = this.getMiniTemplator("alunos_coord");
+		buscaDadoCoord(req, tpl, out);
 		listarAlunosValidacao(req, out, tpl);
 		out.println(tpl.generateOutput());
 
@@ -221,6 +274,7 @@ public class ServletCadastroEventos extends HttpServlet {
 	public void listarativcoordParticipacao(HttpServletRequest req, PrintWriter out)
 			throws TemplateSyntaxException, IOException {
 		MiniTemplator tpl = this.getMiniTemplator("listar_ativ_coord");
+		buscaDadoCoord(req, tpl, out);
 		listarAtividadesParaCoord(req, out, tpl);
 		out.println(tpl.generateOutput());
 	}
@@ -231,9 +285,9 @@ public class ServletCadastroEventos extends HttpServlet {
 		Participacao part = new Participacao();
 		// String auxPart = req.getParameter("pesquisaPart");
 		// part.setNome_ac_part(auxPart);
-		List<Participacao> listaPart = controlePart.listarParticipacaoConsulta(part);
+		List<Participacao> listaPart = controlePart.listarParticipacaocoorConsulta(part);
 		for (Participacao p : listaPart) {
-			if (p.getStatus().equalsIgnoreCase("A validar")) {
+			if (p.getStatus().equalsIgnoreCase("A VALIDAR")) {
 				tpl.setVariable("id_part", p.getId_participacao());
 				tpl.setVariable("chComputada", p.getCh_validada_part());
 				tpl.setVariable("chCadastrada", p.getCh_cadastrada_part());
@@ -308,22 +362,23 @@ public class ServletCadastroEventos extends HttpServlet {
 		ControladorParticipacao ctp = new ControladorParticipacao();
 		Participacao part = getParticipacaoFromRequest(req);
 		part = ctp.obterParticipacao(part.getId_participacao());
-		System.out.println("Id da ativiade: "+part.getId_participacao());
+		System.out.println("Id da ativiade: " + part.getId_participacao());
 		Retorno ret = null;
 		if (part != null) {
-			if (op_validacao.equalsIgnoreCase("validar")) {
-				System.out.println("Nome da ativiade: "+part.getNome_ac_part());
+			if (op_validacao.equalsIgnoreCase("VALIDAR")) {
+				System.out.println("Nome da ativiade: " + part.getNome_ac_part());
 				part.setStatus("VALIDADO");
 			} else {
 				part.setStatus("INVALIDADO");// VER COMO COLOCAR A OBSERVAÇÃO DO
-												// COORDENADOR
-
+												// COORDENADO
 			}
 		}
-		MiniTemplator t = getMiniTemplator("message");
+		MiniTemplator t = getMiniTemplator("listar_ativ_coord");
 		ret = ctp.alterarParticipacao(part);
 		t.setVariable("message", ret.getMensagem());
-		System.out.println("Mensagem: "+ret.getMensagem());
+		buscaDadoCoord(req, t, out);
+		listarAtividadesParaCoord(req, out, t);
+		System.out.println("Mensagem: " + ret.getMensagem());
 		out.println(t.generateOutput());
 	}
 
@@ -334,7 +389,7 @@ public class ServletCadastroEventos extends HttpServlet {
 		try {
 			partid = preparaIdParticipacao(req);
 		} catch (NumberFormatException e) {
-			erroMessage = "Campo ID em formato inválido, aceita somente número!<BR>\n";
+			erroMessage = msg.ERRO6+"<BR>\n";
 		}
 
 		if (!erroMessage.equals("")) {
@@ -357,32 +412,27 @@ public class ServletCadastroEventos extends HttpServlet {
 		Retorno ret = null;
 		String status = req.getParameter("aluno_status");
 		System.out.println("status:" + status.toString());
-		if (status.equalsIgnoreCase("validar")) {
+		if (status.equalsIgnoreCase("validar")) { //VERIFICAR SE NÃO VAI DAR ERRO POR ESTAR COM LETRA MAIUSCULA NO BANCO DE DADOS
 			aluno.setPermissao(true);
-			// System.out.println("Denrto da
-			// servlet"+ctAluno.obter(aluno.getId_aluno())+"permissao:"+aluno.getPermissao());
 			ret = ctAluno.alterar(aluno);
-			// System.out.println(ctAluno.obter(aluno.getId_aluno())+"permissao
-			// 2:"+aluno.getPermissao());
+	
 			System.out.println("Retorno:" + ret.getMensagem());
-			MiniTemplator t = getMiniTemplator("message");
+			MiniTemplator t = getMiniTemplator("alunos_coord");
 
 			t.setVariable("message", ret.getMensagem());
-
+			listarAlunosValidacao(req, out, t);
 			out.println(t.generateOutput());
 
 		} else {
 			aluno.setPermissao(false);
-			// System.out.println("Denrto da
-			// servlet"+ctAluno.obter(aluno.getId_aluno())+"permissao:"+aluno.getPermissao());
+			
 			ret = ctAluno.alterar(aluno);
-			// System.out.println(ctAluno.obter(aluno.getId_aluno())+"permissao
-			// 2:"+aluno.getPermissao());
+
 			System.out.println("Retorno:" + ret.getMensagem());
-			MiniTemplator t = getMiniTemplator("message");
+			MiniTemplator t = getMiniTemplator("alunos_coord");
 
 			t.setVariable("message", ret.getMensagem());
-
+			listarAlunosValidacao(req, out, t);
 			out.println(t.generateOutput());
 		}
 
@@ -481,7 +531,8 @@ public class ServletCadastroEventos extends HttpServlet {
 
 		FileItemFactory factory = new DiskFileItemFactory();
 		ServletFileUpload upload = new ServletFileUpload(factory);
-		File dir = new File(req.getContextPath() + "certificado");
+		//File dir = new File(req.getContextPath() + "certificado");
+		File dir = new File(realPath + separador+"repositorio-certificados");
 		Participacao part = new Participacao();
 		Retorno ret = new Retorno();
 		ControladorParticipacao controle = new ControladorParticipacao();
@@ -496,10 +547,13 @@ public class ServletCadastroEventos extends HttpServlet {
 			List<?> items = upload.parseRequest(req);
 
 			Iterator<?> itr = items.iterator();
-			part.setAluno_id_aluno(2);
-			part.setCoordenador_ac_id_admin(1);
-			part.setCh_validada_part(30);
-			part.setStatus("A validar");
+
+			HttpSession session = req.getSession(true);
+			Aluno aluno = (Aluno) session.getAttribute("Aluno");
+			part.setAluno_id_aluno(aluno.getId_aluno());
+			//part.setCoordenador_ac_id_admin(1);
+			//part.setCh_validada_part(30);
+			part.setStatus("A VALIDAR");
 
 			while (itr.hasNext()) {
 
@@ -520,7 +574,7 @@ public class ServletCadastroEventos extends HttpServlet {
 						part.setAtividade_complementar_id_atividade(preparaId(valor));
 					} else if (campo.equals("dataInicioEvento")) {
 						String dataEmUmFormato = valor;
-						SimpleDateFormat formato = new SimpleDateFormat("dd-MM-yyyy");
+						SimpleDateFormat formato = new SimpleDateFormat("dd/mm/yyyy");
 						Date data = formato.parse(dataEmUmFormato);
 						part.setData_inicio_ac_part(data);
 					}
@@ -529,7 +583,7 @@ public class ServletCadastroEventos extends HttpServlet {
 
 					File file = new File(dir, item.getName());
 					item.write(file);
-					part.setCertificado_part(file.getPath());
+					part.setCertificado_part(file.getName());
 					System.out.println("<br/>Arquivo gravado em: " + file.getPath());
 				}
 
@@ -553,42 +607,144 @@ public class ServletCadastroEventos extends HttpServlet {
 		return ret;
 	}
 
+
+	/*
+	 * executar este metodo quando executar a aplicação, pq ai quando executar o
+	 * código ele ja faz a verificação e bloqueia o aluno impedindo de cadastrar
+	 * uma nova atividade
+	 */
+
+	public void cargahorariatotal() {
+
+		Aluno aluno = new Aluno();
+		Participacao participacao = new Participacao();
+		Date data_conclusao_part = new Date();
+		ControladorAluno controle_aluno = new ControladorAluno();
+		ControladorParticipacao controle_part = new ControladorParticipacao();
+
+		participacao = controle_part.verifica_carga_horaria();
+		aluno = controle_aluno.verifica_se_tem_dataconclusao(participacao.getAluno_id_aluno());
+		System.out.println("Dentro da carga horaria:" + participacao.getCh_validada_part());
+		
+		if (participacao.getCh_validada_part() >= 200 && aluno.getData_conclusao_carga() == null){
+			// bloqueio do cadastro da participacao
+			System.out.println("ID do ALUNO: " + participacao.getAluno_id_aluno() + " Data: " + data_conclusao_part);
+
+			aluno.setData_carga_total_part(data_conclusao_part);
+			aluno.setId_aluno(participacao.getAluno_id_aluno());
+			System.out.println("Inserção da data: " + controle_aluno.inserir_data_conclusao(aluno).getMensagem());
+		}
+
+	}
+	
+	public void verificadataParticipacao(HttpServletRequest req, PrintWriter out) throws ParseException, JRException, IOException{
+		boolean data;
+		String inicio = req.getParameter("dtRelatorioInicio");
+		String fim  = req.getParameter("dtRelatorioFinal");
+		
+		//System.out.println("Teste das datas:"+inicio+", "+fim);
+		SimpleDateFormat formatodata = new SimpleDateFormat("yyyy-mm-dd");
+		//SimpleDateFormat formatodatafim = new SimpleDateFormat("yyyy-mm-dd");
+		Date inicio_data_conversao = formatodata.parse(inicio);
+		Date fim_data_conversao = formatodata.parse(fim);
+		//System.out.println("Teste das datas conversao:"+formatodata.format(inicio_data_conversao)+", "+formatodata.format(fim_data_conversao));
+		
+		if (inicio_data_conversao.before(fim_data_conversao)){
+			data = true;
+		}else if (inicio_data_conversao.after(fim_data_conversao)){
+			data = false;
+		}else{
+			data = true;
+		}
+		if(data){
+			gerarRelatorio(inicio_data_conversao, fim_data_conversao);
+			MiniTemplator tpl =  getMiniTemplator("datas_relatorio");
+			buscaDadoCoord(req, tpl, out);
+			out.println(tpl.generateOutput());
+			//System.out.println("Teste das datas:"+inicio_data_conversao+", "+fim_data_conversao);
+		}
+	//	return data;
+		
+	}
+
+
+	public void gerarRelatorio(Date inicio, Date fim) throws JRException, IOException {
+
+		String caminhoRelatorio = "C:/PROG2/WorkspaceProjetoLisianthus/projetoSLAC/WebContent/jasper/novoRelatorioAlunos.jrxml";
+	
+		ControladorAluno contraluno = new ControladorAluno();
+		
+		JasperReport report = JasperCompileManager.compileReport(caminhoRelatorio);
+
+		List<Aluno> relatorio = contraluno.listaRelatorio(inicio, fim);
+
+		JasperPrint print = JasperFillManager.fillReport(report, null, new JRBeanCollectionDataSource(relatorio));
+
+		JasperExportManager.exportReportToPdfFile(print, "Relatorio_Alunos.pdf");
+		
+		JasperViewer.viewReport(print, false);
+
+	}
+
 	public void consultaParticipacao(HttpServletRequest req, PrintWriter out)
 			throws TemplateSyntaxException, IOException {
 		MiniTemplator tpl = getMiniTemplator("consulta");
-		listarParticipacao(req, out, tpl);
+		buscaDadosAluno(tpl, req);
+		HttpSession session = req.getSession(true);
+		Aluno aluno = (Aluno) session.getAttribute("Aluno");
+		listarParticipacao(req, out, tpl, aluno);
 		out.println(tpl.generateOutput());
 	}
 
-	private void listarParticipacao(HttpServletRequest req, PrintWriter out, MiniTemplator tpl) {
+	private void listarParticipacao(HttpServletRequest req, PrintWriter out, MiniTemplator tpl, Aluno aluno) {
 		ControladorParticipacao controlePart = new ControladorParticipacao();
 		Participacao part = new Participacao();
 		String auxPart = req.getParameter("pesquisaPart");
 		part.setNome_ac_part(auxPart);
 
 		int totalChComputada = 0;
-		List<Participacao> listaPart = controlePart.listarParticipacaoConsulta(part);
+		List<Participacao> listaPart = controlePart.listarParticipacaoConsulta(part, aluno);
 
 		for (Participacao p : listaPart) {
 			// if(p.getStatus().equalsIgnoreCase("A validar")) NÃO SOMA O VALOR
 			// DA CARGA HORÁRIA
-			tpl.setVariable("id_part", p.getId_participacao());
-			tpl.setVariable("chComputada", p.getCh_validada_part());
-			tpl.setVariable("chCadastrada", p.getCh_cadastrada_part());
-			tpl.setVariable("partCadastrada", p.getNome_ac_part());
-			tpl.setVariable("validacao", p.getStatus());
 			if(p.getStatus().equalsIgnoreCase("VALIDADO")){
-				totalChComputada += p.getCh_validada_part();
+				tpl.setVariable("id_part", p.getId_participacao());
+				tpl.setVariable("chComputada", p.getCh_validada_part());
+				tpl.setVariable("chCadastrada", p.getCh_cadastrada_part());
+				tpl.setVariable("partCadastrada", p.getNome_ac_part());
+				tpl.setVariable("validacao", p.getStatus());
+					totalChComputada += p.getCh_validada_part();
+				tpl.addBlock("manterparticipacao");
+				
+			}else if(p.getStatus().equalsIgnoreCase("A VALIDAR")){
+				tpl.setVariable("id_part", p.getId_participacao());
+				tpl.setVariable("chComputada", p.getCh_validada_part());
+				tpl.setVariable("chCadastrada", p.getCh_cadastrada_part());
+				tpl.setVariable("partCadastrada", p.getNome_ac_part());
+				tpl.setVariable("validacao", p.getStatus());
+				tpl.addBlock("participacaovalidar");
+			}else{
+				tpl.setVariable("id_part", p.getId_participacao());
+				tpl.setVariable("chComputada", p.getCh_validada_part());
+				tpl.setVariable("chCadastrada", p.getCh_cadastrada_part());
+				tpl.setVariable("partCadastrada", p.getNome_ac_part());
+				tpl.setVariable("validacao", p.getStatus());
+				
+				tpl.addBlock("participacaoinvalidado");
 			}
-			tpl.addBlock("manterparticipacao");
+			
+			
 		}
 		tpl.setVariable("totalChComputada", totalChComputada);
+		
 
 	}
 
 	public void visualizarcoordParticipacao(HttpServletRequest req, PrintWriter out)
 			throws TemplateSyntaxException, IOException {
 		MiniTemplator tpl = getMiniTemplator("validar_ativ_coord");
+		buscaDadoCoord(req, tpl, out);
 		buscarParticipacao(req, tpl);
 		out.println(tpl.generateOutput());
 	}
@@ -596,6 +752,7 @@ public class ServletCadastroEventos extends HttpServlet {
 	public void visualizarParticipacao(HttpServletRequest req, PrintWriter out)
 			throws TemplateSyntaxException, IOException {
 		MiniTemplator tpl = getMiniTemplator("visualizar");
+		buscaDadosAluno(tpl, req);
 		buscarParticipacao(req, tpl);
 		out.println(tpl.generateOutput());
 	}
@@ -606,25 +763,60 @@ public class ServletCadastroEventos extends HttpServlet {
 		ControladorModalidade contMod = new ControladorModalidade();
 		AtividadeComplementar ac = new AtividadeComplementar();
 		Modalidade mod = new Modalidade();
-		
+
 		int id = preparaId(req.getParameter("id_part"));
 		Participacao part = new Participacao();
+		AtividadeComplementar ch = new AtividadeComplementar();
+		
 		part.setId_participacaoo(id);
 
 		List<Participacao> listaPart = controlePart.buscarParticipacao(part);
+		
 		for (Participacao p : listaPart) {
 			tpl.setVariable("id_participacao", p.getId_participacao());
 			tpl.setVariable("nomeEvento", p.getNome_ac_part());
 			tpl.setVariable("chCertificado", p.getCh_cadastrada_part());
 			tpl.setVariable("localEvento", p.getLocal_ac_part());
 			tpl.setVariable("dataInicio", p.getData_inicio_ac_part().toString());
-			ac = contAc.obter(p.getAtividade_complementar_id_atividade()); 
+			ac = contAc.obter(p.getAtividade_complementar_id_atividade());
 			mod = contMod.obterMod(ac.getModalidade_id_mod());
+			ch = contAc.obterch(mod.getId_mod());
+			tpl.setVariable("chMin", ch.getCh_min_ac());
+			tpl.setVariable("chMax", ch.getCh_max_ac());
 			tpl.setVariable("modalidadeEvento", mod.getNome_mod());
 			tpl.setVariable("certificado", p.getCertificado_part());
 			tpl.setVariable("tipoEvento", p.getTipo_ac_part());
 			tpl.setVariable("descricaoEvento", ac.getDescricao_ac());
 		}
+
+	}
+
+	public void cadastrarACParticipacao(HttpServletRequest req, PrintWriter out)
+			throws TemplateSyntaxException, IOException {
+		MiniTemplator tpl = getMiniTemplator("cadastrar_atividade_complementar");
+		buscaDadoCoord(req, tpl, out);
+		listarModalidade(req, out, tpl);
+	}
+
+	public void salvarACParticipacao(HttpServletRequest req, PrintWriter out)
+			throws TemplateSyntaxException, IOException {
+		MiniTemplator t = getMiniTemplator("opcoes_coord");
+		AtividadeComplementar ac = new AtividadeComplementar();
+		ControladorAtividadeComplementar controleAC = new ControladorAtividadeComplementar();
+		Retorno ret = null;
+
+		if (ac != null) {
+			ac.setCh_max_ac(preparaId(req.getParameter("chmaxima")));
+			ac.setCh_min_ac(preparaId(req.getParameter("chminima")));
+			ac.setDescricao_ac(req.getParameter("descricaoac"));
+			ac.setModalidade_id_mod(preparaId(req.getParameter("modalidade")));
+			ret = controleAC.inserir(ac);
+		}
+
+		System.out.println(ret.getMensagem());
+		buscaDadoCoord(req, t, out);
+		t.setVariable("message", ret.getMensagem());
+		out.println(t.generateOutput());
 
 	}
 }

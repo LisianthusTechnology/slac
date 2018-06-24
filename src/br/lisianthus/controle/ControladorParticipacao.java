@@ -25,6 +25,11 @@ public class ControladorParticipacao {
 		return ret;
 	}
 	
+	public Participacao verifica_carga_horaria(){
+		System.out.println("ControladorParticipacao: "+dao.verificar_carga_horaria());
+		return dao.verificar_carga_horaria();
+	}
+	
 	private Participacao calcularChValida(Participacao part) {
 				AtividadeComplementar ac = new AtividadeComplementar();
 				ControladorAtividadeComplementar contAC = new ControladorAtividadeComplementar();
@@ -58,8 +63,12 @@ public class ControladorParticipacao {
 		return false;
 	}
 
-	public List<Participacao> listarParticipacaoConsulta(Participacao part){
-		return dao.localizarConsulta(part);
+	public List<Participacao> listarParticipacaoConsulta(Participacao part, Aluno aluno){
+		return dao.localizarConsulta(part, aluno);
+	}
+	
+	public List<Participacao> listarParticipacaocoorConsulta(Participacao part){
+		return dao.localizarpartConsulta(part);
 	}
 	
 	public List<Participacao> buscarParticipacao(Participacao part){

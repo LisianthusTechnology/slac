@@ -1,32 +1,47 @@
 package br.lisianthus.modelo;
-import java.math.BigInteger;
+
+import java.util.Date;
 
 public class Aluno {
 
 	private Integer id_aluno, matricula, ano_ingresso, coord_ac_id;
 	private Long cpf;
-	private String nome_aluno, senha, email;
+	private String nome_aluno, nome, nome_admin, senha, email;
 	private boolean permissao;
+	public Date data_carga_total_part;
+	public Date data_conclusao_carga;
 	
 	public Aluno(){
 		
 	}
 	
-	public Aluno(Integer idaluno, Integer matri, Integer anoingresso, Integer coordid, Long cpf_aluno, String nomealuno, String senha_aluno, String email_a, boolean permissao_aluno){
+	public Aluno(Integer idaluno, Integer matri, Integer anoingresso, Long cpf_aluno, String nomealuno, String senha_aluno, String email_a, boolean permissao_aluno){
 		id_aluno = idaluno;
 		matricula = matri;
 		ano_ingresso = anoingresso;
-		coord_ac_id = coordid;
 		cpf = cpf_aluno;
 		nome_aluno = nomealuno;
 		senha = senha_aluno;
 		email = email_a;
 		permissao = permissao_aluno;
+		
 	}
 	
-	//USANDO ESSE METODO PRA PEGAR O ID DO ALUNO NA SERVLET E DEPOIS FAZER ALTERAÇÃO
+	public Aluno (String nomealuno, int matricula_aluno, int anoingresso, Date dataconlusao_carga){
+
+		nome = nomealuno;
+		matricula = matricula_aluno;
+		ano_ingresso = anoingresso;
+		data_conclusao_carga = dataconlusao_carga;// 
+	}
+	
+	//USANDO ESSE METODO PRA PEGAR O ID DO ALUNO NA SERVLET E DEPOIS FAZER ALTERAÇÃO PARA SALVAR A CARGA HORÁRIA TOTAL
 	public Aluno(Integer idaluno){
 		id_aluno = idaluno;
+	}
+	
+	public Aluno(Date data_carga_total_part1){
+		this.data_carga_total_part = data_carga_total_part1;
 	}
 	
 	public Aluno(Long cpf2, String password) {
@@ -35,6 +50,12 @@ public class Aluno {
 		
 	}
 
+	public Date getData_carga_total_part() {
+		return data_carga_total_part;
+	}
+	public void setData_carga_total_part(Date data_carga_total_part) {
+		this.data_carga_total_part = data_carga_total_part;
+	}
 	public Integer getId_aluno() {
 		return id_aluno;
 	}
@@ -90,6 +111,31 @@ public class Aluno {
 		this.permissao = permissao;
 	}
 
-	
+	public String getNome_admin() {
+		return nome_admin;
+	}
+
+	public void setNome_admin(String nome_admin) {
+		this.nome_admin = nome_admin;
+	}
+
+	public String getNome() {
+		return nome;
+	}
+
+	public void setNome(String nome) {
+		this.nome = nome;
+	}
+
+
+	public Date getData_conclusao_carga() {
+		return data_conclusao_carga;
+	}
+
+	public void setData_conclusao_carga(Date data_conclusao) {
+		this.data_conclusao_carga = data_conclusao;
+	}
+
+
 	
 }

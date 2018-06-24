@@ -5,6 +5,7 @@ import java.util.List;
 import br.lisianthus.dao.DAOAtividadeComplementar;
 import br.lisianthus.modelo.AtividadeComplementar;
 import br.lisianthus.modelo.Modalidade;
+import br.lisianthus.utils.Retorno;
 
 public class ControladorAtividadeComplementar {
 	
@@ -25,4 +26,11 @@ public class ControladorAtividadeComplementar {
 		return dao.obter(id_ac);
 	}
 	
+	public AtividadeComplementar obterch(Integer id_mod){
+		return dao.obterch(id_mod);
+	}
+	
+	public Retorno inserir(AtividadeComplementar ac){
+		return dao.inserir(ac);
+	}
 }

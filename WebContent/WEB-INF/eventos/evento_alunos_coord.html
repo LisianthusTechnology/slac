@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>Cadastro de Evento</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"><title>Cadastro de Evento</title>
 <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
 <link href="bootstrap/css/css-project.css?version=15" rel="stylesheet">
 <script
@@ -10,6 +9,8 @@
 	type="text/javascript"></script>
 <script type="text/javascript"
 	src="bootstrap/js/select_inserir.js?version=1"></script>
+<script src="bootstrap/js/bootstrap.js"></script>
+
 </head>
 <body class="background">
 	<nav class="navbar navbar-default color">
@@ -23,15 +24,24 @@
 						<strong>SLAC</strong>
 					</h4>
 					<p class="headtextslac">
-						Sistema de Lan√ßamento de <br>Atividades Complementares
+						Sistema de LanÁamento de <br>Atividades Complementares
 					</p>
 				</div>
 				<div class="col-md-4 text-right">
-					<h4 class="headslac">
-						<strong>Ol√°, <br> Jo√£o Da Silva <span
-							class="glyphicon glyphicon-user"></span>
-						</strong>
-					</h4>
+					<ul class="nav navbar-nav navbar-right">
+						<li class="dropdown">
+          					<h4  class="headslac" class="dropdown-toggle" data-toggle="dropdown" role="button"
+           						aria-haspopup="true" aria-expanded="false">
+           						<strong><span class="glyphicon glyphicon-user"></span>
+           							Ol·, <br> ${nome_coord}	
+								</strong>
+								<span class="caret"></span>
+							</h4>
+          					<ul class="dropdown-menu">
+            					<li><a href="login?op=index">Sair</a>
+          					</ul>
+        				</li>
+        			</ul>
 				</div>
 			</div>
 		</div>
@@ -40,45 +50,23 @@
 		class="form-horizontal container-fluid" method="POST"
 		ENCTYPE="multipart/form-data">
 <input type="hidden" name="id_aluno" value="id_aluno">
-		<div class="row">
 
-			<div class="col-sm-3">
-				<p class="text-cor headslac">
-
-					<strong>Nome do aluno<br>
-					<br></strong>
-				</p>
-
-			</div>
-
-			<div class="col-sm-3">
-				<p class="text-cor headslac">
-
-					<strong>CPF<br> <br></strong>
-				</p>
-			</div>
-
-			<div class="col-sm-3">
-				<p class="text-cor headslac">
-
-					<strong>Status<br> <br></strong>
-				</p>
-			</div>
-
-			<div class="col-sm-3">
-				<p class="text-cor headslac">
-
-					<strong>A√ß√µes<br> <br></strong>
-				</p>
-			</div>
-		</div>
+<p>${message}</p>
 <table class="table table-striped table-bordered table-hover" name="aluno">
+			<thead>
+				<tr>
+					<th class="centralizar">Nome do aluno</th>
+					<th class="centralizar">CPF</th>
+					<th class="centralizar">Status</th>
+					<th class="centralizar">AÁoes</th>
+				</tr>
+			</thead>
 <!-- $beginBlock manteraluno -->
 		<tr>
-			<td>${nome}</td>
-			<td >${cpf}</td>
-			<td>${status}</td>
-			<td><a href="eventos?op=acoes&id_aluno=${id_aluno}&aluno_status=validar">Validar</a>
+			<td class="text-center">${nome}</td>
+			<td class="text-center">${cpf}</td>
+			<td  class="text-center">${status}</td>
+			<td  class="text-center"><a href="eventos?op=acoes&id_aluno=${id_aluno}&aluno_status=validar">Validar</a>
 				<a href="eventos?op=acoes&id_aluno=${id_aluno}&aluno_status=invalidar" name="invalidar">Invalidar</a>
 			</td>
 		</tr>
@@ -86,7 +74,7 @@
 <!-- $endBlock manteraluno-->
 
 </table>
-
+<a href="eventos?op=opcoescoord" class="btnvoltar">Voltar</a> 
 	</form>
 </body>
 </html>

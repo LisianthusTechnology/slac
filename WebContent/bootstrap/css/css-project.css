@@ -35,6 +35,13 @@
     bottom: 8px;
     right: 16px;
 }
+.btn-cert{
+	background-color: #120856;
+	color:white;
+	padding: 12px 25px; /*altura largura*/
+	border: none;
+    border-radius: 2px;  
+}
 
 .btnback{
 	background-color: #120856;
@@ -65,4 +72,8 @@ a:active {
 	padding: 12px 25px; /*altura largura*/
 	border: none;
     border-radius: 2px;  
+}
+
+.alert{
+	color: red;
 }
