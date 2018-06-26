@@ -341,7 +341,11 @@ public List<Aluno> listaParaRelatorio(Date data_inicio, Date data_fim){
 		try{
 			Statement stmt = con_a.createStatement();
 			ResultSet results = stmt.executeQuery(sql);
-			
+			//Date datainicio = data_inicio;
+			//Date datafim = data_fim;
+			//Aluno aluno = new Aluno();
+			//aluno.setData_inicio(datainicio);
+			//aluno.setData_fim(datafim);
 			
 			while(results.next()){
 	
@@ -350,13 +354,20 @@ public List<Aluno> listaParaRelatorio(Date data_inicio, Date data_fim){
 					Integer ano_ingresso = results.getInt("ano_ingresso");
 					Date data_conclusao_carga = results.getDate("data_conclusao_carga");
 					System.out.println("Alunos relatorio:"+data_conclusao_carga);
-				
-					
+					/*
+					aluno.setNome(nome);
+					aluno.setMatricula(matricula);
+					aluno.setAno_ingresso(ano_ingresso);
+					aluno.setData_carga_total_part(data_conclusao_carga);*/
 				Aluno aluno = new Aluno(nome, matricula, ano_ingresso, data_conclusao_carga);
 				
-				list.add(aluno);
+					
+					list.add(aluno);
+				//	aluno.setData_inicio("");
+				//	aluno.setData_fim("");
 				
 			}
+			
 		}catch(SQLException e){
 			//System.out.println("teste"+ e.getMessage());
 			throw new RuntimeException(e.getMessage());
