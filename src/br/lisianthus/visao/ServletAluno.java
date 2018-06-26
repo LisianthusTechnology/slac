@@ -60,6 +60,14 @@ public class ServletAluno extends HttpServlet{
 		return tpa;
 	}
 	
+	public MiniTemplator getMiniTemplatorLogin(String op) throws TemplateSyntaxException, IOException {
+		
+		String caminhoAlunoIndex = realPath + separador + "WEB-INF" + separador + "login" + separador + "login_" 
+		+ op + ".html";
+		MiniTemplator tpa = new MiniTemplator(caminhoAlunoIndex);
+		return tpa;
+	}
+	
 	private void executaPagina(HttpServletRequest req, HttpServletResponse resp)
 			throws TemplateSyntaxException, IOException {
 
@@ -82,9 +90,6 @@ public class ServletAluno extends HttpServlet{
 			
 			  nomeMetodo = op + "Aluno";
 			  
-			
-			  System.out.println("E pior ainda estou aqui");
-
 			try {
 				Class<?> cls;
 
@@ -135,7 +140,7 @@ public class ServletAluno extends HttpServlet{
 	}
 
 	public void salvarAluno(HttpServletRequest req, PrintWriter out) throws IOException {
-		MiniTemplator t = getMiniTemplator("message");
+		MiniTemplator t = getMiniTemplatorLogin("index");
 		//Aluno aluno = new Aluno();
 		Retorno ret = new Retorno();
 		ret = cadastroAluno(req);
@@ -149,8 +154,6 @@ public class ServletAluno extends HttpServlet{
 		Aluno aluno = new Aluno();
 		Retorno ret = new Retorno();
 		ControladorAluno controlealuno = new ControladorAluno();
-
-		try{
 			
 			aluno.setId_aluno(1);
 			aluno.setCpf(new Long(req.getParameter("cpf"))); //- Resolver 
@@ -161,15 +164,9 @@ public class ServletAluno extends HttpServlet{
 			aluno.setAno_ingresso(preparaId(req.getParameter("anocurso")));
             aluno.setPermissao(false);//Verificar como colocar aqui tbm 
             aluno.setCoord_ac_id(1);
-         
             ret = controlealuno.inserir(aluno);
-        	
-		}catch (Exception e) {
-			// TODO: handle exception
-			System.out.println("Erro:"+e.getMessage());
-		}
-		
-		return ret;
+            System.out.println(ret.getMensagem());
+        	return ret;
 	}
 
     

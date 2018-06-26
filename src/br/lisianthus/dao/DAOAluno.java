@@ -16,12 +16,13 @@ import br.lisianthus.modelo.Coordenador;
 import br.lisianthus.modelo.Participacao;
 import br.lisianthus.utils.Mensagens;
 import br.lisianthus.utils.Retorno;
+import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
 
 public class DAOAluno {
 
 	private static DAOAluno dao_a;
 	private Connection con_a;
-	
+	private Mensagens mesg = new Mensagens();
 	
 	private DAOAluno() {
 		try {
@@ -101,6 +102,11 @@ public class DAOAluno {
 			return okValidar;
 		}
 
+		Retorno validaCPF = verificaCPF(aluno.getCpf());
+		if(!validaCPF.isSucesso()){
+			return validaCPF;
+		}
+		
 		String sql = "insert into aluno(cpf, nome, senha, email, matricula, ano_ingresso, permissao)"
 				+ " values(" + "" + preparaAtributoParaBD(aluno.getCpf()) + ","
 				+ preparaAtributoParaBD(aluno.getNome_aluno()) + "," + preparaAtributoParaBD(aluno.getSenha()) + ","
@@ -140,7 +146,7 @@ public class DAOAluno {
 		} else if (aluno.getNome_aluno() == null || aluno.getNome_aluno().equals("")) {
 			ret.setSucesso(false);
 			ret.setMensagem(msg.ERRO5);
-		} 
+		}
 
 		return ret;
 	}
@@ -328,6 +334,33 @@ public class DAOAluno {
 			return null;
 			}
 		}
+	
+	public Retorno verificaCPF(Long cpf) throws RuntimeException{
+		Retorno ret = new Retorno();
+		System.out.println(cpf);
+		String sql = "select count (*) from aluno where cpf = '" + cpf + "'";
+		Statement stmt;
+		try {
+			stmt = con_a.createStatement();
+			ResultSet resultSet = stmt.executeQuery(sql);
+			resultSet.next();
+			int cpfExistente = resultSet.getInt(1);
+			System.out.println("CPF EXISTENTE:" + cpfExistente);
+			
+			if(cpfExistente > 0){
+				ret.setMensagem(mesg.ERRO8);
+				ret.setSucesso(false);
+				return ret;
+			}else{
+				ret.setSucesso(true);
+				return ret;
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return ret;
+	}
 
 public List<Aluno> listaParaRelatorio(Date data_inicio, Date data_fim){
 		

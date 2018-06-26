@@ -70,3 +70,7 @@ a:active {
 .alert{
 	color: red;
 }
+
+.warning{
+	color: #cd853f;
+}

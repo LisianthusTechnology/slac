@@ -463,6 +463,17 @@ public class ServletCadastroEventos extends HttpServlet {
 		}
 
 	}
+	
+	public void buscarCHParticipacao(HttpServletRequest req, PrintWriter out){
+		Gson gson = new Gson();
+		ControladorAtividadeComplementar cont = new ControladorAtividadeComplementar();
+		Integer id = preparaId(req.getParameter("idAtividadeComplementar"));
+		AtividadeComplementar ac = cont.obter(id);
+		String json = gson.toJson(ac);
+		System.out.println("Atividades CH: " + json);
+		out.println(json);
+		
+	}
 
 	private String convertJson(List<AtividadeComplementar> listAtividadeComplementar) {
 		Gson gson = new Gson();

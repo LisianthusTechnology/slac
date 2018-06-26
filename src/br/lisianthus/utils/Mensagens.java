@@ -21,5 +21,7 @@ public class Mensagens {
 	public final String ERRO4 = "ERRO ao salvar a DATA DE CONCLUSÃO DE CARGA HORÁRIA do ALUNO!";
 	public final String ERRO5 = "O campo NOME é de preenchimento obrigatório!";
 	public final String ERRO6 = "O campo Id é de preenchimento obrigatório e deve ser maior que 0!";
-	public final String ERRO7 = "Erro ao realizar login. Tente novamente.";	
+	public final String ERRO7 = "Erro ao realizar login. Tente novamente.";
+	/*VALIDÇÃO DE CPF*/
+	public final String ERRO8 = "O CPF já está cadastrado. Aguarde a validação ou entre em contato com o coordenador!";
 }
