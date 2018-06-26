@@ -46,7 +46,8 @@
 	<form action="eventos?op=salvarAC" name="formac" class="form-horizontal container-fluid" method="POST">
 	<p class="text-center headslac"><strong>Cadastro de Atividades Complementares<br><br></strong></p>
 		<div class="form-group">
-			<label for="modalidadeEvento" class="col-sm-2 control-label">*Modalidade:</label>
+
+			<label for="modalidadeEvento" class="col-sm-2 control-label">Modalidade:</label>
 			<div class="col-sm-8">
 			<select id="modalidadeEvento" class="form-control" name="modalidade">
 				<option>Selecione</option>
@@ -57,7 +58,8 @@
 			</div>
 		</div>	
 		<div class="form-group">
-			<label for="descricao" class="col-sm-2 control-label">*Descrição:</label>
+
+			<label for="descricao" class="col-sm-2 control-label">*Descrição da Atividade:</label>
 			<div class="col-sm-8">
 				<input type="text" class="form-control" name="descricaoac" id="descricao" 
 				placeholder="Descrição da atividade">
@@ -78,6 +80,7 @@
 			</div>
 		</div>
 		<h6 class="legend">* Campo obrigatório.</h6>
+
 		<input type="submit" value="Salvar" class="btnsave" onclick="return validar()">
 		<a href="eventos?op=opcoescoord" class="btnback">Voltar</a> 
 	</form>

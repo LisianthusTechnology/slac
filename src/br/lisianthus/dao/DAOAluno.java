@@ -113,6 +113,7 @@ public class DAOAluno {
 				+ preparaAtributoParaBD(aluno.getEmail()) + "," + preparaAtributoParaBD(aluno.getMatricula()) + ","
 				+ preparaAtributoParaBD(aluno.getAno_ingresso()) + "," + preparaAtributoParaBD(aluno.isPermissao())+ ")";
 		System.out.println("SQL-Aluno:" + sql);
+		
 		int ok = 0;
 		try {
 			ok = executaAlteracao(sql);
@@ -122,6 +123,7 @@ public class DAOAluno {
 			if (e.getMessage().contains("Aluno_pkey")) {
 				message = msg.ERRO1;
 			}
+			
 			ret.setSucesso(false);
 			ret.setMensagem(message);
 		}
@@ -146,7 +148,7 @@ public class DAOAluno {
 		} else if (aluno.getNome_aluno() == null || aluno.getNome_aluno().equals("")) {
 			ret.setSucesso(false);
 			ret.setMensagem(msg.ERRO5);
-		}
+		} 
 
 		return ret;
 	}
@@ -254,7 +256,7 @@ public class DAOAluno {
 				String nome_a = result.getString("nome");
 				String senha_a = result.getString("senha");
 				String email_a = result.getString("email");
-				Integer matricula_a = result.getInt("matricula");
+				Long matricula_a = result.getLong("matricula");
 				Integer ano_ingresso_a = result.getInt("ano_ingresso");
 				boolean permissao_a = result.getBoolean("permissao");
 
@@ -287,7 +289,7 @@ public class DAOAluno {
 				aluno.setNome_aluno(resultSet.getString("nome"));
 				aluno.setSenha(resultSet.getString("senha"));
 				aluno.setEmail(resultSet.getString("email"));
-				aluno.setMatricula(resultSet.getInt("matricula"));
+				aluno.setMatricula(resultSet.getLong("matricula"));
 				aluno.setAno_ingresso(resultSet.getInt("ano_ingresso"));
 				aluno.setPermissao(resultSet.getBoolean("permissao"));
 				aluno.setCoord_ac_id(resultSet.getInt("coordenador_ac_id_admin"));
@@ -320,7 +322,7 @@ public class DAOAluno {
 				aluno.setNome_aluno(resultSet.getString("nome"));
 				aluno.setSenha(resultSet.getString("senha"));
 				aluno.setEmail(resultSet.getString("email"));
-				aluno.setMatricula(resultSet.getInt("matricula"));
+				aluno.setMatricula(resultSet.getLong("matricula"));
 				aluno.setAno_ingresso(resultSet.getInt("ano_ingresso"));
 				aluno.setPermissao(resultSet.getBoolean("permissao"));
 				
@@ -348,7 +350,7 @@ public class DAOAluno {
 			System.out.println("CPF EXISTENTE:" + cpfExistente);
 			
 			if(cpfExistente > 0){
-				ret.setMensagem(mesg.ERRO8);
+				ret.setMensagem(mesg.ERRO9);
 				ret.setSucesso(false);
 				return ret;
 			}else{
@@ -373,22 +375,34 @@ public List<Aluno> listaParaRelatorio(Date data_inicio, Date data_fim){
 		try{
 			Statement stmt = con_a.createStatement();
 			ResultSet results = stmt.executeQuery(sql);
-			
+
+			//Date datainicio = data_inicio;
+			//Date datafim = data_fim;
+			//Aluno aluno = new Aluno();
+			//aluno.setData_inicio(datainicio);
+			//aluno.setData_fim(datafim);
 			
 			while(results.next()){
 	
-				Integer matricula = results.getInt("matricula");
+					Long matricula = results.getLong("matricula");
 					String nome = results.getString("nome");
 					Integer ano_ingresso = results.getInt("ano_ingresso");
 					Date data_conclusao_carga = results.getDate("data_conclusao_carga");
 					System.out.println("Alunos relatorio:"+data_conclusao_carga);
-				
-					
+		/*
+					aluno.setNome(nome);
+					aluno.setMatricula(matricula);
+					aluno.setAno_ingresso(ano_ingresso);
+					aluno.setData_carga_total_part(data_conclusao_carga);*/
 				Aluno aluno = new Aluno(nome, matricula, ano_ingresso, data_conclusao_carga);
 				
-				list.add(aluno);
+					
+					list.add(aluno);
+				//	aluno.setData_inicio("");
+				//	aluno.setData_fim("");
 				
 			}
+			
 		}catch(SQLException e){
 			//System.out.println("teste"+ e.getMessage());
 			throw new RuntimeException(e.getMessage());

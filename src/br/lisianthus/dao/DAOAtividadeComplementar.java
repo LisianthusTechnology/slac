@@ -65,6 +65,31 @@ public class DAOAtividadeComplementar {
 		}
 	}
 	
+	public AtividadeComplementar obterch(Integer id) {
+		if(id == null) return null;
+		String sql = "select  ch_max_ac, ch_min_ac"
+				+ " from atividade_complementar where modalidade_id_mod= '" + id+"'";
+	
+		try {
+			Statement stmt = con_ac.createStatement();
+
+			ResultSet resultSet = stmt.executeQuery(sql);
+			if (resultSet.next()) {
+				AtividadeComplementar ac = new AtividadeComplementar();
+				
+				ac.setCh_max_ac(resultSet.getInt("ch_max_ac"));
+				ac.setCh_min_ac(resultSet.getInt("ch_min_ac"));
+				return ac;
+			} else {
+				return null;
+			}
+
+		} catch (SQLException e) {
+			// TODO remover após conclusão
+			e.printStackTrace();
+			return null;
+		}
+	}
 
 
 	public List<AtividadeComplementar> buscarAtividadeModalidade(Modalidade mod) {

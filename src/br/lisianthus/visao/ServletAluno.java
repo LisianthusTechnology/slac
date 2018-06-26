@@ -19,6 +19,8 @@ import biz.source_code.miniTemplator.MiniTemplator.TemplateSyntaxException;
 import br.lisianthus.controle.ControladorAluno;
 
 import br.lisianthus.modelo.Aluno;
+import br.lisianthus.utils.ManipulaString;
+import br.lisianthus.utils.Mensagens;
 import br.lisianthus.utils.Retorno;
 
 @SuppressWarnings("serial")
@@ -89,7 +91,6 @@ public class ServletAluno extends HttpServlet{
 		} else {
 			
 			  nomeMetodo = op + "Aluno";
-			  
 			try {
 				Class<?> cls;
 
@@ -134,17 +135,13 @@ public class ServletAluno extends HttpServlet{
 		}
 	}
 
-	private Integer preparaId(String id) {
-		Integer idInteger = id != null && !id.equals("") ? Integer.valueOf(id) : null;
-		return idInteger;
-	}
-
 	public void salvarAluno(HttpServletRequest req, PrintWriter out) throws IOException {
 		MiniTemplator t = getMiniTemplatorLogin("index");
+
 		//Aluno aluno = new Aluno();
 		Retorno ret = new Retorno();
 		ret = cadastroAluno(req);
-		t.setVariable("message", ret.getMensagem());
+		t.setVariable("mensagem", ret.getMensagem());
 		out.println(t.generateOutput());
 	}
 	
@@ -154,19 +151,23 @@ public class ServletAluno extends HttpServlet{
 		Aluno aluno = new Aluno();
 		Retorno ret = new Retorno();
 		ControladorAluno controlealuno = new ControladorAluno();
+
 			
-			aluno.setId_aluno(1);
+			//aluno.setId_aluno(1);
 			aluno.setCpf(new Long(req.getParameter("cpf"))); //- Resolver 
 			aluno.setNome_aluno(req.getParameter("nome")); 
 		    aluno.setSenha(req.getParameter("senha"));//-----
 			aluno.setEmail(req.getParameter("email")); // Depois do Aluno e o msm Aqui
-			aluno.setMatricula(preparaId(req.getParameter("matricula")));
-			aluno.setAno_ingresso(preparaId(req.getParameter("anocurso")));
+			aluno.setMatricula(ManipulaString.converteParaLong(req.getParameter("matricula")));
+			aluno.setAno_ingresso(ManipulaString.converteParaInt(req.getParameter("anocurso")));
             aluno.setPermissao(false);//Verificar como colocar aqui tbm 
             aluno.setCoord_ac_id(1);
             ret = controlealuno.inserir(aluno);
             System.out.println(ret.getMensagem());
         	return ret;
+
+		
+
 	}
 
     

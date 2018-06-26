@@ -60,7 +60,7 @@ public class ServletCadastroEventos extends HttpServlet {
 	String realPath;
 	String contextPath;
 	Mensagens msg = new Mensagens();
-	
+
 	public void init() {
 		servletContext = getServletContext();
 		separador = System.getProperty("file.separator");
@@ -176,7 +176,7 @@ public class ServletCadastroEventos extends HttpServlet {
 	private void buscaDadosAluno(MiniTemplator tpl, HttpServletRequest req) {
 		HttpSession session = req.getSession(true);
 		Aluno aluno = (Aluno) session.getAttribute("Aluno");
-		if(aluno != null){
+		if (aluno != null) {
 			tpl.setVariable("nome_aluno", aluno.getNome_aluno());
 		}
 	}
@@ -194,7 +194,7 @@ public class ServletCadastroEventos extends HttpServlet {
 		try {
 			id_mod = preparaIdModalidade(req);
 		} catch (NumberFormatException e) {
-			erroMessage = msg.ERRO6+"<BR>\n";
+			erroMessage = msg.ERRO6 + "<BR>\n";
 		}
 
 		String nome_mod = req.getParameter("nome");
@@ -215,7 +215,7 @@ public class ServletCadastroEventos extends HttpServlet {
 		try {
 			alunoid = preparaIdAluno(req);
 		} catch (NumberFormatException e) {
-			erroMessage = msg.ERRO6+"<BR>\n";
+			erroMessage = msg.ERRO6 + "<BR>\n";
 		}
 
 		if (!erroMessage.equals("")) {
@@ -246,12 +246,7 @@ public class ServletCadastroEventos extends HttpServlet {
 			out.println(tpl.generateOutput());
 		
 	}
-	
-	public void dataRelatorioParticipacao(HttpServletRequest req, PrintWriter out) throws TemplateSyntaxException, IOException{
-		MiniTemplator tpl = this.getMiniTemplator("datas_relatorio");
-		buscaDadoCoord(req, tpl, out);
-		out.println(tpl.generateOutput());
-	}
+
 	
 	private void buscaDadoCoord(HttpServletRequest req, MiniTemplator tpl, PrintWriter out){
 		HttpSession session = req.getSession(true);
@@ -261,6 +256,14 @@ public class ServletCadastroEventos extends HttpServlet {
 			tpl.setVariable("nome_coord", coord.getNome());
 		}
 	}
+
+	public void dataRelatorioParticipacao(HttpServletRequest req, PrintWriter out)
+			throws TemplateSyntaxException, IOException {
+		MiniTemplator tpl = this.getMiniTemplator("datas_relatorio");
+		buscaDadoCoord(req, tpl, out);
+		out.println(tpl.generateOutput());
+	}
+
 
 	public void alunoscoordParticipacao(HttpServletRequest req, PrintWriter out)
 			throws TemplateSyntaxException, IOException {
@@ -285,7 +288,7 @@ public class ServletCadastroEventos extends HttpServlet {
 		Participacao part = new Participacao();
 		// String auxPart = req.getParameter("pesquisaPart");
 		// part.setNome_ac_part(auxPart);
-		List<Participacao> listaPart = controlePart.listarParticipacaoConsulta(part);
+		List<Participacao> listaPart = controlePart.listarParticipacaocoorConsulta(part);
 		for (Participacao p : listaPart) {
 			if (p.getStatus().equalsIgnoreCase("A VALIDAR")) {
 				tpl.setVariable("id_part", p.getId_participacao());
@@ -389,7 +392,7 @@ public class ServletCadastroEventos extends HttpServlet {
 		try {
 			partid = preparaIdParticipacao(req);
 		} catch (NumberFormatException e) {
-			erroMessage = msg.ERRO6+"<BR>\n";
+			erroMessage = msg.ERRO6 + "<BR>\n";
 		}
 
 		if (!erroMessage.equals("")) {
@@ -412,10 +415,14 @@ public class ServletCadastroEventos extends HttpServlet {
 		Retorno ret = null;
 		String status = req.getParameter("aluno_status");
 		System.out.println("status:" + status.toString());
-		if (status.equalsIgnoreCase("validar")) { //VERIFICAR SE NÃO VAI DAR ERRO POR ESTAR COM LETRA MAIUSCULA NO BANCO DE DADOS
+
+		if (status.equalsIgnoreCase("validar")) { // VERIFICAR SE NÃO VAI DAR
+													// ERRO POR ESTAR COM LETRA
+													// MAIUSCULA NO BANCO DE
+													// DADOS
 			aluno.setPermissao(true);
 			ret = ctAluno.alterar(aluno);
-	
+
 			System.out.println("Retorno:" + ret.getMensagem());
 			MiniTemplator t = getMiniTemplator("alunos_coord");
 
@@ -425,7 +432,7 @@ public class ServletCadastroEventos extends HttpServlet {
 
 		} else {
 			aluno.setPermissao(false);
-			
+
 			ret = ctAluno.alterar(aluno);
 
 			System.out.println("Retorno:" + ret.getMensagem());
@@ -542,7 +549,8 @@ public class ServletCadastroEventos extends HttpServlet {
 
 		FileItemFactory factory = new DiskFileItemFactory();
 		ServletFileUpload upload = new ServletFileUpload(factory);
-		File dir = new File(req.getContextPath() + "certificado");
+		// File dir = new File(req.getContextPath() + "certificado");
+		File dir = new File(realPath + separador + "repositorio-certificados");
 		Participacao part = new Participacao();
 		Retorno ret = new Retorno();
 		ControladorParticipacao controle = new ControladorParticipacao();
@@ -561,8 +569,7 @@ public class ServletCadastroEventos extends HttpServlet {
 			HttpSession session = req.getSession(true);
 			Aluno aluno = (Aluno) session.getAttribute("Aluno");
 			part.setAluno_id_aluno(aluno.getId_aluno());
-			//part.setCoordenador_ac_id_admin(1);
-			//part.setCh_validada_part(30);
+
 			part.setStatus("A VALIDAR");
 
 			while (itr.hasNext()) {
@@ -593,7 +600,7 @@ public class ServletCadastroEventos extends HttpServlet {
 
 					File file = new File(dir, item.getName());
 					item.write(file);
-					part.setCertificado_part(file.getPath());
+					part.setCertificado_part(file.getName());
 					System.out.println("<br/>Arquivo gravado em: " + file.getPath());
 				}
 
@@ -634,8 +641,8 @@ public class ServletCadastroEventos extends HttpServlet {
 		participacao = controle_part.verifica_carga_horaria();
 		aluno = controle_aluno.verifica_se_tem_dataconclusao(participacao.getAluno_id_aluno());
 		System.out.println("Dentro da carga horaria:" + participacao.getCh_validada_part());
-		
-		if (participacao.getCh_validada_part() >= 200 && aluno.getData_conclusao_carga() == null){
+
+		if (participacao.getCh_validada_part() >= 200 && aluno.getData_conclusao_carga() == null) {
 			// bloqueio do cadastro da participacao
 			System.out.println("ID do ALUNO: " + participacao.getAluno_id_aluno() + " Data: " + data_conclusao_part);
 
@@ -645,53 +652,57 @@ public class ServletCadastroEventos extends HttpServlet {
 		}
 
 	}
-	
-	public void verificadataParticipacao(HttpServletRequest req, PrintWriter out) throws ParseException, JRException, IOException{
+
+	public void verificadataParticipacao(HttpServletRequest req, PrintWriter out)
+			throws ParseException, JRException, IOException {
 		boolean data;
 		String inicio = req.getParameter("dtRelatorioInicio");
-		String fim  = req.getParameter("dtRelatorioFinal");
-		
-		//System.out.println("Teste das datas:"+inicio+", "+fim);
+		String fim = req.getParameter("dtRelatorioFinal");
+
+		// System.out.println("Teste das datas:"+inicio+", "+fim);
 		SimpleDateFormat formatodata = new SimpleDateFormat("yyyy-mm-dd");
-		//SimpleDateFormat formatodatafim = new SimpleDateFormat("yyyy-mm-dd");
+		// SimpleDateFormat formatodatafim = new SimpleDateFormat("yyyy-mm-dd");
 		Date inicio_data_conversao = formatodata.parse(inicio);
 		Date fim_data_conversao = formatodata.parse(fim);
-		//System.out.println("Teste das datas conversao:"+formatodata.format(inicio_data_conversao)+", "+formatodata.format(fim_data_conversao));
-		
-		if (inicio_data_conversao.before(fim_data_conversao)){
+		// System.out.println("Teste das datas
+		// conversao:"+formatodata.format(inicio_data_conversao)+",
+		// "+formatodata.format(fim_data_conversao));
+
+		if (inicio_data_conversao.before(fim_data_conversao)) {
 			data = true;
-		}else if (inicio_data_conversao.after(fim_data_conversao)){
+		} else if (inicio_data_conversao.after(fim_data_conversao)) {
 			data = false;
-		}else{
+		} else {
 			data = true;
 		}
-		if(data){
+		if (data) {
 			gerarRelatorio(inicio_data_conversao, fim_data_conversao);
-			MiniTemplator tpl =  getMiniTemplator("datas_relatorio");
+			MiniTemplator tpl = getMiniTemplator("datas_relatorio");
 			buscaDadoCoord(req, tpl, out);
 			out.println(tpl.generateOutput());
-			//System.out.println("Teste das datas:"+inicio_data_conversao+", "+fim_data_conversao);
+			// System.out.println("Teste das datas:"+inicio_data_conversao+",
+			// "+fim_data_conversao);
 		}
-	//	return data;
-		
-	}
+		// return data;
 
+	}
 
 	public void gerarRelatorio(Date inicio, Date fim) throws JRException, IOException {
 
-		String caminhoRelatorio = "C:/PROG2/WorkspacePIDS/slac/WebContent/jasper/novoRelatorioAlunos.jrxml";
-	
+		String caminhoRelatorio = "C:/PROG2/WorkspaceProjetoLisianthus/projetoSLAC/WebContent/jasper/RelatorioAlunos.jrxml";
+
 		ControladorAluno contraluno = new ControladorAluno();
-		
+
 		JasperReport report = JasperCompileManager.compileReport(caminhoRelatorio);
-
-		List<Aluno> relatorio = contraluno.listaRelatorio(inicio, fim);
-
-		JasperPrint print = JasperFillManager.fillReport(report, null, new JRBeanCollectionDataSource(relatorio));
-
-		JasperExportManager.exportReportToPdfFile(print, "Relatorio_Alunos.pdf");
+	
 		
-		 JasperViewer.viewReport(print, false);
+		List<Aluno> relatorio = contraluno.listaRelatorio(inicio, fim);
+		
+		JasperPrint print = JasperFillManager.fillReport(report, null, new JRBeanCollectionDataSource(relatorio));
+		
+		JasperExportManager.exportReportToPdfFile(print, "Relatorio_Alunos.pdf");
+
+		JasperViewer.viewReport(print, false);
 
 	}
 
@@ -699,49 +710,53 @@ public class ServletCadastroEventos extends HttpServlet {
 			throws TemplateSyntaxException, IOException {
 		MiniTemplator tpl = getMiniTemplator("consulta");
 		buscaDadosAluno(tpl, req);
-		listarParticipacao(req, out, tpl);
+		HttpSession session = req.getSession(true);
+		Aluno aluno = (Aluno) session.getAttribute("Aluno");
+		listarParticipacao(req, out, tpl, aluno);
 		out.println(tpl.generateOutput());
 	}
 
-	private void listarParticipacao(HttpServletRequest req, PrintWriter out, MiniTemplator tpl) {
+	private void listarParticipacao(HttpServletRequest req, PrintWriter out, MiniTemplator tpl, Aluno aluno) {
 		ControladorParticipacao controlePart = new ControladorParticipacao();
 		Participacao part = new Participacao();
 		String auxPart = req.getParameter("pesquisaPart");
 		part.setNome_ac_part(auxPart);
 
 		int totalChComputada = 0;
-		List<Participacao> listaPart = controlePart.listarParticipacaoConsulta(part);
+		List<Participacao> listaPart = controlePart.listarParticipacaoConsulta(part, aluno);
 
 		for (Participacao p : listaPart) {
 			// if(p.getStatus().equalsIgnoreCase("A validar")) NÃO SOMA O VALOR
 			// DA CARGA HORÁRIA
-			if(p.getStatus().equalsIgnoreCase("VALIDADO")){
+
+			if (p.getStatus().equalsIgnoreCase("VALIDADO")) {
 				tpl.setVariable("id_part", p.getId_participacao());
 				tpl.setVariable("chComputada", p.getCh_validada_part());
 				tpl.setVariable("chCadastrada", p.getCh_cadastrada_part());
 				tpl.setVariable("partCadastrada", p.getNome_ac_part());
 				tpl.setVariable("validacao", p.getStatus());
-					totalChComputada += p.getCh_validada_part();
+
+				totalChComputada += p.getCh_validada_part();
 				tpl.addBlock("manterparticipacao");
-				
-			}else if(p.getStatus().equalsIgnoreCase("A VALIDAR")){
+
+			} else if (p.getStatus().equalsIgnoreCase("A VALIDAR")) {
 				tpl.setVariable("id_part", p.getId_participacao());
 				tpl.setVariable("chComputada", p.getCh_validada_part());
 				tpl.setVariable("chCadastrada", p.getCh_cadastrada_part());
 				tpl.setVariable("partCadastrada", p.getNome_ac_part());
 				tpl.setVariable("validacao", p.getStatus());
 				tpl.addBlock("participacaovalidar");
-			}else{
+
+			} else {
 				tpl.setVariable("id_part", p.getId_participacao());
 				tpl.setVariable("chComputada", p.getCh_validada_part());
 				tpl.setVariable("chCadastrada", p.getCh_cadastrada_part());
 				tpl.setVariable("partCadastrada", p.getNome_ac_part());
 				tpl.setVariable("validacao", p.getStatus());
-				
+
 				tpl.addBlock("participacaoinvalidado");
 			}
-			
-			
+
 		}
 		tpl.setVariable("totalChComputada", totalChComputada);
 		
@@ -773,9 +788,12 @@ public class ServletCadastroEventos extends HttpServlet {
 
 		int id = preparaId(req.getParameter("id_part"));
 		Participacao part = new Participacao();
+		AtividadeComplementar ch = new AtividadeComplementar();
+
 		part.setId_participacaoo(id);
 
 		List<Participacao> listaPart = controlePart.buscarParticipacao(part);
+
 		for (Participacao p : listaPart) {
 			tpl.setVariable("id_participacao", p.getId_participacao());
 			tpl.setVariable("nomeEvento", p.getNome_ac_part());
@@ -784,6 +802,9 @@ public class ServletCadastroEventos extends HttpServlet {
 			tpl.setVariable("dataInicio", p.getData_inicio_ac_part().toString());
 			ac = contAc.obter(p.getAtividade_complementar_id_atividade());
 			mod = contMod.obterMod(ac.getModalidade_id_mod());
+			ch = contAc.obterch(mod.getId_mod());
+			tpl.setVariable("chMin", ch.getCh_min_ac());
+			tpl.setVariable("chMax", ch.getCh_max_ac());
 			tpl.setVariable("modalidadeEvento", mod.getNome_mod());
 			tpl.setVariable("certificado", p.getCertificado_part());
 			tpl.setVariable("tipoEvento", p.getTipo_ac_part());

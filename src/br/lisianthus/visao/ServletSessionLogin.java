@@ -95,7 +95,7 @@ public class ServletSessionLogin extends HttpServlet {
 
 		MiniTemplator tpl = getMiniTemplator("index");
 		if (withErrorMessage) {
-			tpl.setVariable("mensagem", msg.ERRO7);
+			tpl.setVariable("mensagem", msg.LOGININVALIDO);
 		}
 
 		out.println(tpl.generateOutput());

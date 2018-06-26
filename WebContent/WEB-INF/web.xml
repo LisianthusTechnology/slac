@@ -38,5 +38,5 @@
   <servlet-mapping>
     <servlet-name>ServletSessionLogin</servlet-name>
     <url-pattern>/login</url-pattern>
-  </servlet-mapping>
+  </servlet-mapping>  
 </web-app>

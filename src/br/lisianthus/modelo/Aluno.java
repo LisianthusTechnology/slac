@@ -4,8 +4,8 @@ import java.util.Date;
 
 public class Aluno {
 
-	private Integer id_aluno, matricula, ano_ingresso, coord_ac_id;
-	private Long cpf;
+	private Integer id_aluno, ano_ingresso, coord_ac_id;
+	private Long cpf, matricula;
 	private String nome_aluno, nome, nome_admin, senha, email;
 	private boolean permissao;
 	public Date data_carga_total_part;
@@ -15,7 +15,8 @@ public class Aluno {
 		
 	}
 	
-	public Aluno(Integer idaluno, Integer matri, Integer anoingresso, Long cpf_aluno, String nomealuno, String senha_aluno, String email_a, boolean permissao_aluno){
+
+	public Aluno(Integer idaluno, Long matri, Integer anoingresso, Long cpf_aluno, String nomealuno, String senha_aluno, String email_a, boolean permissao_aluno){
 		id_aluno = idaluno;
 		matricula = matri;
 		ano_ingresso = anoingresso;
@@ -27,7 +28,7 @@ public class Aluno {
 		
 	}
 	
-	public Aluno (String nomealuno, int matricula_aluno, int anoingresso, Date dataconlusao_carga){
+	public Aluno (String nomealuno, Long matricula_aluno, int anoingresso, Date dataconlusao_carga){
 
 		nome = nomealuno;
 		matricula = matricula_aluno;
@@ -62,10 +63,10 @@ public class Aluno {
 	public void setId_aluno(Integer id_aluno) {
 		this.id_aluno = id_aluno;
 	}
-	public Integer getMatricula() {
+	public Long getMatricula() {
 		return matricula;
 	}
-	public void setMatricula(Integer matricula) {
+	public void setMatricula(Long matricula) {
 		this.matricula = matricula;
 	}
 	public Integer getAno_ingresso() {
@@ -135,7 +136,5 @@ public class Aluno {
 	public void setData_conclusao_carga(Date data_conclusao) {
 		this.data_conclusao_carga = data_conclusao;
 	}
-
-
 	
 }

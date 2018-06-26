@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import br.lisianthus.modelo.Aluno;
 import br.lisianthus.modelo.Participacao;
 import br.lisianthus.utils.Mensagens;
 import br.lisianthus.utils.Retorno;
@@ -254,12 +255,12 @@ public class DAOParticipacao {
 		return list;
 	}
 
-	public List<Participacao> localizarConsulta(Participacao participacao) throws RuntimeException {
+	public List<Participacao> localizarConsulta(Participacao participacao, Aluno aluno) throws RuntimeException {
 
 		ArrayList<Participacao> list = new ArrayList<Participacao>();
 
 		String sql = "select atividade_complementar_id_atividade, aluno_id_aluno, id_participacao, "
-				+ "status, nome_ac_part, ch_cadastrada_part, ch_validada_part " + "from participacao ";
+				+ "status, nome_ac_part, ch_cadastrada_part, ch_validada_part " + "from participacao where aluno_id_aluno= '"+aluno.getId_aluno()+"'";
 
 		String auxId = "";
 		String auxNome = "";
@@ -304,6 +305,54 @@ public class DAOParticipacao {
 
 	}
 
+	public List<Participacao> localizarpartConsulta(Participacao participacao) throws RuntimeException {
+
+		ArrayList<Participacao> list = new ArrayList<Participacao>();
+
+		String sql = "select atividade_complementar_id_atividade, aluno_id_aluno, id_participacao, "
+				+ "status, nome_ac_part, ch_cadastrada_part, ch_validada_part from participacao";
+		String auxId = "";
+		String auxNome = "";
+		if (participacao != null && participacao.getId_participacao() != null) {
+			auxId = "id_participacao=" + participacao.getId_participacao();
+		}
+
+		if (participacao != null && participacao.getNome_ac_part() != null) {
+			auxNome = "nome_ac_part like '" + participacao.getNome_ac_part() + "%'";
+		}
+
+		if (!auxId.isEmpty()) {
+			sql = sql + " where " + auxId;
+		} else if (!auxNome.isEmpty()) {
+			sql = sql + " where " + auxNome;
+		}
+		ResultSet result = null;
+		System.out.println("SQL localizar:" + sql);
+		try {
+			result = con.createStatement().executeQuery(sql);
+
+			while (result.next()) {
+
+				Integer atividade_comp_id = result.getInt("atividade_complementar_id_atividade");
+				Integer aluno_id = result.getInt("aluno_id_aluno");
+				Integer participacao_id = result.getInt("id_participacao");
+				String status_part = result.getString("status");
+				String nome_ac = result.getString("nome_ac_part");
+				Integer ch_cadastrada = result.getInt("ch_cadastrada_part");
+				Integer ch_validada = result.getInt("ch_validada_part");
+
+				Participacao a = new Participacao(atividade_comp_id, aluno_id, participacao_id, status_part, nome_ac,
+						ch_cadastrada, ch_validada);
+
+				list.add(a);
+			}
+		} catch (SQLException e) {
+			throw new RuntimeException(e.getMessage());
+		}
+
+		return list;
+	}
+	
 	public Participacao obter(Integer id) {
 		if (id == null)
 			return null;

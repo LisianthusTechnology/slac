@@ -25,6 +25,10 @@ public class ControladorAtividadeComplementar {
 	public AtividadeComplementar obter(Integer id_ac){
 		return dao.obter(id_ac);
 	}
+
+	public AtividadeComplementar obterch(Integer id_mod){
+		return dao.obterch(id_mod);
+	}
 	
 	public Retorno inserir(AtividadeComplementar ac){
 		return dao.inserir(ac);

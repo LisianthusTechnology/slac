@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.1.1.final using JasperReports Library version 6.1.1  -->
-<<<<<<< HEAD
-<!-- 2018-06-15T16:23:37 -->
-=======
-<!-- 2018-06-24T18:20:00 -->
->>>>>>> f140f1cc594eba87e6c967e4b3bd5b371c05d877
+<!-- 2018-06-25T16:34:32 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="novoRelatorioAlunos" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="13acf49e-4913-4d1b-bccc-113817ad15d1">
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<style name="Title" forecolor="#FFFFFF" fontName="Times New Roman" fontSize="50" isBold="false"/>
@@ -20,26 +16,17 @@
 	<queryString>
 		<![CDATA[select nome, matricula, ano_ingresso, data_conclusao_carga from aluno where data_conclusao_carga is not null]]>
 	</queryString>
-<<<<<<< HEAD
-	<field name="nome" class="java.lang.String"/>
-	<field name="matricula" class="java.lang.Integer"/>
-=======
 	<field name="data_inicio" class="java.util.Date"/>
 	<field name="data_fim" class="java.util.Date"/>
 	<field name="nome" class="java.lang.String"/>
 	<field name="matricula" class="java.lang.Long"/>
->>>>>>> f140f1cc594eba87e6c967e4b3bd5b371c05d877
 	<field name="ano_ingresso" class="java.lang.Integer"/>
 	<field name="data_conclusao_carga" class="java.util.Date"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-<<<<<<< HEAD
-		<band height="160" splitType="Stretch">
-=======
 		<band height="216" splitType="Stretch">
->>>>>>> f140f1cc594eba87e6c967e4b3bd5b371c05d877
 			<frame>
 				<reportElement mode="Opaque" x="0" y="0" width="553" height="95" backcolor="#E5E9F2" uuid="6c6ca4e1-17cd-4913-93d6-5e670ea9ae8a"/>
 				<staticText>
@@ -51,16 +38,6 @@
 				</staticText>
 			</frame>
 			<frame>
-<<<<<<< HEAD
-				<reportElement mode="Opaque" x="0" y="100" width="553" height="32" forecolor="#000000" backcolor="#E5E9F2" uuid="e3c14156-5b51-4201-918b-97fdc012e5d4"/>
-				<textField pattern="EEEEE dd MMMMM yyyy">
-					<reportElement x="408" y="6" width="144" height="20" forecolor="#47525E" uuid="5c3301e7-a737-4c59-8a2f-a6c79fd1adb8"/>
-					<textElement textAlignment="Right">
-						<font size="12"/>
-					</textElement>
-					<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
-				</textField>
-=======
 				<reportElement mode="Opaque" x="0" y="100" width="553" height="100" forecolor="#000000" backcolor="#E5E9F2" uuid="e3c14156-5b51-4201-918b-97fdc012e5d4"/>
 				<textField pattern="EEEEE dd MMMMM yyyy">
 					<reportElement x="408" y="6" width="144" height="20" forecolor="#47525E" uuid="5c3301e7-a737-4c59-8a2f-a6c79fd1adb8"/>
@@ -91,13 +68,12 @@
 					<text><![CDATA[Conclusão da carga horária referente ao período:]]></text>
 				</staticText>
 				<staticText>
-					<reportElement style="Column header" x="390" y="60" width="36" height="28" forecolor="#47525E" uuid="d5442b65-d484-4237-b64f-960eee35bb1d"/>
+					<reportElement style="Column header" x="370" y="60" width="20" height="28" forecolor="#47525E" uuid="d5442b65-d484-4237-b64f-960eee35bb1d"/>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font size="13" isBold="false"/>
 					</textElement>
 					<text><![CDATA[à]]></text>
 				</staticText>
->>>>>>> f140f1cc594eba87e6c967e4b3bd5b371c05d877
 			</frame>
 		</band>
 	</title>
@@ -168,32 +144,25 @@
 					</textElement>
 					<textFieldExpression><![CDATA[$F{data_conclusao_carga}]]></textFieldExpression>
 				</textField>
-<<<<<<< HEAD
-=======
 				<textField isStretchWithOverflow="true">
-					<reportElement style="Detail" positionType="Float" x="270" y="-102" width="120" height="23" forecolor="#47525E" uuid="0833c702-4ae3-43d4-ac4e-5ce6873e263b"/>
+					<reportElement style="Detail" positionType="Float" x="270" y="-102" width="100" height="23" forecolor="#47525E" uuid="0833c702-4ae3-43d4-ac4e-5ce6873e263b"/>
 					<textElement textAlignment="Left" verticalAlignment="Middle">
 						<font size="14"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{data_inicio}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="true">
-					<reportElement style="Detail" positionType="Float" x="430" y="-102" width="120" height="23" forecolor="#47525E" uuid="ac185cdf-38c2-4406-b2d1-05650670ac9a"/>
+					<reportElement style="Detail" positionType="Float" x="390" y="-102" width="80" height="23" forecolor="#47525E" uuid="ac185cdf-38c2-4406-b2d1-05650670ac9a"/>
 					<textElement textAlignment="Left" verticalAlignment="Middle">
 						<font size="14"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{data_fim}]]></textFieldExpression>
 				</textField>
->>>>>>> f140f1cc594eba87e6c967e4b3bd5b371c05d877
 			</frame>
 		</band>
 	</detail>
 	<columnFooter>
-<<<<<<< HEAD
-		<band height="40" splitType="Stretch"/>
-=======
 		<band height="17" splitType="Stretch"/>
->>>>>>> f140f1cc594eba87e6c967e4b3bd5b371c05d877
 	</columnFooter>
 	<pageFooter>
 		<band height="110" splitType="Stretch">
