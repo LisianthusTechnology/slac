@@ -626,18 +626,23 @@ public class ServletCadastroEventos extends HttpServlet {
 		ControladorParticipacao controle_part = new ControladorParticipacao();
 
 		participacao = controle_part.verifica_carga_horaria();
+		
+		if(participacao != null){
 		aluno = controle_aluno.verifica_se_tem_dataconclusao(participacao.getAluno_id_aluno());
 		System.out.println("Dentro da carga horaria:" + participacao.getCh_validada_part());
 
-		if (participacao.getCh_validada_part() >= 200 && aluno.getData_conclusao_carga() == null) {
-			// bloqueio do cadastro da participacao
-			System.out.println("ID do ALUNO: " + participacao.getAluno_id_aluno() + " Data: " + data_conclusao_part);
+	
+			if (participacao.getCh_validada_part() >= 200 && aluno.getData_conclusao_carga() == null) {
+				// bloqueio do cadastro da participacao
+				System.out
+						.println("ID do ALUNO: " + participacao.getAluno_id_aluno() + " Data: " + data_conclusao_part);
 
-			aluno.setData_carga_total_part(data_conclusao_part);
-			aluno.setId_aluno(participacao.getAluno_id_aluno());
-			System.out.println("Inserção da data: " + controle_aluno.inserir_data_conclusao(aluno).getMensagem());
+				aluno.setData_carga_total_part(data_conclusao_part);
+				aluno.setId_aluno(participacao.getAluno_id_aluno());
+				System.out.println("Inserção da data: " + controle_aluno.inserir_data_conclusao(aluno).getMensagem());
+			}
+
 		}
-
 	}
 
 	public void verificadataParticipacao(HttpServletRequest req, PrintWriter out)
@@ -681,16 +686,17 @@ public class ServletCadastroEventos extends HttpServlet {
 		ControladorAluno contraluno = new ControladorAluno();
 
 		JasperReport report = JasperCompileManager.compileReport(caminhoRelatorio);
-	
+
 		
 		List<Aluno> relatorio = contraluno.listaRelatorio(inicio, fim);
-		
+
+		if(relatorio != null){
 		JasperPrint print = JasperFillManager.fillReport(report, null, new JRBeanCollectionDataSource(relatorio));
-		
+
 		JasperExportManager.exportReportToPdfFile(print, "Relatorio_Alunos.pdf");
 
 		JasperViewer.viewReport(print, false);
-
+		}
 	}
 
 	public void consultaParticipacao(HttpServletRequest req, PrintWriter out)
@@ -785,9 +791,8 @@ public class ServletCadastroEventos extends HttpServlet {
 			tpl.setVariable("dataInicio", p.getData_inicio_ac_part().toString());
 			ac = contAc.obter(p.getAtividade_complementar_id_atividade());
 			mod = contMod.obterMod(ac.getModalidade_id_mod());
-			ch = contAc.obterch(mod.getId_mod());
-			tpl.setVariable("chMin", ch.getCh_min_ac());
-			tpl.setVariable("chMax", ch.getCh_max_ac());
+			tpl.setVariable("chMin", ac.getCh_min_ac());
+			tpl.setVariable("chMax", ac.getCh_max_ac());
 			tpl.setVariable("modalidadeEvento", mod.getNome_mod());
 			tpl.setVariable("certificado", p.getCertificado_part());
 			tpl.setVariable("tipoEvento", p.getTipo_ac_part());
